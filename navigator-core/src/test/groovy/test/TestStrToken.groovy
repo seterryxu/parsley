@@ -18,5 +18,4 @@ class TestStrToken {
 		lst.each {println it}
 		
 	}
-
 }
