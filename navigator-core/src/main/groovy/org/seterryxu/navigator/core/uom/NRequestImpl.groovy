@@ -5,11 +5,10 @@ import javax.servlet.http.HttpServletRequestWrapper
 class NRequestImpl extends HttpServletRequestWrapper implements
 NavigatorRequest {
 
-	private NavigatorRequest req
 	private tokenizedReqUrl=[]
 
 	NRequestImpl(NavigatorRequest req,String reqUrl){
-		this.req=req
+		super(req)
 		this.tokenizedReqUrl=tokenize(reqUrl)
 	}
 

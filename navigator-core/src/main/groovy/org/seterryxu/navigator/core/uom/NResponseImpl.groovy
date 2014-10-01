@@ -5,9 +5,8 @@ import javax.servlet.http.HttpServletResponseWrapper
 class NResponseImpl extends HttpServletResponseWrapper implements
 NavigatorResponse {
 
-	private NavigatorResponse res
-	
 	NResponseImpl(NavigatorResponse res){
-		this.res=res
+		super(res)
+		
 	}
 }
