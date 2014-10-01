@@ -11,6 +11,31 @@
 		<module>navigator-freemarker</module>
 	</modules>
 
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.gmaven</groupId>
+					<artifactId>gmaven-plugin</artifactId>
+					<version>1.5</version>
+					<configuration>
+						<providerSelection>1.8</providerSelection>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>generateStubs</goal>
+								<goal>compile</goal>
+								<goal>generateTestStubs</goal>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
