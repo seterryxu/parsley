@@ -1,17 +1,25 @@
 package org.seterryxu.navigator.freemarker
 
+import org.seterryxu.navigator.framework.core.parse.AbstractParser
 
-import org.seterryxu.navigator.core.parse.AbstractParser
 
-import freemarker.template.Configuration
-import freemarker.template.Template;
 
 class TemplateParser extends AbstractParser {
 
 	@Override
-	public Object load(Object view) {
-		Configuration conf=new Configuration()
-		Template t=conf.getTemplate("")
+	public String parse(Object view) {
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public String getExtension() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void load(String viewLoc) {
+		// TODO Auto-generated method stub
+
 	}
 }

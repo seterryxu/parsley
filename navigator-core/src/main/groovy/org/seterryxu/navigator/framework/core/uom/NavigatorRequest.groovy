@@ -1,4 +1,4 @@
-package org.seterryxu.navigator.core.uom
+package org.seterryxu.navigator.framework.core.uom
 
 import javax.servlet.http.HttpServletRequest;
 
