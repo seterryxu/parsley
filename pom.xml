@@ -3,13 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.seterryxu</groupId>
-	<artifactId>navigator</artifactId>
+	<artifactId>parsley</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>navigator-core</module>
-		<module>navigator-groovy</module>
-		<module>navigator-freemarker</module>
+		<module>parsley-core</module>
+		<module>parsley-groovy</module>
+		<module>parsley-freemarker</module>
 	</modules>
 
 	<build>
@@ -69,7 +69,7 @@
 
 			<dependency>
 				<groupId>org.seterryxu</groupId>
-				<artifactId>navigator-core</artifactId>
+				<artifactId>parsley-core</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
