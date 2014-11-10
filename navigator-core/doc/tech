@@ -1,0 +1,12 @@
+1. EL exp
+2. annotation parsing
+3. commons-discovery
+4. ThreadLocal
+5. CopyOnWriteArrayList
+6. ConcurrentMap
+7. jsr269
+8. ClassLoader
+9. GroovyASTTransformation
+10.google.common.cache - script loading cache ?
+11.groovy singleton
+12.包内可见
