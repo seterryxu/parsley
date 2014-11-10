@@ -26,7 +26,7 @@ package org.seterryxu.parsley.framework.core.uom
 import javax.servlet.http.HttpServletResponse
 import java.net.URL
 
-interface ParsleyResponse extends HttpServletResponse{
+interface IParsleyResponse extends HttpServletResponse{
 
 	boolean handleStaticResource(URL resUrl)
 	

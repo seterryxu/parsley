@@ -29,11 +29,13 @@ import javax.servlet.ServletContext
 
 final class WebApp {
 
-	private static Logger logger=Logger.getLogger this
+	private static Logger _logger=Logger.getLogger this
 
 	static final Set<String> supportedEncodings
 
 	static Map<String, URL> resources
+	
+	static final RESOURCE_DIR
 
 	static final Set<String> supportedMimeTypes
 

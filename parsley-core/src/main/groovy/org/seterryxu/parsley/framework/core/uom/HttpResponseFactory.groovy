@@ -23,10 +23,39 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+import javax.servlet.http.HttpServletResponse
+
 class HttpResponseFactory {
 
-	HttpResponseException error(){
-		
+	/**
+	 * Error 500
+	 */
+	static HttpResponseException error(){
+		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
 	}
+
+	/**
+	 * Error 404
+	 */
+	static HttpResponseException notFound(){
+		_status(HttpServletResponse.SC_NOT_FOUND)
+	}
+
+	/**
+	 * Error 403
+	 */
+	static HttpResponseException forbidden(){
+		_status(HttpServletResponse.SC_FORBIDDEN)
+	}
+
+	private static HttpResponseException _status(int statusCode){
+		new HttpResponseException(){
+					void generateResponse(IParsleyResponse pres){
+						pres.setStatus(statusCode)
+					}
+				}
+	}
+	
+	
 	
 }

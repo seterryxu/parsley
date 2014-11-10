@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletResponseWrapper
 
 class PResponseImpl extends HttpServletResponseWrapper implements
-ParsleyResponse {
+IParsleyResponse {
 
 	PResponseImpl(HttpServletResponse res){
 		super(res)

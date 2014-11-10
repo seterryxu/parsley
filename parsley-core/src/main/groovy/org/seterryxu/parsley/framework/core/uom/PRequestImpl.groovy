@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequestWrapper
  * @author Xu Lijia
  *
  */
-class PRequestImpl extends HttpServletRequestWrapper implements ParsleyRequest {
+class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest {
 
 	private final String requestedUrl
 	private final List<String> tokenizedUrl=[]
@@ -59,7 +59,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements ParsleyRequest {
 	}
 
 	public boolean isStaticResourceRequest() {
-		if(requestedUrl.contains('/$Static/')){
+		if(_isValid()&&requestedUrl.contains('/$Static/')){
 			return true
 		}
 
@@ -79,22 +79,22 @@ class PRequestImpl extends HttpServletRequestWrapper implements ParsleyRequest {
 		return false
 	}
 
-	public boolean isValid() {
+	private boolean _isValid() {
 		String lowerCasedRequestedUrl=requestedUrl.toLowerCase()
 		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
 			return true
 		}
-		
+
 		return false
 	}
 
 	public String getRequestedResourceName() {
 		// TODO Auto-generated method stub
-		return null;
+		return null
 	}
 
 	public Locale getRequestedLocale() {
 		// TODO Auto-generated method stub
-		return null;
+		return null
 	}
 }

@@ -23,6 +23,15 @@
 
 package org.seterryxu.parsley.framework.core.lang.facets
 
+import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
+
+/**
+ * @author Xu Lijia
+ *
+ */
 abstract class Facet {
 
+	abstract boolean handle(IParsleyRequest preq)
+	
+	
 }

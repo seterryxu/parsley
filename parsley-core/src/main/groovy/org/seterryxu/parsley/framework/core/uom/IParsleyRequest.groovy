@@ -23,8 +23,19 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-interface HttpResponse {
+import javax.servlet.http.HttpServletRequest
 
-	void generateResponse()
-	
+interface IParsleyRequest extends HttpServletRequest {
+
+	boolean isRestfulRequest()
+
+	boolean isStaticResourceRequest()
+
+	boolean isJavaScriptRequest()
+
+	boolean hasMoreTokens()
+
+	String getRequestedResourceName()
+
+	Locale getRequestedLocale()
 }

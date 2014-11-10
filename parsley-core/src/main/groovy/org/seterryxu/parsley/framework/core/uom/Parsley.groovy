@@ -23,6 +23,8 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+import groovy.transform.Immutable
+
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.ServletException
@@ -32,6 +34,10 @@ import javax.servlet.http.HttpServletResponse
 
 import org.seterryxu.parsley.framework.core.WebApp
 
+/**
+ * @author Xu Lijia
+ *
+ */
 final class Parsley extends HttpServlet {
 
 	private ServletContext _context
@@ -46,17 +52,16 @@ final class Parsley extends HttpServlet {
 	protected void service(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException {
 		//wrapper
-		ParsleyRequest preq=new PRequestImpl(req)
-		ParsleyResponse pres=new PResponseImpl(res)
+		IParsleyRequest preq=new PRequestImpl(req)
+		IParsleyResponse pres=new PResponseImpl(res)
 
 		//		if(preq.isRestfulRequest()){
 		//		}
 
 		if(preq.isStaticResourceRequest()){
-			if(preq.isValid()){
-				URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
-				pres.handleStaticResource(resUrl)
-			}
+			URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
+			//			TODO where to implement this method?
+			pres.handleStaticResource(resUrl)
 		}
 
 		//		if(preq.isJavaScriptRequest()){
@@ -75,20 +80,33 @@ final class Parsley extends HttpServlet {
 		static URL selectByLocale(String name, Locale locale){
 
 		}
+	}
 
 
-		private URL getResource(String name){
-			if(Boolean.getBoolean(".parsleyNoCache")){
-				_context.getResource(name)
-			}
+	private URL getResource(String name){
+		//		TODO sys var?
+		if(Boolean.getBoolean(".parsleyNoCache")){
+			_context.getResource(name)
+		}
 
-			if(WebApp.resources){
-				//TODO no get?
-				WebApp.resources.get(name)
-			}else{
-				_context.getResource(name)
-			}
+		if(WebApp.resources){
+			//TODO no get?
+			WebApp.resources.get(name)
+		}else{
+			_context.getResource(name)
 		}
 	}
+
+	private URL getIndexPage(){
+		def indexPagePath="/WEB-INF/${WebApp.RESOURCE_DIR}/"
+
+		for(page in INDEX_PAGES){
+			if(getResource(indexPagePath+page))
+				break
+		}
+	}
+
+	//TODO make unmodified
+	private static final Collection<String> INDEX_PAGES=Collections.singletonList('index.html','index.htm','index.ftl','index.jsp')
 
 }

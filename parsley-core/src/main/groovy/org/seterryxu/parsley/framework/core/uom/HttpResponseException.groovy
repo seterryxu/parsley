@@ -23,11 +23,7 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-class HttpResponseException extends RuntimeException implements HttpResponse {
-
-	public void generateResponse() {
-		// TODO Auto-generated method stub
-
-	}
+//TODO why RuntimeException?
+abstract class HttpResponseException extends RuntimeException implements IHttpResponse {
 
 }
