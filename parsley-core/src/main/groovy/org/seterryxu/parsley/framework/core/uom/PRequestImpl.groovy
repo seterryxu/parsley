@@ -25,6 +25,7 @@ package org.seterryxu.parsley.framework.core.uom
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
+import java.util.Locale
 
 /**
  * @author Xu Lijia
@@ -32,26 +33,54 @@ import javax.servlet.http.HttpServletRequestWrapper
  */
 class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest {
 
-	private final String requestedUrl
-	private final List<String> tokenizedUrl=[]
+	private final String _requestedUrl
+	
+	final TokenizedUrl tokenizedUrl
 
 	PRequestImpl(HttpServletRequest req){
 		super(req)
-		this.requestedUrl=getRequestedUrl(req)
-		tokenizeUrl()
+		this._requestedUrl=_getRequestedUrl(req)
+		tokenizedUrl=new TokenizedUrl()
 	}
 
-	private String getRequestedUrl(HttpServletRequest req){
+	//------------------- pre-process url ------------------- 
+	private String _getRequestedUrl(HttpServletRequest req){
 		req.getRequestURI().substring(req.getContextPath().size())
 	}
 
-	private void tokenizeUrl(){
-		StringTokenizer tk=new StringTokenizer(requestedUrl, '/\\')
-		tk.each {tokenizedUrl<<it }
+	
+	//------------------- tokenize url -------------------
+	private class TokenizedUrl{
+		private final String[] _tokens
+		
+		TokenizedUrl(){
+			_tokenizeUrl()
+		}
+		
+		private void _tokenizeUrl(){
+			StringTokenizer tk=new StringTokenizer(_requestedUrl, '/\\')
+			tk.each {_tokens<<it }
+		}
+		
+		private int index
+		
+		String current(){
+			_tokens[index]
+		}
+		
+		String next(){
+			_tokens[++index]
+		}
+		
+		public boolean hasMore() {
+			index!=_tokens.size()
+		}
 	}
-
+	
+	
+	//------------------- judge type of preq -------------------
 	public boolean isRestfulRequest() {
-		if(requestedUrl.startsWith('/$Parsley/')){
+		if(_requestedUrl.startsWith('/$Parsley/')){
 			return true
 		}
 
@@ -59,7 +88,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 	}
 
 	public boolean isStaticResourceRequest() {
-		if(_isValid()&&requestedUrl.contains('/$Static/')){
+		if(_isValid()&&_requestedUrl.contains('/$Static/')){
 			return true
 		}
 
@@ -67,34 +96,30 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 	}
 
 	public boolean isJavaScriptRequest() {
-		if(requestedUrl.contains('/$Js/')){
+		if(_requestedUrl.contains('/$Js/')){
 			return true
 		}
 
 		return false
 	}
-
-	public boolean hasMoreTokens() {
-		// TODO Auto-generated method stub
-		return false
-	}
-
+	
 	private boolean _isValid() {
-		String lowerCasedRequestedUrl=requestedUrl.toLowerCase()
-		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
-			return true
-		}
-
+		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
+				if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
+					return true
+				}
+		
 		return false
 	}
 
+
+	//------------------- preq info -------------------
 	public String getRequestedResourceName() {
 		// TODO Auto-generated method stub
 		return null
 	}
 
 	public Locale getRequestedLocale() {
-		// TODO Auto-generated method stub
-		return null
+		getLocale()?:Locale.ENGLISH
 	}
 }

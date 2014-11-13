@@ -26,6 +26,10 @@ package org.seterryxu.parsley.framework.core.uom
 import javax.servlet.http.HttpServletResponse
 import java.net.URL
 
+/**
+ * @author Xu Lijia
+ *
+ */
 interface IParsleyResponse extends HttpServletResponse{
 
 	boolean handleStaticResource(URL resUrl)

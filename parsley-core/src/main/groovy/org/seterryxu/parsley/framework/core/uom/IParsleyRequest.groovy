@@ -24,7 +24,12 @@
 package org.seterryxu.parsley.framework.core.uom
 
 import javax.servlet.http.HttpServletRequest
+import java.util.Locale
 
+/**
+ * @author Xu Lijia
+ *
+ */
 interface IParsleyRequest extends HttpServletRequest {
 
 	boolean isRestfulRequest()
@@ -32,8 +37,6 @@ interface IParsleyRequest extends HttpServletRequest {
 	boolean isStaticResourceRequest()
 
 	boolean isJavaScriptRequest()
-
-	boolean hasMoreTokens()
 
 	String getRequestedResourceName()
 

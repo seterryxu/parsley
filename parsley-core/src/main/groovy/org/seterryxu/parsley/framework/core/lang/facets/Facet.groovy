@@ -23,6 +23,8 @@
 
 package org.seterryxu.parsley.framework.core.lang.facets
 
+import java.util.logging.Logger;
+
 import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
 
 /**
@@ -31,7 +33,11 @@ import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
  */
 abstract class Facet {
 
+	private static Logger _logger=Logger.getLogger this
+	 
 	abstract boolean handle(IParsleyRequest preq)
 	
-	
+	static List<Facet> discoverExtensions(){
+		
+	}
 }

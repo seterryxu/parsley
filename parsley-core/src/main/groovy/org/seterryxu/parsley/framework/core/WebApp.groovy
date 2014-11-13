@@ -31,11 +31,11 @@ final class WebApp {
 
 	private static Logger _logger=Logger.getLogger this
 
+	static final RESOURCE_DIR
+
 	static final Set<String> supportedEncodings
 
 	static Map<String, URL> resources
-	
-	static final RESOURCE_DIR
 
 	static final Set<String> supportedMimeTypes
 
@@ -47,7 +47,6 @@ final class WebApp {
 	WebApp(ServletContext context){
 		this.context=context
 		generateResourcePaths()
-		generateGlobalDispatchers()
 	}
 
 	private static void generateResourcePaths(){
@@ -81,6 +80,4 @@ final class WebApp {
 		resources = Collections.unmodifiableMap(paths)
 	}
 
-	private void generateGlobalDispatchers(){
-	}
 }

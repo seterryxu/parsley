@@ -25,8 +25,10 @@ package org.seterryxu.parsley.framework.core.uom
 
 import org.seterryxu.parsley.framework.core.WebApp
 
-
-
+/**
+ * @author Xu Lijia
+ *
+ */
 abstract class Dispatcher {
 
 	private static boolean TRACE=Boolean.getBoolean(".trace")

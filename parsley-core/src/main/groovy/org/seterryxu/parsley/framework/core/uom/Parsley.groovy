@@ -23,8 +23,6 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import groovy.transform.Immutable
-
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.ServletException
@@ -60,7 +58,7 @@ final class Parsley extends HttpServlet {
 
 		if(preq.isStaticResourceRequest()){
 			URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
-			//			TODO where to implement this method?
+			//TODO where to implement this method?
 			pres.handleStaticResource(resUrl)
 		}
 
@@ -76,12 +74,21 @@ final class Parsley extends HttpServlet {
 		 }*/
 	}
 
+	//------------------- navigating methods -------------------
+	/**
+	 * recursive method for navigation
+	 */
+	private tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
+		preq.tokenizedUrl
+	}
+
+
+	//------------------- resource process -------------------
 	private static class LocalizedResourceSelector extends Closure<URL>{
 		static URL selectByLocale(String name, Locale locale){
 
 		}
 	}
-
 
 	private URL getResource(String name){
 		//		TODO sys var?
@@ -97,6 +104,7 @@ final class Parsley extends HttpServlet {
 		}
 	}
 
+	//------------------- index page process -------------------
 	private URL getIndexPage(){
 		def indexPagePath="/WEB-INF/${WebApp.RESOURCE_DIR}/"
 
@@ -106,7 +114,7 @@ final class Parsley extends HttpServlet {
 		}
 	}
 
-	//TODO make unmodified
+	//TODO make unmodified: as ? or ?
 	private static final Collection<String> INDEX_PAGES=Collections.singletonList('index.html','index.htm','index.ftl','index.jsp')
 
 }
