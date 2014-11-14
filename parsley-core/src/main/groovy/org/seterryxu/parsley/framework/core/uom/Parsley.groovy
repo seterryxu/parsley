@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 import org.seterryxu.parsley.framework.core.WebApp
+import org.seterryxu.parsley.framework.core.lang.facets.Facet
 
 /**
  * @author Xu Lijia
@@ -72,14 +73,27 @@ final class Parsley extends HttpServlet {
 		 }
 		 }
 		 }*/
+		if(tryNavigate(this, preq, pres)){
+			return
+		}
+
+		for(facet in Facet.facets){
+			if(facet.handle(preq)){
+				return
+			}
+		}
+
+		//		out of options
+		HttpResponseFactory.notFound(pres)
 	}
 
 	//------------------- navigating methods -------------------
 	/**
 	 * recursive method for navigation
 	 */
-	private tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
+	private boolean tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
 		preq.tokenizedUrl
+
 	}
 
 

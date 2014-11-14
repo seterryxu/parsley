@@ -25,37 +25,42 @@ package org.seterryxu.parsley.framework.core.uom
 
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * @author Xu Lijia
+ *
+ */
 class HttpResponseFactory {
 
+	//------------------- http exceptions -------------------
 	/**
-	 * Error 500
+	 * Error 500 INTERNAL_SERVER_ERROR
 	 */
-	static HttpResponseException error(){
-		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
+	static HttpResponseException error(IParsleyResponse pres){
+		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).generateResponse(pres)
 	}
 
 	/**
-	 * Error 404
+	 * Error 404 NOT_FOUND
 	 */
-	static HttpResponseException notFound(){
-		_status(HttpServletResponse.SC_NOT_FOUND)
+	static HttpResponseException notFound(IParsleyResponse pres){
+		_status(HttpServletResponse.SC_NOT_FOUND).generateResponse(pres)
 	}
 
 	/**
-	 * Error 403
+	 * Error 403 FORBIDDEN
 	 */
-	static HttpResponseException forbidden(){
-		_status(HttpServletResponse.SC_FORBIDDEN)
+	static HttpResponseException forbidden(IParsleyResponse pres){
+		_status(HttpServletResponse.SC_FORBIDDEN).generateResponse(pres)
 	}
 
 	private static HttpResponseException _status(int statusCode){
 		new HttpResponseException(){
-					void generateResponse(IParsleyResponse pres){
-						pres.setStatus(statusCode)
-					}
-				}
+			void generateResponse(IParsleyResponse pres){
+				pres.setStatus(statusCode)
+			}
+		}
 	}
 	
-	
+	//------------------- http  -------------------
 	
 }

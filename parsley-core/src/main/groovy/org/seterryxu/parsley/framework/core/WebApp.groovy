@@ -27,14 +27,18 @@ import java.util.logging.Logger
 
 import javax.servlet.ServletContext
 
+import org.seterryxu.parsley.framework.core.lang.facets.Facet
+
+/**
+ *
+ * @author Xu Lijia
+ */
 final class WebApp {
 
 	private static Logger _logger=Logger.getLogger this
 
-	static final RESOURCE_DIR
-
 	static final Set<String> supportedEncodings
-
+	static final RESOURCE_DIR
 	static Map<String, URL> resources
 
 	static final Set<String> supportedMimeTypes
@@ -46,10 +50,11 @@ final class WebApp {
 	//TODO singleton
 	WebApp(ServletContext context){
 		this.context=context
-		generateResourcePaths()
+		_generateResourcePaths()
+		_generatePageHandlers()
 	}
 
-	private static void generateResourcePaths(){
+	private static void _generateResourcePaths(){
 		if (Boolean.getBoolean(".noResourcePathCache")) {
 			resources = null
 			return
@@ -80,4 +85,7 @@ final class WebApp {
 		resources = Collections.unmodifiableMap(paths)
 	}
 
+	private static void _generatePageHandlers(){
+		Facet.discoverExtensions(resources.filterByFolder('lib'))
+	}
 }

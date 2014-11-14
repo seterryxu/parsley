@@ -1,7 +1,7 @@
-1. EL exp
+1. gradle
 2. annotation parsing
 3. commons-discovery
-4. ThreadLocal
+4. EL exp
 5. CopyOnWriteArrayList
 6. ConcurrentMap
 7. jsr269
@@ -10,3 +10,4 @@
 10.google.common.cache - script loading cache ?
 11.groovy singleton
 12.包内可见
+13.ThreadLocal

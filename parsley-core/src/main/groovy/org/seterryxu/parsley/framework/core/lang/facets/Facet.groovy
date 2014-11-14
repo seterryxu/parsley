@@ -34,7 +34,9 @@ import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
 abstract class Facet {
 
 	private static Logger _logger=Logger.getLogger this
-	 
+	
+	private static final List<Facet> facets=[];
+	
 	abstract boolean handle(IParsleyRequest preq)
 	
 	static List<Facet> discoverExtensions(){
