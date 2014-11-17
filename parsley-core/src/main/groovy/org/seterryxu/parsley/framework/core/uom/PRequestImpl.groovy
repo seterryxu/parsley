@@ -25,6 +25,9 @@ package org.seterryxu.parsley.framework.core.uom
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
+
+import org.seterryxu.parsley.framework.core.WebApp
+
 import java.util.Locale
 
 /**
@@ -34,7 +37,7 @@ import java.util.Locale
 class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest {
 
 	private final String _requestedUrl
-	
+
 	final TokenizedUrl tokenizedUrl
 
 	PRequestImpl(HttpServletRequest req){
@@ -43,41 +46,43 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		tokenizedUrl=new TokenizedUrl()
 	}
 
-	//------------------- pre-process url ------------------- 
+	//------------------- pre-process url -------------------
 	private String _getRequestedUrl(HttpServletRequest req){
 		req.getRequestURI().substring(req.getContextPath().size())
 	}
 
-	
+
 	//------------------- tokenize url -------------------
 	private class TokenizedUrl{
-		private final String[] _tokens
-		
+		//TODO need final?
+		private String[] _tokens
+
 		TokenizedUrl(){
 			_tokenizeUrl()
 		}
-		
+
 		private void _tokenizeUrl(){
 			StringTokenizer tk=new StringTokenizer(_requestedUrl, '/\\')
-			tk.each {_tokens<<it }
+			_tokens=new String[tk.countTokens()]
+			for(t in tk){_tokens<<t }
 		}
-		
+
 		private int index
-		
+
 		String current(){
 			_tokens[index]
 		}
-		
+
 		String next(){
 			_tokens[++index]
 		}
-		
+
 		public boolean hasMore() {
 			index!=_tokens.size()
 		}
 	}
-	
-	
+
+
 	//------------------- judge type of preq -------------------
 	public boolean isRestfulRequest() {
 		if(_requestedUrl.startsWith('/$Parsley/')){
@@ -87,8 +92,17 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		return false
 	}
 
+	@Override
+	public boolean isIndexPageRequest() {
+		if(!tokenizedUrl.hasMore()){
+			return true
+		}
+
+		return false
+	}
+
 	public boolean isStaticResourceRequest() {
-		if(_isValid()&&_requestedUrl.contains('/$Static/')){
+		if(_isValid()){
 			return true
 		}
 
@@ -102,13 +116,13 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 
 		return false
 	}
-	
+
 	private boolean _isValid() {
 		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
-				if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
-					return true
-				}
-		
+		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
+			return true
+		}
+
 		return false
 	}
 
@@ -122,4 +136,5 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 	public Locale getRequestedLocale() {
 		getLocale()?:Locale.ENGLISH
 	}
+
 }

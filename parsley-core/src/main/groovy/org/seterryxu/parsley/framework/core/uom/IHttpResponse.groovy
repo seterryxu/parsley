@@ -23,6 +23,10 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+/**
+ * @author Xu Lijia
+ *
+ */
 interface IHttpResponse {
 
 	void generateResponse(IParsleyResponse pres)

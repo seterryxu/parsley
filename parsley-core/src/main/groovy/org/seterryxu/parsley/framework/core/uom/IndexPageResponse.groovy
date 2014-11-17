@@ -23,24 +23,29 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import javax.servlet.http.HttpServletRequest
-import java.util.Locale
+import javax.servlet.ServletOutputStream
 
 /**
  * @author Xu Lijia
  *
  */
-interface IParsleyRequest extends HttpServletRequest {
+class IndexPageResponse implements IHttpResponse {
 
-	boolean isRestfulRequest()
+	private FileInputStream _index
 	
-	boolean isIndexPageRequest()
+	IndexPageResponse(File index){
+		this._index=new FileInputStream(index) 
+	}
+	
+	@Override
+	public void generateResponse(IParsleyResponse pres) {
+		ServletOutputStream out=pres.getOutputStream()
 
-	boolean isStaticResourceRequest()
-
-	boolean isJavaScriptRequest()
-
-	String getRequestedResourceName()
-
-	Locale getRequestedLocale()
+		// TODO why 1024 byte?
+		byte[]buffer=new byte[1024]
+		int len
+		while((len=_index.read(buffer))>0){
+			out.write(buffer, 0, len)
+		}
+	}
 }

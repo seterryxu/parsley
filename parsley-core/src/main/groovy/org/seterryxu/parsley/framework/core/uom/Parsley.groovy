@@ -54,9 +54,16 @@ final class Parsley extends HttpServlet {
 		IParsleyRequest preq=new PRequestImpl(req)
 		IParsleyResponse pres=new PResponseImpl(res)
 
+		if(preq.isIndexPageRequest()){
+			def indexPage=getIndexPage()
+			if(indexPage){
+				HttpResponseFactory.indexPage(pres,FileUtils.toFile(indexPage))
+			}
+		}
+		
 		//		if(preq.isRestfulRequest()){
 		//		}
-
+		
 		if(preq.isStaticResourceRequest()){
 			URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
 			//TODO where to implement this method?
@@ -73,6 +80,8 @@ final class Parsley extends HttpServlet {
 		 }
 		 }
 		 }*/
+		
+		if(preq.is)
 		if(tryNavigate(this, preq, pres)){
 			return
 		}
@@ -129,6 +138,6 @@ final class Parsley extends HttpServlet {
 	}
 
 	//TODO make unmodified: as ? or ?
-	private static final Collection<String> INDEX_PAGES=Collections.singletonList('index.html','index.htm','index.ftl','index.jsp')
+	private static final List<String> INDEX_PAGES=['index.html','index.htm','index.ftl','index.jsp'] 
 
 }
