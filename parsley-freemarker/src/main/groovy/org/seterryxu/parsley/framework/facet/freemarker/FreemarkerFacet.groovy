@@ -23,7 +23,9 @@
 
 package org.seterryxu.parsley.framework.facet.freemarker
 
+import org.seterryxu.parsley.framework.core.lang.facets.Facet;
 import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
+import org.seterryxu.parsley.framework.core.uom.IParsleyResponse;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -32,7 +34,7 @@ import freemarker.template.Template;
  * @author Xu Lijia
  *
  */
-class FreemarkerFacet {
+class FreemarkerFacet extends Facet{
 
 	private static Configuration _conf
 	private Template _t
@@ -43,9 +45,10 @@ class FreemarkerFacet {
 		_conf.setDefaultEncoding('UTF-8')
 	}
 
-	boolean handle(IParsleyRequest preq,instance){
-		_t=_conf.getTemplate(preq.getResourceName())
-		def out=preq.getPrintStream()
+	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
+		_t=_conf.getTemplate(preq.getRequestedResourceName())
+		def out=pres.getOutputStream()
 		_t.process(instance, out)
 	}
+
 }

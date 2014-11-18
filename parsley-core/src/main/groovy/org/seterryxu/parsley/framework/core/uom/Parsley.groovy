@@ -23,8 +23,8 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import java.io.File;
-import java.net.URL;
+import java.io.File
+import java.net.URL
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
@@ -60,18 +60,19 @@ final class Parsley extends HttpServlet {
 		if(preq.isIndexPageRequest()){
 			def indexPage=getIndexPage()
 			if(indexPage){
-				HttpResponseFactory.indexPage(pres,toFile(indexPage))
+				HttpResponseFactory.indexPage(pres,toStream(indexPage))
 			}
 		}
-		
-		//		if(preq.isRestfulRequest()){
-		//		}
-		
+
 		if(preq.isStaticResourceRequest()){
 			URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
 			//TODO where to implement this method?
 			pres.handleStaticResource(resUrl)
 		}
+
+		//		if(preq.isRestfulRequest()){
+		//		}
+
 
 		//		if(preq.isJavaScriptRequest()){
 		//		}
@@ -83,19 +84,18 @@ final class Parsley extends HttpServlet {
 		 }
 		 }
 		 }*/
-		
-		if(preq.is)
+		//		TODO: recursive??
 		if(tryNavigate(this, preq, pres)){
 			return
 		}
 
 		for(facet in Facet.facets){
-			if(facet.handle(preq)){
+			if(facet.handle(this,preq,pres)){
 				return
 			}
 		}
 
-		//		out of options
+		//out of options
 		HttpResponseFactory.notFound(pres)
 	}
 
@@ -132,19 +132,22 @@ final class Parsley extends HttpServlet {
 
 	//------------------- index page process -------------------
 	private URL getIndexPage(){
-		def indexPagePath="/WEB-INF/${WebApp.RESOURCE_FOLDER}/"
-
+		URL index
 		for(page in INDEX_PAGES){
-			if(getResource(indexPagePath+page))
+			index=getResource("${WebApp.RESOURCE_FOLDER}${page}")
+			if(index){
 				break
+			}
 		}
+
+		return index
 	}
 
 	//TODO make unmodified: as ? or ?
-	private static final List<String> INDEX_PAGES=['index.html','index.htm','index.ftl','index.jsp'] 
+	private static final List<String> INDEX_PAGES=['index.html', 'index.htm', 'index.ftl', 'index.jsp']
 
 	//TODO------------------- Temp codes -------------------
-	public static File toFile(URL url){
-		return new File(url.toExternalForm());
+	public static InputStream toStream(URL url){
+		url.openConnection().getInputStream()
 	}
 }

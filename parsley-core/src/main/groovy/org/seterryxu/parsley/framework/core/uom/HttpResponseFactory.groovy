@@ -65,8 +65,8 @@ class HttpResponseFactory {
 	}
 	
 	//------------------- http page responses -------------------
-	static void indexPage(IParsleyResponse pres,File indexPage){
-		new IndexPageResponse(indexPage).generateResponse(pres)
+	static void indexPage(IParsleyResponse pres,stream){
+		new IndexPageResponse(stream).generateResponse(pres)
 	}
 	
 

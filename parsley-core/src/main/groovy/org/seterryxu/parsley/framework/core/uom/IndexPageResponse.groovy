@@ -31,10 +31,12 @@ import javax.servlet.ServletOutputStream
  */
 class IndexPageResponse implements IHttpResponse {
 
-	private FileInputStream _index
+	private static final BUFFER_SIZE=4096
 	
-	IndexPageResponse(File index){
-		this._index=new FileInputStream(index) 
+	private InputStream _stream
+	
+	IndexPageResponse(stream){
+		this._stream=stream 
 	}
 	
 	@Override
@@ -42,9 +44,9 @@ class IndexPageResponse implements IHttpResponse {
 		ServletOutputStream out=pres.getOutputStream()
 
 		// TODO why 1024 byte?
-		byte[]buffer=new byte[1024]
+		byte[]buffer=new byte[BUFFER_SIZE]
 		int len
-		while((len=_index.read(buffer))>0){
+		while((len=_stream.read(buffer))>0){
 			out.write(buffer, 0, len)
 		}
 	}

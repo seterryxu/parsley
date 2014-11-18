@@ -21,7 +21,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsley.groovy
+package org.seterryxu.parsley.framework.facet.groovy
 
 /**
  * @author Xu Lijia

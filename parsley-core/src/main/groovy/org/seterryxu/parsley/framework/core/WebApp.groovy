@@ -41,7 +41,7 @@ final class WebApp {
 	static final Set<String> supportedEncodings
 	static final Set<String> supportedMimeTypes
 	static String RESOURCE_FOLDER
-	static WebResource resources=new WebResource()
+	static WebResource resources
 
 	//------------------- web dispatchers -------------------
 	static final List<String> dispatchers
@@ -52,15 +52,26 @@ final class WebApp {
 	static void init(ServletContext context){
 		this._context=context
 		_initResourceFolder()
+		_initEncodings()
+		_initMimeTypes()
 		_generateResourcePaths()
 		_generatePageHandlers()
 	}
 
 	private static void _initResourceFolder(){
-		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')
+		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
 	}
 
+	private static void _initEncodings(){
+		
+	}
+	
+	private static void _initMimeTypes(){
+		
+	}
+	
 	private static void _generateResourcePaths(){
+//		TODO how to set vars?
 		if (Boolean.getBoolean(".noResourcePathCache")) {
 			resources = null
 			return
@@ -88,29 +99,46 @@ final class WebApp {
 			}
 		}
 
-		resources.init Collections.unmodifiableMap(paths)
-	}
-
-	private static void _generatePageHandlers(){
-		Facet.discoverExtensions(resources.filterByFolder('lib'))
+		resources=new WebResource(paths)
 	}
 
 	private static final class WebResource{
 		private static Map<String, URL> _resources
 
-		void init(resourcePaths){
-			this._resources=resourcePaths
+		WebResource(resourcePaths){
+			this._resources=Collections.unmodifiableMap(resourcePaths)
 		}
 
+		URL get(String name){
+			_resources.get(name)
+		}
+		
 		List<URL> filterByFolder(String folderName){
 			def l=[]
 			for(resource in _resources.values()){
-				if(resource.toExternalForm().contains(folderName)){
+				if(resource.toExternalForm().contains("/${folderName}/")){
 					l<<resource
 				}
 			}
 
 			return l
 		}
+		
+		List<URL> filterWebResources(){
+			def l=[]
+			for(resource in _resources.values()){
+				String u=resource.toExternalForm()
+				if(u.contains("/${RESOURCE_FOLDER}/")&&!u.endsWith('.class')){
+					l<<resource
+				}
+			}
+			
+			return l
+		}
 	}
+	
+	private static void _generatePageHandlers(){
+		Facet.discoverExtensions(resources.filterByFolder('lib'))
+	}
+	
 }
