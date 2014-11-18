@@ -23,6 +23,9 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+import java.io.File;
+import java.net.URL;
+
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.ServletException
@@ -57,7 +60,7 @@ final class Parsley extends HttpServlet {
 		if(preq.isIndexPageRequest()){
 			def indexPage=getIndexPage()
 			if(indexPage){
-				HttpResponseFactory.indexPage(pres,FileUtils.toFile(indexPage))
+				HttpResponseFactory.indexPage(pres,toFile(indexPage))
 			}
 		}
 		
@@ -129,7 +132,7 @@ final class Parsley extends HttpServlet {
 
 	//------------------- index page process -------------------
 	private URL getIndexPage(){
-		def indexPagePath="/WEB-INF/${WebApp.RESOURCE_DIR}/"
+		def indexPagePath="/WEB-INF/${WebApp.RESOURCE_FOLDER}/"
 
 		for(page in INDEX_PAGES){
 			if(getResource(indexPagePath+page))
@@ -140,4 +143,8 @@ final class Parsley extends HttpServlet {
 	//TODO make unmodified: as ? or ?
 	private static final List<String> INDEX_PAGES=['index.html','index.htm','index.ftl','index.jsp'] 
 
+	//TODO------------------- Temp codes -------------------
+	public static File toFile(URL url){
+		return new File(url.toExternalForm());
+	}
 }

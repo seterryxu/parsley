@@ -23,6 +23,10 @@
 
 package org.seterryxu.parsley.groovy
 
+/**
+ * @author Xu Lijia
+ *
+ */
 class FreemarkerBuilder {
 
 }

@@ -21,28 +21,31 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsley.freemarker
+package org.seterryxu.parsley.framework.facet.freemarker
 
-import org.seterryxu.navigator.framework.core.parse.AbstractParser
+import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
+/**
+ * @author Xu Lijia
+ *
+ */
+class FreemarkerFacet {
 
-class TemplateParser extends AbstractParser {
+	private static Configuration _conf
+	private Template _t
 
-	@Override
-	public String parse(Object view) {
-		// TODO Auto-generated method stub
-		return null;
+	FreemarkerFacet(){
+		_conf=new Configuration()
+		//TODO		_conf.setDirectoryForTemplateLoading(null)
+		_conf.setDefaultEncoding('UTF-8')
 	}
 
-	public String getExtension() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void load(String viewLoc) {
-		// TODO Auto-generated method stub
-
+	boolean handle(IParsleyRequest preq,instance){
+		_t=_conf.getTemplate(preq.getResourceName())
+		def out=preq.getPrintStream()
+		_t.process(instance, out)
 	}
 }

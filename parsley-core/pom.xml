@@ -33,5 +33,11 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+<!--  
+		<dependency>
+			<groupId>org.seterryxu</groupId>
+			<artifactId>utils</artifactId>
+		</dependency>
+-->		
 	</dependencies>
 </project>

@@ -35,23 +35,29 @@ import org.seterryxu.parsley.framework.core.lang.facets.Facet
  */
 final class WebApp {
 
-	private static Logger _logger=Logger.getLogger this
+	private static Logger _logger=Logger.getLogger(WebApp.class.name)
 
+	//------------------- web content meta-data -------------------
 	static final Set<String> supportedEncodings
-	static final RESOURCE_DIR
-	static Map<String, URL> resources
-
 	static final Set<String> supportedMimeTypes
+	static String RESOURCE_FOLDER
+	static WebResource resources=new WebResource()
 
+	//------------------- web dispatchers -------------------
 	static final List<String> dispatchers
 
-	private static ServletContext context
+	private static ServletContext _context
 
 	//TODO singleton
-	WebApp(ServletContext context){
-		this.context=context
+	static void init(ServletContext context){
+		this._context=context
+		_initResourceFolder()
 		_generateResourcePaths()
 		_generatePageHandlers()
+	}
+
+	private static void _initResourceFolder(){
+		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')
 	}
 
 	private static void _generateResourcePaths(){
@@ -65,13 +71,13 @@ final class WebApp {
 		q.push("/")
 		while (!q.isEmpty()) {
 			String folder = q.pop()
-			Set<String> content = context.getResourcePaths(folder)
+			Set<String> content = _context.getResourcePaths(folder)
 			if (content) {
 				for (String c : content) {
 					if (c.endsWith("/"))
 						q.push(c)
 					else {
-						URL v = context.getResource(c)
+						URL v = _context.getResource(c)
 						if (!v) {
 							resources = null
 							return
@@ -82,10 +88,29 @@ final class WebApp {
 			}
 		}
 
-		resources = Collections.unmodifiableMap(paths)
+		resources.init Collections.unmodifiableMap(paths)
 	}
 
 	private static void _generatePageHandlers(){
 		Facet.discoverExtensions(resources.filterByFolder('lib'))
+	}
+
+	private static final class WebResource{
+		private static Map<String, URL> _resources
+
+		void init(resourcePaths){
+			this._resources=resourcePaths
+		}
+
+		List<URL> filterByFolder(String folderName){
+			def l=[]
+			for(resource in _resources.values()){
+				if(resource.toExternalForm().contains(folderName)){
+					l<<resource
+				}
+			}
+
+			return l
+		}
 	}
 }
