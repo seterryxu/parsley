@@ -37,29 +37,35 @@ abstract class Dispatcher {
 		TRACE
 	}
 
-	boolean add(def clazz){
+	void dispatch(clazz){
+		// consume url tokens
+
+		// do dispatch
+		// before doing dispatch
 		String clazzname=clazz.class.name
-		"$clazzname".metaClass.invokeMethod={String name,Object argz->
-			if(name.startsWith('js')){
-				
+
+		if(!WebApp.dispatchers.contains(clazzname)){
+			"$clazzname".metaClass.methodMissing={String name,args->
+				if(name.startsWith('js')){
+				}
+
+				if(name.startsWith('get')){
+				}
+
+				if(name.startsWith('do')){
+				}
+
+				if(name.startsWith('do$Self')){
+				}
+
+				//out of options
+				//			HttpResponse exception=HttpResponseFactory.
 			}
-			
-			if(name.startsWith('get')){
-				
-			}
-			
-			if(name.startsWith('do')){
-				
-			}
-			
-			if(name.startsWith('do$Self')){
-				
-			}
-			
-			//out of options
-//			HttpResponse exception=HttpResponseFactory.
+
+			WebApp.dispatchers.add(clazzname)
 		}
 
-		WebApp.dispatchers.add(clazzname)
+
 	}
+	
 }

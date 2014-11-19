@@ -51,20 +51,19 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		req.getRequestURI().substring(req.getContextPath().size())
 	}
 
-
 	//------------------- tokenize url -------------------
 	private class TokenizedUrl{
 		//TODO need final?
 		private String[] _tokens
 
 		TokenizedUrl(){
-			_tokenizeUrl()
-		}
-
-		private void _tokenizeUrl(){
 			StringTokenizer tk=new StringTokenizer(_requestedUrl, '/\\')
 			_tokens=new String[tk.countTokens()]
-			for(t in tk){_tokens<<t }
+			//			TODO maybe a better way?
+			def i=0
+			while(tk.hasMoreTokens()){
+				_tokens[i++]=tk.nextToken()
+			}
 		}
 
 		private int index
@@ -82,16 +81,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		}
 	}
 
-
-	//------------------- judge type of preq -------------------
-	public boolean isRestfulRequest() {
-		if(_requestedUrl.startsWith('/$Parsley/')){
-			return true
-		}
-
-		return false
-	}
-
+	//------------------- static resource -------------------
 	@Override
 	public boolean isIndexPageRequest() {
 		if(!tokenizedUrl.hasMore()){
@@ -101,15 +91,42 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		return false
 	}
 
+	@Override
 	public boolean isStaticResourceRequest() {
-		if(_isValid()){
+		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
+		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
+			//			TODO check existence?
+
 			return true
 		}
 
 		return false
 	}
 
+	@Override
+	public String getRequestedResourceName() {
+		_requestedUrl.replace('.', '/')
+	}
+
+	@Override
+	public Locale getRequestedLocale() {
+		getLocale()?:Locale.ENGLISH
+	}
+
+	//------------------- preq info -------------------
+	@Override
+	public boolean isRestfulRequest() {
+		//		TODO
+		if(_requestedUrl.startsWith('/$Parsley/')){
+			return true
+		}
+
+		return false
+	}
+
+	@Override
 	public boolean isJavaScriptRequest() {
+		//		TODO
 		if(_requestedUrl.contains('/$Js/')){
 			return true
 		}
@@ -117,24 +134,5 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		return false
 	}
 
-	private boolean _isValid() {
-		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
-		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
-			return true
-		}
-
-		return false
-	}
-
-
-	//------------------- preq info -------------------
-	public String getRequestedResourceName() {
-		// TODO Auto-generated method stub
-		return null
-	}
-
-	public Locale getRequestedLocale() {
-		getLocale()?:Locale.ENGLISH
-	}
 
 }

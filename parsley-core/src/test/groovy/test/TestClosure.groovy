@@ -8,31 +8,12 @@ class TestClosure {
 
 	@Test
 	public void test() {
-		//		def aa=[2, 1, 3]
-		//
-		//		aa.each {
-		//			println it
-		//			if(it==1)
-		//				return
-		//		}
-		//
-		//		for(def a:aa){
-		//			println a
-		//			if(a==1)
-		//				break
-		//		}
 
-		TestBean.metaClass.invokeMethod={String name,Object argz->
-			if(name.startsWith('do'))
-				println "$name, $argz"
+		int i=1
+		if(i){
+			println i
 		}
-
-		new TestBean().doAbc()
-
-		PRequestImpl pres
 	}
 
-	def $(){
-
-	}
+	
 }

@@ -23,12 +23,12 @@
 
 package org.seterryxu.parsley.framework.facet.freemarker
 
-import org.seterryxu.parsley.framework.core.lang.facets.Facet;
-import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
-import org.seterryxu.parsley.framework.core.uom.IParsleyResponse;
+import org.seterryxu.parsley.framework.core.lang.facets.Facet
+import org.seterryxu.parsley.framework.core.uom.IParsleyRequest
+import org.seterryxu.parsley.framework.core.uom.IParsleyResponse
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import freemarker.template.Configuration
+import freemarker.template.Template
 
 /**
  * @author Xu Lijia
@@ -41,7 +41,8 @@ class FreemarkerFacet extends Facet{
 
 	FreemarkerFacet(){
 		_conf=new Configuration()
-		//TODO		_conf.setDirectoryForTemplateLoading(null)
+		//TODO
+		//		_conf.setDirectoryForTemplateLoading(null)
 		_conf.setDefaultEncoding('UTF-8')
 	}
 
@@ -50,5 +51,4 @@ class FreemarkerFacet extends Facet{
 		def out=pres.getOutputStream()
 		_t.process(instance, out)
 	}
-
 }

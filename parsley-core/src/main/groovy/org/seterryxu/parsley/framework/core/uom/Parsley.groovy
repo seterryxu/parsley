@@ -23,9 +23,6 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import java.io.File
-import java.net.URL
-
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.ServletException
@@ -58,32 +55,37 @@ final class Parsley extends HttpServlet {
 		IParsleyResponse pres=new PResponseImpl(res)
 
 		if(preq.isIndexPageRequest()){
-			def indexPage=getIndexPage()
+			def indexPage=_getIndexPage()
 			if(indexPage){
-				HttpResponseFactory.indexPage(pres,toStream(indexPage))
+				HttpResponseFactory.indexPage(pres,indexPage)
+			}else{
+				HttpResponseFactory.notFound(pres)
 			}
+
+			return
 		}
 
 		if(preq.isStaticResourceRequest()){
-			URL resUrl=LocalizedResourceSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
-			//TODO where to implement this method?
-			pres.handleStaticResource(resUrl)
+			URL resUrl=LocalizedResourcesSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
+			if(resUrl){
+				HttpResponseFactory.staticResource(pres,resUrl)
+			}else{
+				HttpResponseFactory.notFound(pres)
+			}
+
+			return
 		}
 
-		//		if(preq.isRestfulRequest()){
-		//		}
+		//		TODO
+		if(preq.isRestfulRequest()){
+		}
 
+		//		TODO
+		if(preq.isJavaScriptRequest()){
+		}
 
-		//		if(preq.isJavaScriptRequest()){
-		//		}
-
-		/*		while(preq.hasMoreTokens()){
-		 for(Dispatcher d:WebApp.dispatchers) {
-		 if(d.dispatch(preq)){
-		 break
-		 }
-		 }
-		 }*/
+		
+		//		TODO: lazy loading MetaClass?
 		//		TODO: recursive??
 		if(tryNavigate(this, preq, pres)){
 			return
@@ -104,26 +106,53 @@ final class Parsley extends HttpServlet {
 	 * recursive method for navigation
 	 */
 	private boolean tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
-		preq.tokenizedUrl
 
+		preq.tokenizedUrl
+		while(preq.tokenizedUrl.hasMore()){
+			for(Dispatcher d:WebApp.dispatchers) {
+				if(d.dispatch(preq)){
+					break
+				}
+			}
+		}
 	}
 
 
 	//------------------- resource process -------------------
-	private static class LocalizedResourceSelector extends Closure<URL>{
-		static URL selectByLocale(String name, Locale locale){
+	private static class LocalizedResourcesSelector{
+		private static final Map<String,URL> _localizedResources
 
+		static{
+			if(WebApp.resources){
+				_localizedResources=WebApp.resources.filterWebResources()
+			}
+		}
+
+		static URL selectByLocale(String name, Locale locale){
+			if(_localizedResources){
+				int i=name.lastIndexOf('.')
+				if(i>0){
+					def filename=name.substring(0, i)
+					def extname=name.subSequence(i)
+					def lang=locale.getLanguage()
+					def country=locale.getCountry()
+					return _localizedResources.get("${filename}_${lang}_${country}.${extname}")
+				}
+
+				return null
+			}
+
+			return null
 		}
 	}
 
-	private URL getResource(String name){
+	private URL _getResource(String name){
 		//		TODO sys var?
 		if(Boolean.getBoolean(".parsleyNoCache")){
 			_context.getResource(name)
 		}
 
 		if(WebApp.resources){
-			//TODO no get?
 			WebApp.resources.get(name)
 		}else{
 			_context.getResource(name)
@@ -131,10 +160,10 @@ final class Parsley extends HttpServlet {
 	}
 
 	//------------------- index page process -------------------
-	private URL getIndexPage(){
+	private URL _getIndexPage(){
 		URL index
 		for(page in INDEX_PAGES){
-			index=getResource("${WebApp.RESOURCE_FOLDER}${page}")
+			index=_getResource("${WebApp.RESOURCE_FOLDER}${page}")
 			if(index){
 				break
 			}
@@ -143,11 +172,6 @@ final class Parsley extends HttpServlet {
 		return index
 	}
 
-	//TODO make unmodified: as ? or ?
-	private static final List<String> INDEX_PAGES=['index.html', 'index.htm', 'index.ftl', 'index.jsp']
+	private static final List<String> INDEX_PAGES=['index.html', 'index.htm']
 
-	//TODO------------------- Temp codes -------------------
-	public static InputStream toStream(URL url){
-		url.openConnection().getInputStream()
-	}
 }

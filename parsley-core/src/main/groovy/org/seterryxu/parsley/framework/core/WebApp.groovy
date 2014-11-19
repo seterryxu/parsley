@@ -43,8 +43,8 @@ final class WebApp {
 	static String RESOURCE_FOLDER
 	static WebResource resources
 
-	//------------------- web dispatchers -------------------
-	static final List<String> dispatchers
+	//------------------- action dispatchers -------------------
+	static final List<String> dispatchers=[]
 
 	private static ServletContext _context
 
@@ -124,16 +124,15 @@ final class WebApp {
 			return l
 		}
 		
-		List<URL> filterWebResources(){
-			def l=[]
-			for(resource in _resources.values()){
-				String u=resource.toExternalForm()
-				if(u.contains("/${RESOURCE_FOLDER}/")&&!u.endsWith('.class')){
-					l<<resource
+		Map<String,URL> filterWebResources(){
+			def m=[:]
+			for(key in _resources.keySet()){
+				if(key.contains("/${RESOURCE_FOLDER}/")){
+					m.put(key, _resources.get(key))
 				}
 			}
 			
-			return l
+			return m
 		}
 	}
 	

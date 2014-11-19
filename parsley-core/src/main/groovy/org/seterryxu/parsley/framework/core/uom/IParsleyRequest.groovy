@@ -35,13 +35,14 @@ interface IParsleyRequest extends HttpServletRequest {
 	boolean isIndexPageRequest()
 
 	boolean isStaticResourceRequest()
+	
+	String getRequestedResourceName()
+	
+	Locale getRequestedLocale()
+	
 	//TODO
 	boolean isRestfulRequest()
 
 	//TODO
 	boolean isJavaScriptRequest()
-
-	String getRequestedResourceName()
-
-	Locale getRequestedLocale()
 }

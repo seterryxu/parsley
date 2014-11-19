@@ -23,20 +23,23 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+import java.io.InputStream;
+import java.net.URL;
+
 import javax.servlet.ServletOutputStream
 
 /**
  * @author Xu Lijia
  *
  */
-class IndexPageResponse implements IHttpResponse {
+class StaticResourceResponse implements IHttpResponse {
 
 	private static final BUFFER_SIZE=4096
 	
 	private InputStream _stream
 	
-	IndexPageResponse(stream){
-		this._stream=stream 
+	StaticResourceResponse(URL resUrl){
+		this._stream=toStream(resUrl) 
 	}
 	
 	@Override
@@ -49,5 +52,10 @@ class IndexPageResponse implements IHttpResponse {
 		while((len=_stream.read(buffer))>0){
 			out.write(buffer, 0, len)
 		}
+	}
+	
+	//TODO------------------- Temp codes -------------------
+	private static InputStream toStream(URL url){
+		url.openConnection().getInputStream()
 	}
 }

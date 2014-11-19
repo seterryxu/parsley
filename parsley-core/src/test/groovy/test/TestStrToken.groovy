@@ -8,14 +8,14 @@ class TestStrToken {
 
 	@Test
 	public void test() {
-		StringTokenizer st=new StringTokenizer("some/dir/res1/res2",'/')
-//		st.each {
-//			println it
-//		}
-		def lst=[]
-		st.each {lst<<it}
+		StringTokenizer tk=new StringTokenizer('/b/c/a.html', '/\\')
+		String[]_tokens=new String[tk.countTokens()]
+		def i=0
+		while(tk.hasMoreTokens()){
+			_tokens[i++]=tk.nextToken()
+		}
 		
-		lst.each {println it}
+		println _tokens
 		
 	}
 }

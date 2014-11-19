@@ -23,8 +23,8 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import java.io.File;
-import java.net.URL;
+import java.io.File
+import java.net.URL
 
 import javax.servlet.http.HttpServletResponse
 
@@ -58,16 +58,19 @@ class HttpResponseFactory {
 
 	private static HttpResponseException _status(int statusCode){
 		new HttpResponseException(){
-			void generateResponse(IParsleyResponse pres){
-				pres.setStatus(statusCode)
-			}
-		}
+					void generateResponse(IParsleyResponse pres){
+						pres.setStatus(statusCode)
+					}
+				}
 	}
-	
+
 	//------------------- http page responses -------------------
-	static void indexPage(IParsleyResponse pres,stream){
-		new IndexPageResponse(stream).generateResponse(pres)
+	static void indexPage(IParsleyResponse pres,URL resUrl){
+		new StaticResourceResponse(resUrl).generateResponse(pres)
 	}
-	
+
+	static void staticResource(IParsleyResponse pres,URL resUrl){
+		new StaticResourceResponse(resUrl).generateResponse(pres)
+	}
 
 }
