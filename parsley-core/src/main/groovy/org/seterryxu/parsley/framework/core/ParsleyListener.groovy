@@ -21,55 +21,25 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsley.framework.core.uom
+package org.seterryxu.parsley.framework.core
 
-import org.seterryxu.parsley.framework.core.WebApp
+import javax.servlet.ServletContextEvent
+import javax.servlet.ServletContextListener
 
 /**
  * @author Xu Lijia
  *
  */
-abstract class Dispatcher {
+class ParsleyListener implements ServletContextListener {
 
-	private static boolean TRACE=Boolean.getBoolean(".trace")
-
-	boolean traceable(){
-		TRACE
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		WebApp.init(event.getServletContext())
 	}
 
-	void dispatch(instance,IParsleyRequest preq,IParsleyResponse pres){
-		// consume url tokens
-
-		// do dispatch
-		// before doing dispatch
-		String classname=instance.class.name
-
-		if(!WebApp.dispatchers.contains(classname)){
-			"$classname".metaClass.methodMissing={String name,args->
-				if(name.startsWith('js')){
-				}
-
-				if(name.startsWith('get')){
-				}
-
-				if(name.startsWith('do')){
-				}
-
-				if(name.startsWith('do$Self')){
-				}
-
-				//out of options
-				//			HttpResponse exception=HttpResponseFactory.
-			}
-			
-			"$classname".metaClass.propertyMissing={String name->
-				
-			}
-
-			WebApp.dispatchers.add(classname)
-		}
-
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		// TODO Auto-generated method stub
 
 	}
-	
 }

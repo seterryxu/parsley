@@ -107,10 +107,9 @@ final class Parsley extends HttpServlet {
 	 */
 	private boolean tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
 
-		preq.tokenizedUrl
 		while(preq.tokenizedUrl.hasMore()){
 			for(Dispatcher d:WebApp.dispatchers) {
-				if(d.dispatch(preq)){
+				if(d.dispatch(instance,preq,pres)){
 					break
 				}
 			}

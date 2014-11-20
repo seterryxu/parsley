@@ -45,6 +45,8 @@ final class WebApp {
 
 	//------------------- action dispatchers -------------------
 	static final List<String> dispatchers=[]
+	
+	private static Map<String,URL> _classnames=[:]
 
 	private static ServletContext _context
 
@@ -56,16 +58,19 @@ final class WebApp {
 		_initMimeTypes()
 		_generateResourcePaths()
 		_generatePageHandlers()
+		_initClassList()
 	}
 
 	private static void _initResourceFolder(){
 		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
 	}
 
+	//TODO 
 	private static void _initEncodings(){
 		
 	}
 	
+	//TODO 
 	private static void _initMimeTypes(){
 		
 	}
@@ -134,10 +139,30 @@ final class WebApp {
 			
 			return m
 		}
+		
+		Map<String,URL> filterClasses(){
+			def m=[:]
+			for(k in _resources.keySet()){
+				if(k.endsWith('.class')){
+					m.put(k, _resources.get(k))
+				}
+			}
+			
+			return m
+		}
 	}
 	
 	private static void _generatePageHandlers(){
 		Facet.discoverExtensions(resources.filterByFolder('lib'))
 	}
 	
+	//------------------- instantiate object instances -------------------
+	private static void _initClassList(){
+		_classnames=resources.filterClasses()
+	}
+	
+	static instantiate(String classname){
+		def classUrl=_classnames.get(classname)
+		
+	}
 }
