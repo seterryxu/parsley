@@ -24,7 +24,9 @@
 package org.seterryxu.parsley.framework.core.lang.facets
 
 import java.util.logging.Logger
+import java.util.Set
 
+import org.seterryxu.parsley.framework.core.WebApp
 import org.seterryxu.parsley.framework.core.uom.IParsleyRequest
 import org.seterryxu.parsley.framework.core.uom.IParsleyResponse
 
@@ -38,11 +40,47 @@ abstract class Facet {
 
 	private static final List<Facet> facets=[]
 
+	//	TODO how to discover extensions?
 	static final List<Facet> discoverExtensions(List<URL> libs){
 	}
 
+	//------------------- all facets should maintain localized resources -------------------
+	
+	//	TODO where to place this class?
+	protected static class LocalizedResourcesSelector{
+		protected static final Map<String,URL> localizedResources
+
+		static{
+			if(WebApp.resources){
+				localizedResources=WebApp.resources.filterWebResources()
+			}
+		}
+
+		static URL selectByLocale(String name, Locale locale){
+			if(localizedResources){
+				if(name.equals('/')){
+					return localizedResources
+				}
+
+				int i=name.lastIndexOf('.')
+				if(i>0){
+					def filename=name.substring(0, i)
+					def extname=name.subSequence(i)
+					def lang=locale.getLanguage()
+					def country=locale.getCountry()
+					return localizedResources.get("${filename}_${lang}_${country}.${extname}")
+				}
+
+				return null
+			}
+
+			return null
+		}
+	}
+
+	//------------------- handlers for subclasses to implement -------------------
+
 	abstract boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres)
 
-	abstract boolean handleIndexRequest(instance,IParsleyRequest preq,IParsleyResponse pres)
-	
+	protected abstract Set<String> allowedExtensions()
 }

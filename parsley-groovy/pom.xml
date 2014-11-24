@@ -25,5 +25,9 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.seterryxu</groupId>
+			<artifactId>parsley-core</artifactId>
+		</dependency>
 	</dependencies>
 </project>

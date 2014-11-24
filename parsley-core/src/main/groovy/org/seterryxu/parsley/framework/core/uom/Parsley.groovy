@@ -56,8 +56,7 @@ final class Parsley extends HttpServlet {
 
 		//judge request type
 		if(preq.isStaticResourceRequest()){
-			URL resUrl=LocalizedResourcesSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
-			new StaticResourceFacet(resUrl)
+			new StaticResourceFacet().handle(this, preq, pres)
 
 			return
 		}
@@ -97,17 +96,17 @@ final class Parsley extends HttpServlet {
 		}
 
 		_generateDispatchers(rootClass)
-		
+
 		def instance=rootClass.newInstance()
 
 		//		tryNavigate()
 		//		TODO: recursive??
 		while(preq.tokenizedUrl.hasMore()){
 			preq.tokenizedUrl.next()
-			if(tryNavigate(instance,preq,pres))
+			if(_tryNavigate(instance,preq,pres))
 				break
 		}
-		
+
 		return true
 	}
 
@@ -120,41 +119,15 @@ final class Parsley extends HttpServlet {
 		Dispatcher.addDispatchers(root)
 	}
 
-	private tryNavigate(instance,IParsleyRequest preq, IParsleyResponse pres){
-		
-		for(Dispatcher d in WebApp.dispatchers) {
-			if(d.dispatch(rootClass,preq,pres)){
-				break
-			}
+	private _tryNavigate(instance,IParsleyRequest preq, IParsleyResponse pres){
+		String token=preq.tokenizedUrl.current()
+		try{
+			return instance."$token"
+		}catch(MissingPropertyException e){
+			instance."$token()"
 		}
 	}
 
-	//------------------- resource process -------------------
-	private static class LocalizedResourcesSelector{
-		private static final Map<String,URL> _localizedResources
-
-		static{
-			if(WebApp.resources){
-				_localizedResources=WebApp.resources.filterWebResources()
-			}
-		}
-
-		static URL selectByLocale(String name, Locale locale){
-			if(_localizedResources){
-				int i=name.lastIndexOf('.')
-				if(i>0){
-					def filename=name.substring(0, i)
-					def extname=name.subSequence(i)
-					def lang=locale.getLanguage()
-					def country=locale.getCountry()
-					return _localizedResources.get("${filename}_${lang}_${country}.${extname}")
-				}
-
-				return null
-			}
-
-			return null
-		}
-	}
+	
 
 }

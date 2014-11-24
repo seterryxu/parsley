@@ -36,7 +36,7 @@ import org.seterryxu.parsley.framework.core.lang.facets.Facet
  */
 final class WebApp {
 
-	private static Logger _logger=Logger.getLogger(WebApp.class.name)
+//	private static Logger _logger=Logger.getLogger(WebApp.class.name)
 
 	//------------------- web content meta-data -------------------
 	static final Set<String> supportedEncodings
@@ -58,24 +58,12 @@ final class WebApp {
 	//TODO singleton
 	static void init(ServletContext context){
 		this._context=context
-		_initApp()
 		_initResourceFolder()
 		_initEncodings()
 		_initMimeTypes()
 		_generateResourcePaths()
+		_initApp()
 		_generatePageHandlers()
-	}
-
-	private static void _initApp(){
-		_appName=_context.getInitParameter('APP')
-		//		TODO check good name?
-		if(_appName){
-			_rootClass=Class.forName(_appName)
-			return
-		}
-
-		_rootClass=WebApp.class.name
-		_generateClassList()
 	}
 
 	private static void _initResourceFolder(){
@@ -159,7 +147,7 @@ final class WebApp {
 		Map<String,URL> filterWebResources(){
 			def m=[:]
 			for(key in _resources.keySet()){
-				if(key.contains("/${RESOURCE_FOLDER}/")){
+				if(key.contains(WebApp.RESOURCE_FOLDER)){
 					m.put(key, _resources.get(key))
 				}
 			}
@@ -180,6 +168,19 @@ final class WebApp {
 		
 	}
 
+	//------------------- init app -------------------
+	private static void _initApp(){
+		_appName=_context.getInitParameter('APP')
+		//		TODO check good name?
+		if(_appName){
+			_rootClass=Class.forName(_appName)
+			return
+		}
+
+		_rootClass=WebApp.class.name
+		_generateClassList()
+	}
+	
 	//------------------- page facet handlers -------------------
 	private static void _generatePageHandlers(){
 		Facet.discoverExtensions(resources.filterByFolder('lib'))

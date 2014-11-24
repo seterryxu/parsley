@@ -23,11 +23,11 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
-import java.net.URL
-import java.util.List
-
 import org.seterryxu.parsley.framework.core.WebApp
 import org.seterryxu.parsley.framework.core.lang.facets.Facet
+import org.seterryxu.parsley.framework.core.lang.facets.Facet.LocalizedResourcesSelector
+
+import java.util.Set
 
 /**
  * @author Xu Lijia
@@ -35,38 +35,31 @@ import org.seterryxu.parsley.framework.core.lang.facets.Facet
  */
 class StaticResourceFacet extends Facet {
 
-	private URL _resUrl
-
-	StaticResourceFacet(URL resUrl){
-		this._resUrl=_resUrl
-	}
-
 	@Override
-	public boolean handle(Object instance, IParsleyRequest preq,
+	public boolean handle(instance, IParsleyRequest preq,
 			IParsleyResponse pres) {
 
-		if(_resUrl){
-			HttpResponseFactory.staticResource(pres,_resUrl)
-		}else{
-			HttpResponseFactory.notFound(pres)
+		if(_isIndexPageRequest(preq)){
+			def indexPage=_getIndexPage()
+			if(indexPage){
+				HttpResponseFactory.indexPage(pres,indexPage)
+			}else{
+				HttpResponseFactory.notFound(pres)
+			}
+			
+			return true
 		}
 		
-		return false
-	}
+		def resUrl=LocalizedResourcesSelector.selectByLocale(preq.getRequestedResourceName(), preq.getRequestedLocale())
 
-	@Override
-	public boolean handleIndexRequest(instance,IParsleyRequest preq,IParsleyResponse pres) {
-		if(!_isIndexPageRequest(preq))
-			return false
-
-		def indexPage=_getIndexPage()
-		if(indexPage){
-			HttpResponseFactory.indexPage(pres,indexPage)
+		if(resUrl){
+			HttpResponseFactory.staticResource(pres,resUrl)
+			return true
 		}else{
 			HttpResponseFactory.notFound(pres)
 		}
 
-		return true
+		return false
 	}
 
 	boolean _isIndexPageRequest(IParsleyRequest preq) {
@@ -80,8 +73,8 @@ class StaticResourceFacet extends Facet {
 	//------------------- index page process -------------------
 	private URL _getIndexPage(){
 		URL index
-		for(page in INDEX_PAGES){
-			index=WebApp.resources.get("${WebApp.RESOURCE_FOLDER}${page}")
+		for(ext in allowedExtensions()){
+			index=WebApp.resources.get("${WebApp.RESOURCE_FOLDER}index${ext}")
 			if(index){
 				break
 			}
@@ -90,6 +83,13 @@ class StaticResourceFacet extends Facet {
 		return index
 	}
 
-	private static final List<String> INDEX_PAGES=['index.html', 'index.htm']
+	@Override
+	protected Set<String> allowedExtensions() {
+		def exts=new HashSet<String>()
+		exts.add('.html')
+		exts.add('.htm')
+
+		return exts
+	}
 
 }

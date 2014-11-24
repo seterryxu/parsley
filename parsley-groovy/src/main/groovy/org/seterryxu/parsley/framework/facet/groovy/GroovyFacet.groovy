@@ -21,43 +21,32 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsley.framework.facet.freemarker
+package org.seterryxu.parsley.framework.facet.groovy
 
 import java.util.Set;
 
-import org.seterryxu.parsley.framework.core.lang.facets.Facet
-import org.seterryxu.parsley.framework.core.uom.IParsleyRequest
-import org.seterryxu.parsley.framework.core.uom.IParsleyResponse
-
-import freemarker.template.Configuration
-import freemarker.template.Template
+import org.seterryxu.parsley.framework.core.lang.facets.Facet;
+import org.seterryxu.parsley.framework.core.uom.IParsleyRequest;
+import org.seterryxu.parsley.framework.core.uom.IParsleyResponse;
 
 /**
  * @author Xu Lijia
  *
  */
-class FreemarkerFacet extends Facet{
+class GroovyFacet extends Facet {
 
-	private static Configuration _conf
-	private Template _t
-
-	FreemarkerFacet(){
-		_conf=new Configuration()
-		//TODO
-		//		_conf.setDirectoryForTemplateLoading(null)
-		_conf.setDefaultEncoding('UTF-8')
-	}
-
-	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
-		_t=_conf.getTemplate(preq.getRequestedResourceName())
-		def out=pres.getOutputStream()
-		_t.process(instance, out)
+	@Override
+	public boolean handle(Object instance, IParsleyRequest preq,
+			IParsleyResponse pres) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	protected Set<String> allowedExtensions() {
 		def exts=new HashSet<String>()
-		exts.add('.ftl')
+		exts.add('.groovy')
 		return exts;
 	}
+
 }
