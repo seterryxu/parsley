@@ -23,6 +23,7 @@
 
 package org.seterryxu.parsley.framework.core
 
+import java.net.URL;
 import java.util.logging.Logger
 
 import javax.servlet.ServletContext
@@ -45,38 +46,54 @@ final class WebApp {
 
 	//------------------- action dispatchers -------------------
 	static final List<String> dispatchers=[]
-	
 	private static Map<String,URL> _classnames=[:]
+	private Set<String> duplicatedClassNames=new HashSet<String>()
+
+	//------------------- app name -------------------
+	private static String _appName
+	private static Class _rootClass
 
 	private static ServletContext _context
 
 	//TODO singleton
 	static void init(ServletContext context){
 		this._context=context
+		_initApp()
 		_initResourceFolder()
 		_initEncodings()
 		_initMimeTypes()
 		_generateResourcePaths()
 		_generatePageHandlers()
-		_initClassList()
+	}
+
+	private static void _initApp(){
+		_appName=_context.getInitParameter('APP')
+		//		TODO check good name?
+		if(_appName){
+			_rootClass=Class.forName(_appName)
+			return
+		}
+
+		_rootClass=WebApp.class.name
+		_generateClassList()
 	}
 
 	private static void _initResourceFolder(){
 		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
 	}
 
-	//TODO 
+	//TODO
 	private static void _initEncodings(){
-		
+
 	}
-	
-	//TODO 
+
+	//TODO
 	private static void _initMimeTypes(){
-		
+
 	}
-	
+
 	private static void _generateResourcePaths(){
-//		TODO how to set vars?
+		//		TODO how to set vars?
 		if (Boolean.getBoolean(".noResourcePathCache")) {
 			resources = null
 			return
@@ -115,9 +132,19 @@ final class WebApp {
 		}
 
 		URL get(String name){
-			_resources.get(name)
-		}
+			//		TODO sys var?
+			if(Boolean.getBoolean(".parsleyNoCache")){
+				_context.getResource(name)
+			}
+	
+			if(_resources){
+				_resources.get(name)
+			}else{
+				_context.getResource(name)
+			}
 		
+		}
+
 		List<URL> filterByFolder(String folderName){
 			def l=[]
 			for(resource in _resources.values()){
@@ -128,7 +155,7 @@ final class WebApp {
 
 			return l
 		}
-		
+
 		Map<String,URL> filterWebResources(){
 			def m=[:]
 			for(key in _resources.keySet()){
@@ -136,10 +163,10 @@ final class WebApp {
 					m.put(key, _resources.get(key))
 				}
 			}
-			
+
 			return m
 		}
-		
+
 		Map<String,URL> filterClasses(){
 			def m=[:]
 			for(k in _resources.keySet()){
@@ -147,22 +174,45 @@ final class WebApp {
 					m.put(k, _resources.get(k))
 				}
 			}
-			
+
 			return m
 		}
+		
 	}
-	
+
+	//------------------- page facet handlers -------------------
 	private static void _generatePageHandlers(){
 		Facet.discoverExtensions(resources.filterByFolder('lib'))
 	}
-	
+
 	//------------------- instantiate object instances -------------------
-	private static void _initClassList(){
+	private static void _generateClassList(){
 		_classnames=resources.filterClasses()
+		//		TODO check class name conflicts at compile time?
+
 	}
 	
-	static instantiate(String classname){
-		def classUrl=_classnames.get(classname)
+	//	TODO check good name
+	//	TODO check duplicated name
+	static Class get(String classname){
+		if(_appName){
+			return _rootClass
+		}
 		
+		if(_classnames&&classname){
+			def classUrl=_classnames.get(classname)
+			URL[] u=new URL[1]
+			u[0]=classUrl
+			URLClassLoader ldr=URLClassLoader.newInstance(u)
+			return ldr.loadClass(classname)
+		}
+
+		return null
 	}
+	
+	//------------------- clean up before shutdown -------------------
+	static void cleanUp(){
+
+	}
+	
 }

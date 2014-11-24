@@ -54,24 +54,10 @@ final class Parsley extends HttpServlet {
 		IParsleyRequest preq=new PRequestImpl(req)
 		IParsleyResponse pres=new PResponseImpl(res)
 
-		if(preq.isIndexPageRequest()){
-			def indexPage=_getIndexPage()
-			if(indexPage){
-				HttpResponseFactory.indexPage(pres,indexPage)
-			}else{
-				HttpResponseFactory.notFound(pres)
-			}
-
-			return
-		}
-
+		//judge request type
 		if(preq.isStaticResourceRequest()){
 			URL resUrl=LocalizedResourcesSelector.selectByLocale(preq.getRequestedResourceName(),preq.getRequestedLocale())
-			if(resUrl){
-				HttpResponseFactory.staticResource(pres,resUrl)
-			}else{
-				HttpResponseFactory.notFound(pres)
-			}
+			new StaticResourceFacet(resUrl)
 
 			return
 		}
@@ -84,15 +70,14 @@ final class Parsley extends HttpServlet {
 		if(preq.isJavaScriptRequest()){
 		}
 
-		
-		//		TODO: lazy loading MetaClass?
-		//		TODO: recursive??
-		if(tryNavigate(this, preq, pres)){
+		if(_navigate(preq, pres)){
 			return
 		}
 
+		//		TODO how to handle?
+		//static resource facet excluded
 		for(facet in Facet.facets){
-			if(facet.handle(this,preq,pres)){
+			if(facet.handle(instance,preq,pres)){
 				return
 			}
 		}
@@ -105,17 +90,44 @@ final class Parsley extends HttpServlet {
 	/**
 	 * recursive method for navigation
 	 */
-	private boolean tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
+	private boolean _navigate(IParsleyRequest preq, IParsleyResponse pres){
+		def rootClass=_findRootClass(preq)
+		if(!rootClass){
+			return false
+		}
 
+		_generateDispatchers(rootClass)
+		
+		def instance=rootClass.newInstance()
+
+		//		tryNavigate()
+		//		TODO: recursive??
 		while(preq.tokenizedUrl.hasMore()){
-			for(Dispatcher d:WebApp.dispatchers) {
-				if(d.dispatch(instance,preq,pres)){
-					break
-				}
+			preq.tokenizedUrl.next()
+			if(tryNavigate(instance,preq,pres))
+				break
+		}
+		
+		return true
+	}
+
+	private Class _findRootClass(IParsleyRequest preq){
+		String root=preq.tokenizedUrl.current()
+		WebApp.get(root)
+	}
+
+	private void _generateDispatchers(Class root){
+		Dispatcher.addDispatchers(root)
+	}
+
+	private tryNavigate(instance,IParsleyRequest preq, IParsleyResponse pres){
+		
+		for(Dispatcher d in WebApp.dispatchers) {
+			if(d.dispatch(rootClass,preq,pres)){
+				break
 			}
 		}
 	}
-
 
 	//------------------- resource process -------------------
 	private static class LocalizedResourcesSelector{
@@ -144,33 +156,5 @@ final class Parsley extends HttpServlet {
 			return null
 		}
 	}
-
-	private URL _getResource(String name){
-		//		TODO sys var?
-		if(Boolean.getBoolean(".parsleyNoCache")){
-			_context.getResource(name)
-		}
-
-		if(WebApp.resources){
-			WebApp.resources.get(name)
-		}else{
-			_context.getResource(name)
-		}
-	}
-
-	//------------------- index page process -------------------
-	private URL _getIndexPage(){
-		URL index
-		for(page in INDEX_PAGES){
-			index=_getResource("${WebApp.RESOURCE_FOLDER}${page}")
-			if(index){
-				break
-			}
-		}
-
-		return index
-	}
-
-	private static final List<String> INDEX_PAGES=['index.html', 'index.htm']
 
 }

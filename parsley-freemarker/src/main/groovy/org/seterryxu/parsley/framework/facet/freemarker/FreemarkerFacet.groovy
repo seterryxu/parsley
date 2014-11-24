@@ -51,4 +51,10 @@ class FreemarkerFacet extends Facet{
 		def out=pres.getOutputStream()
 		_t.process(instance, out)
 	}
+
+	@Override
+	public boolean handleIndexRequest(instance,IParsleyRequest preq,IParsleyResponse pres) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

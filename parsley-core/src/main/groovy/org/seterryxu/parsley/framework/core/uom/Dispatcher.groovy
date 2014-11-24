@@ -37,39 +37,45 @@ abstract class Dispatcher {
 		TRACE
 	}
 
+	static void addDispatchers(Class c){
+		if(!WebApp.dispatchers.contains(c)){
+			"$classname".metaClass.methodMissing={String name,args->
+			if(name.startsWith('js')){
+			}
+			
+			if(name.startsWith('get')){
+			}
+			
+			if(name.startsWith('do')){
+			}
+			
+			if(name.startsWith('do$Self')){
+			}
+			
+			//out of options
+			//			HttpResponse exception=HttpResponseFactory.
+			}
+			
+			"$classname".metaClass.propertyMissing={String name->
+			
+			}
+			
+			WebApp.dispatchers.add(c)
+		}
+		
+	}
+	
 	void dispatch(instance,IParsleyRequest preq,IParsleyResponse pres){
 		// consume url tokens
-
+		if(!pres.tokenizedUrl.hasMore()){
+			
+		}
 		// do dispatch
 		// before doing dispatch
 		String classname=instance.class.name
 
-		if(!WebApp.dispatchers.contains(classname)){
-			"$classname".metaClass.methodMissing={String name,args->
-				if(name.startsWith('js')){
-				}
-
-				if(name.startsWith('get')){
-				}
-
-				if(name.startsWith('do')){
-				}
-
-				if(name.startsWith('do$Self')){
-				}
-
-				//out of options
-				//			HttpResponse exception=HttpResponseFactory.
-			}
-			
-			"$classname".metaClass.propertyMissing={String name->
-				
-			}
-
-			WebApp.dispatchers.add(classname)
-		}
 
 
 	}
-	
+
 }

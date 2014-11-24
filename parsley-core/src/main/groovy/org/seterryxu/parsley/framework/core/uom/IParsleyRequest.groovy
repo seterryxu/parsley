@@ -32,8 +32,6 @@ import java.util.Locale
  */
 interface IParsleyRequest extends HttpServletRequest {
 
-	boolean isIndexPageRequest()
-
 	boolean isStaticResourceRequest()
 	
 	String getRequestedResourceName()

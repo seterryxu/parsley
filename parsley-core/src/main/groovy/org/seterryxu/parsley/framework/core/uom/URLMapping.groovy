@@ -27,6 +27,5 @@ package org.seterryxu.parsley.framework.core.uom
  * @author Xu Lijia
  *
  */
-@interface WebMethod {
-
+@interface URLMapping {
 }

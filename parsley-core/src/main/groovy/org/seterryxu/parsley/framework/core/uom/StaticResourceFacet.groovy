@@ -23,10 +23,73 @@
 
 package org.seterryxu.parsley.framework.core.uom
 
+import java.net.URL
+import java.util.List
+
+import org.seterryxu.parsley.framework.core.WebApp
+import org.seterryxu.parsley.framework.core.lang.facets.Facet
+
 /**
  * @author Xu Lijia
  *
  */
-@interface WebMethod {
+class StaticResourceFacet extends Facet {
+
+	private URL _resUrl
+
+	StaticResourceFacet(URL resUrl){
+		this._resUrl=_resUrl
+	}
+
+	@Override
+	public boolean handle(Object instance, IParsleyRequest preq,
+			IParsleyResponse pres) {
+
+		if(_resUrl){
+			HttpResponseFactory.staticResource(pres,_resUrl)
+		}else{
+			HttpResponseFactory.notFound(pres)
+		}
+		
+		return false
+	}
+
+	@Override
+	public boolean handleIndexRequest(instance,IParsleyRequest preq,IParsleyResponse pres) {
+		if(!_isIndexPageRequest(preq))
+			return false
+
+		def indexPage=_getIndexPage()
+		if(indexPage){
+			HttpResponseFactory.indexPage(pres,indexPage)
+		}else{
+			HttpResponseFactory.notFound(pres)
+		}
+
+		return true
+	}
+
+	boolean _isIndexPageRequest(IParsleyRequest preq) {
+		if(!preq.tokenizedUrl.hasMore()){
+			return true
+		}
+
+		return false
+	}
+
+	//------------------- index page process -------------------
+	private URL _getIndexPage(){
+		URL index
+		for(page in INDEX_PAGES){
+			index=WebApp.resources.get("${WebApp.RESOURCE_FOLDER}${page}")
+			if(index){
+				break
+			}
+		}
+
+		return index
+	}
+
+	private static final List<String> INDEX_PAGES=['index.html', 'index.htm']
 
 }

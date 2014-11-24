@@ -76,21 +76,35 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 			_tokens[++index]
 		}
 
+		int nextAsInt(){
+			_tokens[++index] as int
+		}
+
 		public boolean hasMore() {
 			index!=_tokens.size()
 		}
+
+		@Override
+		public String toString() {
+			StringBuilder b=new StringBuilder()
+			def i=0
+			while(i!=_tokens.size()){
+				if(i!=index){
+					b.append(_tokens[i])
+				}else{
+					b.append('!'+_tokens[i])
+				}
+
+				i++
+			}
+
+			return b.toString()
+		}
+
+
 	}
 
 	//------------------- static resource -------------------
-	@Override
-	public boolean isIndexPageRequest() {
-		if(!tokenizedUrl.hasMore()){
-			return true
-		}
-
-		return false
-	}
-
 	@Override
 	public boolean isStaticResourceRequest() {
 		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
