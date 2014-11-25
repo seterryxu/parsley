@@ -47,8 +47,7 @@ final class WebApp {
 
 	//------------------- action dispatchers -------------------
 	static final List<String> dispatchers=[]
-	private static Map<String,URL> _unduplicatedClassnames=[:]
-	private static DuplicatedClass _duplicatedClassnames=new DuplicatedClass()
+	private static ClassUrlMapper _mapper=new ClassUrlMapper()
 
 	//------------------- app name -------------------
 	private static String _appName
@@ -157,7 +156,6 @@ final class WebApp {
 		}
 
 		void filterClasses(){
-			def s=new HashSet<String>()
 
 			for(k in _resources.keySet()){
 				if(k.endsWith('.class')){
@@ -165,31 +163,28 @@ final class WebApp {
 					def k1=k.substring(0, i)
 					int i2=k1.lastIndexOf('/')
 					def k2=k1.substring(i2+1)
+					int i3=k1.lastIndexOf('classes/')
+					def k3=k1.substring(i3+8)
 
-					if(!s.contains(k2)){
-						s.add(k2)
-						WebApp._unduplicatedClassnames.put(k2, _resources.get(k))
-					}else{
-						WebApp._duplicatedClassnames.put(k2,k,_resources.get(k))
-					}
+					WebApp._mapper.add(k3, k2, _resources.get(k))
 				}
 			}
 		}
 
 	}
 
-	//	TODO an ugly way to do this, a better one?
-	private static final class DuplicatedClass{
-		private Map<String,URL> _classnames=new HashMap<String,URL>()
-
-		void put(String simplifiedClassname,String qualifiedClassname,URL classUrl){
-			_classnames.put(simplifiedClassname+','+qualifiedClassname, classUrl)
+	private static final class ClassUrlMapper{
+		private class ClassInfo{
+			String qualifiedName
+			String simplifiedName
+			URL classUrl
 		}
 
-		boolean contains(String classname){
-			for(String n:_classnames.keySet()){
-				def n2=n.split(',')
-				if(n2[0].equalsIgnoreCase(classname)){
+		private List<ClassInfo> _classInfo=[]
+
+		boolean contains(String name){
+			for(c in _classInfo){
+				if(c.simplifiedName.equalsIgnoreCase(name)){
 					return true
 				}
 			}
@@ -197,8 +192,32 @@ final class WebApp {
 			return false
 		}
 
-		URL getClassUrl(){
+		void add(String qualifiedName,String simplifiedName,URL classUrl){
+			def c=new ClassInfo()
+			c.qualifiedName=qualifiedName
+			c.simplifiedName=simplifiedName
+			c.classUrl=classUrl
+			_classInfo.add(c)
+		}
 
+		String getQualifiedName(String name){
+			for(c in _classInfo){
+				if(c.simplifiedName.equalsIgnoreCase(name)){
+					return c.qualifiedName.replaceAll('/', '.')
+				}
+			}
+
+			return null
+		}
+
+		URL getUrl(String name){
+			for(c in _classInfo){
+				if(c.simplifiedName.equalsIgnoreCase(name)){
+					return c.classUrl
+				}
+			}
+
+			return null
 		}
 	}
 
@@ -234,19 +253,14 @@ final class WebApp {
 		}
 
 		if(classname){
-			if(_duplicatedClassnames.contains(classname)){
-				//TODO
-			}else{
+			if(_mapper.contains(classname)){
 				def clazzname=StringUtils.camelize(classname)
-				def classUrl=_unduplicatedClassnames.get(clazzname)
+				def classUrl=_mapper.getUrl(clazzname)
 				if(classUrl){
-					URL[] u=new URL[1]
-					u[0]=classUrl
-					URLClassLoader ldr=URLClassLoader.newInstance(u)
-					return ldr.loadClass(clazzname)
-				}else{
-					return null
+					return Class.forName(_mapper.getQualifiedName(clazzname))
 				}
+			}else{
+				return null
 			}
 		}
 

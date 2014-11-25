@@ -102,9 +102,10 @@ final class Parsley extends HttpServlet {
 		//		tryNavigate()
 		//		TODO: recursive??
 		while(preq.tokenizedUrl.hasMore()){
-			preq.tokenizedUrl.next()
-			if(_tryNavigate(instance,preq,pres))
+			preq.tokenizedUrl.nextTokenizedUrl()
+			if(_tryNavigate(instance,preq,pres)){
 				break
+			}
 		}
 
 		return true
@@ -121,11 +122,7 @@ final class Parsley extends HttpServlet {
 
 	private _tryNavigate(instance,IParsleyRequest preq, IParsleyResponse pres){
 		String token=preq.tokenizedUrl.current()
-		try{
-			return instance."$token"
-		}catch(MissingPropertyException e){
-			instance."$token()"
-		}
+		return instance."$token"(preq,pres)
 	}
 
 }

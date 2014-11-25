@@ -24,6 +24,7 @@
 package org.seterryxu.parsley.framework.core.uom
 
 import org.seterryxu.parsley.framework.core.WebApp
+import org.seterryxu.parsley.framework.core.util.StringUtils
 
 /**
  * @author Xu Lijia
@@ -39,36 +40,46 @@ abstract class Dispatcher {
 
 	static void addDispatchers(Class c){
 		if(!WebApp.dispatchers.contains(c)){
-			"$classname".metaClass.methodMissing={String name,args->
-			if(name.startsWith('js')){
+			c.metaClass.fallback={
+				if(it)
+				it.call()
 			}
 			
-			if(name.startsWith('get')){
+			c.metaClass.methodMissing={String name,args->
+				def n=StringUtils.camelize(name)
+				if(c.metaClass.respondsTo(c,"js$n")){
+					return invokeMethod("js$n", args)
+				}
+
+				if(c.metaClass.respondsTo(c,"get$n")){
+					return invokeMethod("get$n", args)
+				}
+
+				if(c.metaClass.respondsTo(c,"do$n")){
+					return invokeMethod("do$n", args)
+				}
+
+				if(c.metaClass.respondsTo(c,'do$Self')){
+					return invokeMethod('do$Self', args)
+				}
+
+				fallback()
 			}
-			
-			if(name.startsWith('do')){
+
+			c.metaClass.propertyMissing={String name->
+				if(hasProperty(name)){
+					println 'has $name'
+				}
 			}
-			
-			if(name.startsWith('do$Self')){
-			}
-			
-			//out of options
-			//			HttpResponse exception=HttpResponseFactory.
-			}
-			
-			"$classname".metaClass.propertyMissing={String name->
-			
-			}
-			
+
 			WebApp.dispatchers.add(c)
 		}
-		
 	}
-	
+
 	void dispatch(instance,IParsleyRequest preq,IParsleyResponse pres){
 		// consume url tokens
 		if(!pres.tokenizedUrl.hasMore()){
-			
+
 		}
 		// do dispatch
 		// before doing dispatch

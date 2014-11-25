@@ -72,8 +72,12 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 			_tokens[index]
 		}
 
-		String next(){
-			_tokens[++index]
+		String nextTokenizedUrl(){
+			if(hasMore()){
+				return _tokens[++index]
+			}
+			
+			return null
 		}
 
 		int nextAsInt(){
@@ -81,7 +85,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		}
 
 		public boolean hasMore() {
-			index!=_tokens.size()
+			index<_tokens.size()-1
 		}
 
 		@Override
