@@ -108,10 +108,21 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 	@Override
 	public boolean isStaticResourceRequest() {
 		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
-		if(lowerCasedRequestedUrl&&!lowerCasedRequestedUrl.startsWith('/meta-inf')&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
+		if(lowerCasedRequestedUrl
+		&&!lowerCasedRequestedUrl.startsWith('/meta-inf')
+		&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
 			//			TODO check existence?
+			def resName=getRequestedResourceName()
+			if(resName.equals('/')){
+				return true
+			}
 
-			return true
+			//			TODO not a decent way to do this
+			for(ext in ['.htm', 'html']){
+				if(WebApp.resources.get("${WebApp.RESOURCE_FOLDER}${resName}${ext}")){
+					return true
+				}
+			}
 		}
 
 		return false

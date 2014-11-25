@@ -84,7 +84,7 @@ class StaticResourceFacet extends Facet {
 	}
 
 	@Override
-	protected Set<String> allowedExtensions() {
+	Set<String> allowedExtensions() {
 		def exts=new HashSet<String>()
 		exts.add('.html')
 		exts.add('.htm')

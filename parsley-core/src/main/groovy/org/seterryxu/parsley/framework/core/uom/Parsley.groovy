@@ -112,7 +112,7 @@ final class Parsley extends HttpServlet {
 
 	private Class _findRootClass(IParsleyRequest preq){
 		String root=preq.tokenizedUrl.current()
-		WebApp.get(root)
+		WebApp.getClazz(root)
 	}
 
 	private void _generateDispatchers(Class root){
@@ -127,7 +127,5 @@ final class Parsley extends HttpServlet {
 			instance."$token()"
 		}
 	}
-
-	
 
 }

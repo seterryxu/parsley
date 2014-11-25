@@ -82,5 +82,5 @@ abstract class Facet {
 
 	abstract boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres)
 
-	protected abstract Set<String> allowedExtensions()
+	abstract Set<String> allowedExtensions()
 }

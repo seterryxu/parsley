@@ -23,12 +23,13 @@
 
 package org.seterryxu.parsley.framework.core
 
-import java.net.URL;
+import java.net.URL
 import java.util.logging.Logger
 
 import javax.servlet.ServletContext
 
 import org.seterryxu.parsley.framework.core.lang.facets.Facet
+import org.seterryxu.parsley.framework.core.util.StringUtils
 
 /**
  *
@@ -36,7 +37,7 @@ import org.seterryxu.parsley.framework.core.lang.facets.Facet
  */
 final class WebApp {
 
-//	private static Logger _logger=Logger.getLogger(WebApp.class.name)
+	//	private static Logger _logger=Logger.getLogger(WebApp.class.name)
 
 	//------------------- web content meta-data -------------------
 	static final Set<String> supportedEncodings
@@ -46,8 +47,8 @@ final class WebApp {
 
 	//------------------- action dispatchers -------------------
 	static final List<String> dispatchers=[]
-	private static Map<String,URL> _classnames=[:]
-	private Set<String> duplicatedClassNames=new HashSet<String>()
+	private static Map<String,URL> _unduplicatedClassnames=[:]
+	private static DuplicatedClass _duplicatedClassnames=new DuplicatedClass()
 
 	//------------------- app name -------------------
 	private static String _appName
@@ -124,13 +125,13 @@ final class WebApp {
 			if(Boolean.getBoolean(".parsleyNoCache")){
 				_context.getResource(name)
 			}
-	
+
 			if(_resources){
 				_resources.get(name)
 			}else{
 				_context.getResource(name)
 			}
-		
+
 		}
 
 		List<URL> filterByFolder(String folderName){
@@ -155,17 +156,50 @@ final class WebApp {
 			return m
 		}
 
-		Map<String,URL> filterClasses(){
-			def m=[:]
+		void filterClasses(){
+			def s=new HashSet<String>()
+
 			for(k in _resources.keySet()){
 				if(k.endsWith('.class')){
-					m.put(k, _resources.get(k))
+					int i=k.lastIndexOf('.')
+					def k1=k.substring(0, i)
+					int i2=k1.lastIndexOf('/')
+					def k2=k1.substring(i2+1)
+
+					if(!s.contains(k2)){
+						s.add(k2)
+						WebApp._unduplicatedClassnames.put(k2, _resources.get(k))
+					}else{
+						WebApp._duplicatedClassnames.put(k2,k,_resources.get(k))
+					}
+				}
+			}
+		}
+
+	}
+
+	//	TODO an ugly way to do this, a better one?
+	private static final class DuplicatedClass{
+		private Map<String,URL> _classnames=new HashMap<String,URL>()
+
+		void put(String simplifiedClassname,String qualifiedClassname,URL classUrl){
+			_classnames.put(simplifiedClassname+','+qualifiedClassname, classUrl)
+		}
+
+		boolean contains(String classname){
+			for(String n:_classnames.keySet()){
+				def n2=n.split(',')
+				if(n2[0].equalsIgnoreCase(classname)){
+					return true
 				}
 			}
 
-			return m
+			return false
 		}
-		
+
+		URL getClassUrl(){
+
+		}
 	}
 
 	//------------------- init app -------------------
@@ -180,7 +214,7 @@ final class WebApp {
 		_rootClass=WebApp.class.name
 		_generateClassList()
 	}
-	
+
 	//------------------- page facet handlers -------------------
 	private static void _generatePageHandlers(){
 		Facet.discoverExtensions(resources.filterByFolder('lib'))
@@ -188,32 +222,40 @@ final class WebApp {
 
 	//------------------- instantiate object instances -------------------
 	private static void _generateClassList(){
-		_classnames=resources.filterClasses()
+		resources.filterClasses()
 		//		TODO check class name conflicts at compile time?
-
 	}
-	
+
 	//	TODO check good name
 	//	TODO check duplicated name
-	static Class get(String classname){
+	static Class getClazz(String classname){
 		if(_appName){
 			return _rootClass
 		}
-		
-		if(_classnames&&classname){
-			def classUrl=_classnames.get(classname)
-			URL[] u=new URL[1]
-			u[0]=classUrl
-			URLClassLoader ldr=URLClassLoader.newInstance(u)
-			return ldr.loadClass(classname)
+
+		if(classname){
+			if(_duplicatedClassnames.contains(classname)){
+				//TODO
+			}else{
+				def clazzname=StringUtils.camelize(classname)
+				def classUrl=_unduplicatedClassnames.get(clazzname)
+				if(classUrl){
+					URL[] u=new URL[1]
+					u[0]=classUrl
+					URLClassLoader ldr=URLClassLoader.newInstance(u)
+					return ldr.loadClass(clazzname)
+				}else{
+					return null
+				}
+			}
 		}
 
 		return null
 	}
-	
+
 	//------------------- clean up before shutdown -------------------
 	static void cleanUp(){
 
 	}
-	
+
 }
