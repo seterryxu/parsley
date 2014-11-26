@@ -26,6 +26,7 @@ package org.seterryxu.parsleyframework.core.uom
 import java.net.URL;
 import java.util.Set;
 
+import org.seterryxu.parsleyframework.core.WebApp;
 import org.seterryxu.parsleyframework.core.lang.facets.Facet;
 
 /**

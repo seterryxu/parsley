@@ -26,6 +26,7 @@ package org.seterryxu.parsleyframework.core
 import java.net.URL
 import java.util.logging.Logger
 
+import javax.naming.InitialContext;
 import javax.servlet.ServletContext
 
 import org.seterryxu.parsleyframework.core.lang.facets.Facet;
@@ -68,7 +69,12 @@ final class WebApp {
 	}
 
 	private static void _initSystemProperties(){
-		
+		def c=new InitialContext()
+		def e=c.lookup('java:comp/env')
+//		TODO how to set global vars?
+		def props=System.getProperties()
+		props.put 'Parsley.trace',e.lookup('Parsley.trace')
+		props.put 'Parsley.noResourcePathCache',e.lookup('Parsley.noResourcePathCache')
 	}
 	
 	private static void _initResourceFolder(){
@@ -87,7 +93,7 @@ final class WebApp {
 
 	private static void _generateResourcePaths(){
 		//		TODO how to set vars?
-		if (Boolean.getBoolean(".noResourcePathCache")) {
+		if (Boolean.getBoolean('Parsley.noResourcePathCache')) {
 			resources = null
 			return
 		}
@@ -126,7 +132,7 @@ final class WebApp {
 
 		URL get(String name){
 			//		TODO sys var?
-			if(Boolean.getBoolean(".parsleyNoCache")){
+			if(Boolean.getBoolean('Parsley.noResourcePathCache')){
 				_context.getResource(name)
 			}
 

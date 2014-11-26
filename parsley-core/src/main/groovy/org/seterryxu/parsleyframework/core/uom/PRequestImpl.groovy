@@ -28,6 +28,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import org.seterryxu.parsleyframework.core.WebApp;
+
 /**
  * @author Xu Lijia
  *

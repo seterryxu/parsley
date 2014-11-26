@@ -21,7 +21,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsleyframework.core.uom
+package org.seterryxu.parsleyframework
 
 import java.io.IOException;
 
@@ -31,6 +31,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.seterryxu.parsleyframework.core.WebApp;
+import org.seterryxu.parsleyframework.core.uom.Dispatcher;
+import org.seterryxu.parsleyframework.core.uom.HttpResponseFactory;
+import org.seterryxu.parsleyframework.core.uom.IParsleyRequest;
+import org.seterryxu.parsleyframework.core.uom.IParsleyResponse;
+import org.seterryxu.parsleyframework.core.uom.PRequestImpl;
+import org.seterryxu.parsleyframework.core.uom.PResponseImpl;
+import org.seterryxu.parsleyframework.core.uom.StaticResourceFacet;
 
 /**
  * @author Xu Lijia

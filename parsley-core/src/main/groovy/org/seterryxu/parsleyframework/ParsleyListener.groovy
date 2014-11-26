@@ -21,10 +21,12 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsleyframework.core
+package org.seterryxu.parsleyframework
 
 import javax.servlet.ServletContextEvent
 import javax.servlet.ServletContextListener
+
+import org.seterryxu.parsleyframework.core.WebApp;
 
 /**
  * @author Xu Lijia
