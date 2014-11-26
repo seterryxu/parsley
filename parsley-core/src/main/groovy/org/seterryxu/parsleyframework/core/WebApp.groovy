@@ -58,6 +58,7 @@ final class WebApp {
 	//TODO singleton
 	static void init(ServletContext context){
 		this._context=context
+		_initSystemProperties()
 		_initResourceFolder()
 		_initEncodings()
 		_initMimeTypes()
@@ -66,6 +67,10 @@ final class WebApp {
 		_generatePageHandlers()
 	}
 
+	private static void _initSystemProperties(){
+		
+	}
+	
 	private static void _initResourceFolder(){
 		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
 	}
