@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.seterryxu.parsleyframework.core.WebApp;
+import org.seterryxu.parsleyframework.core.lang.facets.Facet;
 import org.seterryxu.parsleyframework.core.uom.Dispatcher;
 import org.seterryxu.parsleyframework.core.uom.HttpResponseFactory;
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest;
@@ -110,7 +111,7 @@ final class Parsley extends HttpServlet {
 		//		tryNavigate()
 		//		TODO: recursive??
 		while(preq.tokenizedUrl.hasMore()){
-			preq.tokenizedUrl.nextTokenizedUrl()
+			preq.tokenizedUrl.nextToken()
 			if(_tryNavigate(instance,preq,pres)){
 				break
 			}

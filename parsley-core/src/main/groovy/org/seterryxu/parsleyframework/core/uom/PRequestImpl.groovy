@@ -72,7 +72,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 			_tokens[index]
 		}
 
-		String nextTokenizedUrl(){
+		String nextToken(){
 			if(hasMore()){
 				return _tokens[++index]
 			}

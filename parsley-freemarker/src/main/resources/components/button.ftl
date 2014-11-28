@@ -1,4 +1,4 @@
-<#macro reversable_note>
+<#macro button>
 	<div id="${id}" class="yui3-module">
 	    <div class="yui3-hd">
 	        <h3>${title}</h3>
