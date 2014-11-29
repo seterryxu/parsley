@@ -115,6 +115,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		if(lowerCasedRequestedUrl
 		&&!lowerCasedRequestedUrl.startsWith('/meta-inf')
 		&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
+			//			TODO check index existence?
 			//			TODO check existence?
 			def resName=getRequestedResourceName()
 			if(resName.equals('/')){

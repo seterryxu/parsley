@@ -41,6 +41,7 @@ abstract class Facet {
 	private static final List<Facet> facets=[]
 
 	//	TODO how to discover extensions?
+	//	TODO how to disable inheritance
 	static final List<Facet> discoverExtensions(List<URL> libs){
 	}
 

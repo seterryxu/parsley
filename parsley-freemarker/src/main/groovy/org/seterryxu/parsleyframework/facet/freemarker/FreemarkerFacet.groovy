@@ -33,8 +33,8 @@ import freemarker.template.Template
 import java.util.Set
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class FreemarkerFacet extends Facet{
 
@@ -49,9 +49,12 @@ class FreemarkerFacet extends Facet{
 	}
 
 	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
-		_t=_conf.getTemplate(preq.getRequestedResourceName())
+		_t=_conf.getTemplate(preq.getRequestedResourceName()+allowedExtensions().get(0))
+		
 		def out=pres.getOutputStream()
-		_t.process(instance, out)
+		def root=[:]
+		root.put('it', instance)
+		_t.process(root, out)
 	}
 
 	@Override

@@ -4,8 +4,9 @@
 
 	<groupId>org.seterryxu</groupId>
 	<artifactId>parsley</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	
 	<modules>
 		<module>parsley-core</module>
 		<module>parsley-groovy</module>
@@ -13,9 +14,7 @@
 	</modules>
 
 	<properties>
-<!-- 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
- -->	
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 		<groovyVersion>2.1.8</groovyVersion>
@@ -89,10 +88,9 @@
 			<dependency>
 				<groupId>org.seterryxu</groupId>
 				<artifactId>parsley-core</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>0.1-SNAPSHOT</version>
 			</dependency>
-<!--			
--->			
+			<!-- -->
 			<dependency>
 				<groupId>org.seterryxu</groupId>
 				<artifactId>utils</artifactId>
