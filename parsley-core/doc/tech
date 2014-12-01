@@ -11,3 +11,5 @@
 11.groovy singleton
 12.包内可见
 13.ThreadLocal
+14.how to load *.ftl from *.jar
+15.how to render html with css and js?
