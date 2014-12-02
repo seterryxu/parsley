@@ -21,58 +21,64 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsleyframework.facet.freemarker
+package org.seterryxu.parsleyframework.facet.freemarker.util
 
-import org.seterryxu.parsleyframework.core.lang.facets.Facet
-import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
-import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
-import org.seterryxu.parsleyframework.facet.freemarker.util.JarUtils
-
-import freemarker.template.Configuration
-import freemarker.template.Template
+import java.util.jar.JarFile
 
 /**
- *
  * @author Xu Lijia
+ *
  */
-class FreemarkerFacet extends Facet{
+class JarUtils {
 
-	private static Configuration _conf
-	private Template _t
-	private static boolean _isInitialized
-
-	FreemarkerFacet(){
-		_conf=new Configuration()
-		//TODO
-		//		_conf.setDirectoryForTemplateLoading(null)
-		_conf.setDefaultEncoding('UTF-8')
-
-	}
-
-	@Override
-	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
-		if(!_isInitialized){
-			JarUtils.decompress("", preq.getServletContext().getRealPath('/'))
-			_isInitialized=true
+	static boolean decompress(String jarFile,String outputPath){
+		if(!jarFile||!outputPath){
+			return false
 		}
 
-		def ext
-		for(e in allowedExtensions()){
-			ext=e
+		def jFile=new File(jarFile)
+		if(!jFile.exists()){
+			return false
 		}
 
-		_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
+		def oPath=new File(outputPath)
+		if(!oPath.exists()){
+			if(oPath.mkdirs()){
+				return false
+			}
+		}
 
-		def out=pres.getOutputStream()
-		def root=[:]
-		root.put('it', instance)
-		_t.process(root, out)
-	}
+		def jar=new JarFile(jFile)
+		def entries=jar.entries()
+		while(entries.hasMoreElements()){
+			def entry=entries.nextElement()
 
-	@Override
-	Set<String> allowedExtensions() {
-		def exts=new HashSet<String>()
-		exts.add('.ftl')
-		return exts
+			def f=new File("${outputPath}/${entry.getName()}")
+			if(f.isDirectory()){
+				if(!f.exists()){
+					if(!f.mkdirs()){
+						return false
+						break
+					}
+				}
+			}else{
+				def parentFile=f.getParentFile()
+				if(!parentFile.exists()){
+					if(!parentFile.mkdirs()){
+						return false
+						break
+					}
+				}
+				
+				def is=jar.getInputStream(entry)
+				def os=new BufferedOutputStream(new FileOutputStream(f))
+				
+				byte[]buffer=new byte[4096]
+				int len
+				while((len=is.read(buffer)>0)){
+					os.write(buffer, 0, len)
+				}
+			}
+		}
 	}
 }
