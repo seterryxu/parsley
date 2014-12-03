@@ -143,7 +143,7 @@ final class WebApp {
 			}
 		}
 
-		List<URL> filterByFolder(String folderName){
+/*		List<URL> filterByFolder(String folderName){
 			def l=[]
 			for(resource in _resources.values()){
 				if(resource.toExternalForm().contains("/${folderName}/")){
@@ -152,7 +152,7 @@ final class WebApp {
 			}
 
 			return l
-		}
+		}*/
 
 		Map<String,URL> filterWebResources(){
 			def m=[:]
@@ -246,7 +246,7 @@ final class WebApp {
 
 	//------------------- page facet handlers -------------------
 	private static void _generatePageHandlers(){
-		Facet.discoverExtensions(resources.filterByFolder('lib'))
+		Facet.lookupFacets()
 	}
 
 	//------------------- instantiate object instances -------------------

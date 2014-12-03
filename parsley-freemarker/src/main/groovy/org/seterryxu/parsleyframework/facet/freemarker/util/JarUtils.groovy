@@ -52,7 +52,7 @@ class JarUtils {
 		def entries=jar.entries()
 		while(entries.hasMoreElements()){
 			def entry=entries.nextElement()
-
+			//TODO filter .css, .js ? if(!entry.getName().endsWith(''))
 			def f=new File("${outputPath}/${entry.getName()}")
 			if(f.isDirectory()){
 				if(!f.exists()){

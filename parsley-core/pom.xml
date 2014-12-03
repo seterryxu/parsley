@@ -7,7 +7,7 @@
 		<artifactId>parsley</artifactId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>parsley-core</artifactId>
 
 	<build>
@@ -30,6 +30,10 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-discovery</groupId>
+			<artifactId>commons-discovery</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

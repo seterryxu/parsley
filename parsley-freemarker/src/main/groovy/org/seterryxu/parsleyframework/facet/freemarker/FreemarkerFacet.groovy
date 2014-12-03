@@ -52,7 +52,10 @@ class FreemarkerFacet extends Facet{
 	@Override
 	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
 		if(!_isInitialized){
-			JarUtils.decompress("", preq.getServletContext().getRealPath('/'))
+			def url=this.class.getProtectionDomain().getCodeSource().getLocation()
+			def jarFile=new File(url.toURI())
+			
+			JarUtils.decompress(jarFile, preq.getServletContext().getRealPath('/'))
 			_isInitialized=true
 		}
 

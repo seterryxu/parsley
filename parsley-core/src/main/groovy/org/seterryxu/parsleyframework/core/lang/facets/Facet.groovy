@@ -26,6 +26,7 @@ package org.seterryxu.parsleyframework.core.lang.facets
 import java.util.logging.Logger
 import java.util.Set
 
+import org.apache.commons.discovery.tools.Service;
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
@@ -42,7 +43,12 @@ abstract class Facet {
 
 	//	TODO how to discover extensions?
 	//	TODO how to disable inheritance
-	static final List<Facet> discoverExtensions(List<URL> libs){
+	static final List<Facet> lookupFacets(){
+		def facetImpls=Service.providers(this.class)
+		
+		for(f in facetImpls){
+			facets.add(f.class)
+		}
 	}
 
 	//------------------- all facets should maintain localized resources -------------------

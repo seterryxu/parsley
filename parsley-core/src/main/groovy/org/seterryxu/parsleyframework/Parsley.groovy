@@ -85,7 +85,7 @@ final class Parsley extends HttpServlet {
 		//		TODO how to handle?
 		//static resource facet excluded
 		for(facet in Facet.facets){
-			if(facet.handle(instance,preq,pres)){
+			if(facet.newInstance().handle(instance,preq,pres)){
 				return
 			}
 		}

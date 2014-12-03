@@ -6,7 +6,7 @@
 	<artifactId>parsley</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>parsley-core</module>
 		<module>parsley-groovy</module>
@@ -67,6 +67,11 @@
 				<artifactId>groovy-all</artifactId>
 				<version>${groovyVersion}</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>commons-discovery</groupId>
+				<artifactId>commons-discovery</artifactId>
+				<version>0.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.sitemesh</groupId>
