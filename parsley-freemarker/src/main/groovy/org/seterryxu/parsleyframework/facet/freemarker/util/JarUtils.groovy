@@ -31,13 +31,12 @@ import java.util.jar.JarFile
  */
 class JarUtils {
 
-	static boolean decompress(String jarFile,String outputPath){
+	static boolean decompress(File jarFile,String outputPath){
 		if(!jarFile||!outputPath){
 			return false
 		}
 
-		def jFile=new File(jarFile)
-		if(!jFile.exists()){
+		if(!jarFile.exists()){
 			return false
 		}
 
@@ -48,13 +47,13 @@ class JarUtils {
 			}
 		}
 
-		def jar=new JarFile(jFile)
+		def jar=new JarFile(jarFile)
 		def entries=jar.entries()
 		while(entries.hasMoreElements()){
 			def entry=entries.nextElement()
 			//TODO filter .css, .js ? if(!entry.getName().endsWith(''))
 			def f=new File("${outputPath}/${entry.getName()}")
-			if(f.isDirectory()){
+			if(entry.isDirectory()){
 				if(!f.exists()){
 					if(!f.mkdirs()){
 						return false
@@ -75,9 +74,13 @@ class JarUtils {
 				
 				byte[]buffer=new byte[4096]
 				int len
-				while((len=is.read(buffer)>0)){
+				while((len=is.read(buffer))>0){
 					os.write(buffer, 0, len)
 				}
+				
+				os.flush()
+				os.close()
+				is.close()
 			}
 		}
 	}

@@ -34,12 +34,16 @@
 		<dependency>
 			<groupId>commons-discovery</groupId>
 			<artifactId>commons-discovery</artifactId>
+			<version>0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.seterryxu</groupId> <artifactId>utils</artifactId> 
-			</dependency> -->
+<!--    <dependency> 
+			<groupId>org.seterryxu</groupId> 
+			<artifactId>utils</artifactId> 
+		</dependency>
+ -->
 	</dependencies>
 </project>

@@ -43,11 +43,11 @@ abstract class Facet {
 
 	//	TODO how to discover extensions?
 	//	TODO how to disable inheritance
-	static final List<Facet> lookupFacets(){
-		def facetImpls=Service.providers(this.class)
+	static final void lookupFacets(){
+		def facetImpls=Service.providers(Facet.class)
 		
-		for(f in facetImpls){
-			facets.add(f.class)
+		while(facetImpls.hasMoreElements()){
+			facets.add(facetImpls.nextElement().class)
 		}
 	}
 

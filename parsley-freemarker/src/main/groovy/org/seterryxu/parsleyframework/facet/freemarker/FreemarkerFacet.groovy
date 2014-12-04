@@ -54,7 +54,7 @@ class FreemarkerFacet extends Facet{
 		if(!_isInitialized){
 			def url=this.class.getProtectionDomain().getCodeSource().getLocation()
 			def jarFile=new File(url.toURI())
-			
+
 			JarUtils.decompress(jarFile, preq.getServletContext().getRealPath('/'))
 			_isInitialized=true
 		}
@@ -64,12 +64,24 @@ class FreemarkerFacet extends Facet{
 			ext=e
 		}
 
-		_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
+		try{
+			_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
+		}catch(FileNotFoundException e){
+			
+			try{
+				_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
+				return true
+			}catch(FileNotFoundException e2){
+				return false
+			}
+		}
 
 		def out=pres.getOutputStream()
 		def root=[:]
 		root.put('it', instance)
 		_t.process(root, out)
+		
+		return true
 	}
 
 	@Override
