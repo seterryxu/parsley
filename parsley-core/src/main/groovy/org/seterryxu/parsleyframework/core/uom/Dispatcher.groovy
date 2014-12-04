@@ -47,7 +47,7 @@ abstract class Dispatcher {
 			}
 			
 			c.metaClass.methodMissing={String name,args->
-				def n=StringUtils.camelize(name)
+				def n=StringUtils.capitalFirst(name)
 				if(c.metaClass.respondsTo(c,"js$n")){
 					return invokeMethod("js$n", args)
 				}

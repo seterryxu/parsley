@@ -26,11 +26,11 @@ package org.seterryxu.parsleyframework.core
 import java.net.URL
 import java.util.logging.Logger
 
-import javax.naming.InitialContext;
+import javax.naming.InitialContext
 import javax.servlet.ServletContext
 
-import org.seterryxu.parsleyframework.core.lang.facets.Facet;
-import org.seterryxu.parsleyframework.core.util.StringUtils;
+import org.seterryxu.parsleyframework.core.lang.facets.Facet
+import org.seterryxu.parsleyframework.core.util.StringUtils
 
 /**
  *
@@ -38,6 +38,7 @@ import org.seterryxu.parsleyframework.core.util.StringUtils;
  */
 final class WebApp {
 
+	//	TODO add logger
 	//	private static Logger _logger=Logger.getLogger(WebApp.class.name)
 
 	//------------------- web content meta-data -------------------
@@ -71,12 +72,12 @@ final class WebApp {
 	private static void _initSystemProperties(){
 		def c=new InitialContext()
 		def e=c.lookup('java:comp/env')
-//		TODO how to set global vars?
+		//		TODO how to set global vars?
 		def props=System.getProperties()
 		props.put 'Parsley.trace',e.lookup('Parsley.trace')
 		props.put 'Parsley.noResourcePathCache',e.lookup('Parsley.noResourcePathCache')
 	}
-	
+
 	private static void _initResourceFolder(){
 		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
 	}
@@ -143,16 +144,15 @@ final class WebApp {
 			}
 		}
 
-/*		List<URL> filterByFolder(String folderName){
-			def l=[]
-			for(resource in _resources.values()){
-				if(resource.toExternalForm().contains("/${folderName}/")){
-					l<<resource
-				}
-			}
-
-			return l
-		}*/
+		/*		List<URL> filterByFolder(String folderName){
+		 def l=[]
+		 for(resource in _resources.values()){
+		 if(resource.toExternalForm().contains("/${folderName}/")){
+		 l<<resource
+		 }
+		 }
+		 return l
+		 }*/
 
 		Map<String,URL> filterWebResources(){
 			def m=[:]
@@ -264,7 +264,7 @@ final class WebApp {
 
 		if(classname){
 			if(_mapper.contains(classname)){
-				def clazzname=StringUtils.camelize(classname)
+				def clazzname=StringUtils.capitalFirst(classname)
 				def classUrl=_mapper.getUrl(clazzname)
 				if(classUrl){
 					return Class.forName(_mapper.getQualifiedName(clazzname))
@@ -279,7 +279,7 @@ final class WebApp {
 
 	//------------------- clean up before shutdown -------------------
 	static void cleanUp(){
-
+		//		TODO add some clean up tasks
 	}
 
 }
