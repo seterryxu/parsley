@@ -47,9 +47,7 @@ abstract class Facet {
 		def facetImpls=Service.providers(Facet.class)
 		
 		while(facetImpls.hasMoreElements()){
-			def c=facetImpls.nextElement().class
-			println c 
-			facets.add(c)
+			facets.add(facetImpls.nextElement().class)
 		}
 	}
 

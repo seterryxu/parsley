@@ -23,7 +23,7 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
-import org.seterryxu.parsleyframework.core.Facet;
+import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
@@ -50,11 +50,7 @@ class FreemarkerFacet extends Facet{
 		_conf=new Configuration()
 		_conf.setDefaultEncoding('UTF-8')
 
-		def claLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
-		def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_FOLDER))
-		TemplateLoader[]loaders=[claLoader, resLoader]
-		def multiLoaders=new MultiTemplateLoader(loaders)
-		_conf.setTemplateLoader(claLoader)
+		//		TODO why can't I add template loaders here ?
 	}
 
 	@Override
@@ -72,13 +68,17 @@ class FreemarkerFacet extends Facet{
 			ext=e
 		}
 
+		def claLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
+		def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
+		TemplateLoader[]loaders=[claLoader, resLoader]
+		def multiLoaders=new MultiTemplateLoader(loaders)
+		_conf.setTemplateLoader(claLoader)
+
 		try{
 			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
 		}catch(FileNotFoundException e){
-
 			try{
 				_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
-				return true
 			}catch(FileNotFoundException e2){
 				return false
 			}
