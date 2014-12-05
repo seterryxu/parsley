@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2014, Xu Lijia
+ * Copyright (c) 2013-2015, Xu Lijia
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided
@@ -23,8 +23,8 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import org.seterryxu.parsleyframework.core.WebApp;
-import org.seterryxu.parsleyframework.core.util.StringUtils;
+import org.seterryxu.parsleyframework.core.WebApp
+import org.seterryxu.parsleyframework.core.util.StringUtils
 
 
 /**
@@ -43,9 +43,9 @@ abstract class Dispatcher {
 		if(!WebApp.dispatchers.contains(c)){
 			c.metaClass.fallback={
 				if(it)
-				it.call()
+					it.call()
 			}
-			
+
 			c.metaClass.methodMissing={String name,args->
 				def n=StringUtils.capitalFirst(name)
 				if(c.metaClass.respondsTo(c,"js$n")){
@@ -68,6 +68,7 @@ abstract class Dispatcher {
 			}
 
 			c.metaClass.propertyMissing={String name->
+				//				TODO
 				if(hasProperty(name)){
 					println 'has $name'
 				}
