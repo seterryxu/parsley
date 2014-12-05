@@ -23,11 +23,16 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
+import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.lang.facets.Facet
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.seterryxu.parsleyframework.facet.freemarker.util.JarUtils
 
+import freemarker.cache.ClassTemplateLoader
+import freemarker.cache.FileTemplateLoader
+import freemarker.cache.MultiTemplateLoader
+import freemarker.cache.TemplateLoader
 import freemarker.template.Configuration
 import freemarker.template.Template
 
@@ -43,10 +48,13 @@ class FreemarkerFacet extends Facet{
 
 	FreemarkerFacet(){
 		_conf=new Configuration()
-		//TODO
-		//		_conf.setDirectoryForTemplateLoading(null)
 		_conf.setDefaultEncoding('UTF-8')
 
+		def claLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
+		def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_FOLDER))
+		TemplateLoader[]loaders=[claLoader, resLoader]
+		def multiLoaders=new MultiTemplateLoader(loaders)
+		_conf.setTemplateLoader(claLoader)
 	}
 
 	@Override
@@ -65,11 +73,11 @@ class FreemarkerFacet extends Facet{
 		}
 
 		try{
-			_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
+			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
 		}catch(FileNotFoundException e){
-			
+
 			try{
-				_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
+				_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
 				return true
 			}catch(FileNotFoundException e2){
 				return false
@@ -80,7 +88,7 @@ class FreemarkerFacet extends Facet{
 		def root=[:]
 		root.put('it', instance)
 		_t.process(root, out)
-		
+
 		return true
 	}
 

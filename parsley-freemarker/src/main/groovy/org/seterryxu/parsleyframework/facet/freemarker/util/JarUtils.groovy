@@ -69,6 +69,10 @@ class JarUtils {
 					}
 				}
 				
+				if(!entry.name.endsWith('.css')||entry.name.endsWith('.js')){
+					continue
+				}
+				
 				def is=jar.getInputStream(entry)
 				def os=new BufferedOutputStream(new FileOutputStream(f))
 				
