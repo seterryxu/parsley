@@ -21,13 +21,12 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsleyframework.core.lang.facets
+package org.seterryxu.parsleyframework.core
 
 import java.util.logging.Logger
 import java.util.Set
 
 import org.apache.commons.discovery.tools.Service;
-import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 

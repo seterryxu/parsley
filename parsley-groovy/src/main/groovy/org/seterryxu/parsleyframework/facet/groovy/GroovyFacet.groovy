@@ -23,7 +23,7 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import org.seterryxu.parsleyframework.core.lang.facets.Facet
+import org.seterryxu.parsleyframework.core.Facet;
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 

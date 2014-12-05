@@ -23,8 +23,8 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
+import org.seterryxu.parsleyframework.core.Facet;
 import org.seterryxu.parsleyframework.core.WebApp
-import org.seterryxu.parsleyframework.core.lang.facets.Facet
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.seterryxu.parsleyframework.facet.freemarker.util.JarUtils

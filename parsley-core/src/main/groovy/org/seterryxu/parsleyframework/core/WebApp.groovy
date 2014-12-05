@@ -29,7 +29,6 @@ import java.util.logging.Logger
 import javax.naming.InitialContext
 import javax.servlet.ServletContext
 
-import org.seterryxu.parsleyframework.core.lang.facets.Facet
 import org.seterryxu.parsleyframework.core.util.StringUtils
 
 /**

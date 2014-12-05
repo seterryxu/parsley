@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.seterryxu.parsleyframework.core.Facet;
 import org.seterryxu.parsleyframework.core.WebApp;
-import org.seterryxu.parsleyframework.core.lang.facets.Facet;
 import org.seterryxu.parsleyframework.core.uom.Dispatcher;
 import org.seterryxu.parsleyframework.core.uom.HttpResponseFactory;
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest;
