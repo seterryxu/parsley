@@ -75,6 +75,7 @@ class FreemarkerFacet extends Facet{
 		_conf.setTemplateLoader(claLoader)
 
 		try{
+			//			TODO how to embed directives?
 			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
 		}catch(FileNotFoundException e){
 			try{

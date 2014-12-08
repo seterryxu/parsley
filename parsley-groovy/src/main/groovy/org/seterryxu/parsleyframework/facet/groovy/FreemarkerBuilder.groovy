@@ -23,10 +23,56 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
+import java.util.logging.Logger;
+
 /**
  * @author Xu Lijia
  *
  */
 class FreemarkerBuilder {
 
+	private static final Logger _logger=Logger.getLogger(FreemarkerBuilder.class.name)
+	
+	private Writer _w
+
+	FreemarkerBuilder(Writer w){
+		this._w=w
+	}
+
+	def build(closure){
+		closure.delegate=this
+		closure()
+		println _w
+	}
+
+	def methodMissing(String name,args){
+		_w<<'<@'
+		_w<<name
+		_w<<handleArgs(args)
+	}
+
+	def propertyMissing(String name){
+	}
+
+	def handle(String name,args){
+	}
+	
+	def handleArgs(args){
+		int num=args.size()
+		
+		if(num==2&&args[-1] instanceof Closure){
+			_w<<' '
+			args[0].each{
+				_w<<it.key
+				_w<<'="'
+				_w<<it.value
+				_w<<'" '
+			}
+			_w<<'>\r\n'
+			
+			def cl=args[-1]
+			cl.delegate=this
+			cl()
+		}
+	}
 }
