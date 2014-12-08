@@ -54,7 +54,7 @@ final class WebApp {
 	//------------------- app name -------------------
 	private static String _appName
 	private static Class _rootClass
-	
+
 	//------------------- web PATH -------------------
 	static String WEB_ROOT_PATH
 	static String RESOURCE_PATH
@@ -77,7 +77,7 @@ final class WebApp {
 	private static void _initWebRootPath(){
 		WEB_ROOT_PATH=_context.getRealPath("/")
 	}
-	
+
 	private static void _initSystemProperties(){
 		def c=new InitialContext()
 		def e=c.lookup('java:comp/env')
@@ -89,7 +89,8 @@ final class WebApp {
 
 	private static void _initResourceFolder(){
 		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
-		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER
+		//		TODO /WEB... or WEB ?
+		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER.substring(1)
 	}
 
 	//TODO

@@ -23,6 +23,8 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
+import javax.servlet.ServletOutputStream;
+
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
@@ -68,11 +70,11 @@ class FreemarkerFacet extends Facet{
 			ext=e
 		}
 
-		def claLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
+		def clsLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
 		def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
-		TemplateLoader[]loaders=[claLoader, resLoader]
+		TemplateLoader[]loaders=[clsLoader, resLoader] as TemplateLoader[]
 		def multiLoaders=new MultiTemplateLoader(loaders)
-		_conf.setTemplateLoader(claLoader)
+		_conf.setTemplateLoader(multiLoaders)
 
 		try{
 			//			TODO how to embed directives?
@@ -85,10 +87,14 @@ class FreemarkerFacet extends Facet{
 			}
 		}
 
-		def out=pres.getOutputStream()
 		def root=[:]
 		root.put('it', instance)
-		_t.process(root, out)
+		root.put('content','testcontent')
+		
+		ServletOutputStream os=pres.getOutputStream()
+		def writer=new OutputStreamWriter(os)
+		
+		_t.process(root, writer)
 
 		return true
 	}

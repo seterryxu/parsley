@@ -1,6 +1,7 @@
+TODO
 1. gradle
 2. annotation parsing
-3. commons-discovery
+3. how to render html with css and js?
 4. EL exp
 5. CopyOnWriteArrayList
 6. ConcurrentMap
@@ -11,5 +12,8 @@
 11.groovy singleton
 12.包内可见
 13.ThreadLocal
-14.how to load *.ftl from *.jar
-15.how to render html with css and js?
+
+
+finished:
+1.commons-discovery
+2.how to load *.ftl from *.jar
