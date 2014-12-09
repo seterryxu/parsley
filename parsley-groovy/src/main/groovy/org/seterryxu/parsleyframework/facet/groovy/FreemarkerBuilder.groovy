@@ -23,7 +23,9 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import java.util.logging.Logger;
+import java.util.logging.Logger
+
+import freemarker.template.Configuration
 
 /**
  * @author Xu Lijia
@@ -32,34 +34,71 @@ import java.util.logging.Logger;
 class FreemarkerBuilder {
 
 	private static final Logger _logger=Logger.getLogger(FreemarkerBuilder.class.name)
-	
+
 	private Writer _w
 
-	FreemarkerBuilder(Writer w){
+	private static Configuration _conf
+
+	FreemarkerBuilder(Configuration conf,Writer w){
+		FreemarkerBuilder._conf=conf
 		this._w=w
 	}
 
-	def build(closure){
-		closure.delegate=this
-		closure()
-		println _w
-	}
-
 	def methodMissing(String name,args){
-		_w<<'<@'
-		_w<<name
-		_w<<handleArgs(args)
+		//judge what parameters we have
+		Map arguments
+		Closure closure
+
+		switch(args.size()){
+			case 0:break
+			case 1:
+				if(args[0] instanceof Map){
+					arguments=args[0]
+				}else if(args[0] instanceof Closure){
+					closure=args[0]
+				}
+				break
+			case 2:
+				if(args[0] instanceof Map&&args[1] instanceof Closure){
+					arguments=args[0]
+					closure=args[1]
+				}
+				break
+			default:
+				throw new MissingMethodException(name, getClass(), args)
+		}
+
+		if(_isDirective(name)){
+
+		}
+
 	}
 
+	private boolean _isDirective(String name){
+		if(KEY_WORDS.contains(name)){
+			return true
+		}
+		
+		//		TODO how to search templates in sub-dirs?
+		def t=_conf.getTemplate(name)
+		if(t){
+			return true
+		}
+
+		return false
+	}
+
+	private static final Set<String> KEY_WORDS=['if','else',''] as Set<String>
+	
 	def propertyMissing(String name){
 	}
 
 	def handle(String name,args){
 	}
-	
+
 	def handleArgs(args){
 		int num=args.size()
-		
+
 		if(num==2&&args[-1] instanceof Closure){
 			_w<<' '
 			args[0].each{
@@ -69,7 +108,7 @@ class FreemarkerBuilder {
 				_w<<'" '
 			}
 			_w<<'>\r\n'
-			
+
 			def cl=args[-1]
 			cl.delegate=this
 			cl()
