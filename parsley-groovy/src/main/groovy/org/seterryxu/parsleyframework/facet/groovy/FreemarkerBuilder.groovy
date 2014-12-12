@@ -75,7 +75,7 @@ class FreemarkerBuilder {
 	}
 
 	private boolean _isDirective(String name){
-		if(KEY_WORDS.contains(name)){
+		if(DIRECTIVES.contains(name)){
 			return true
 		}
 		
@@ -88,30 +88,6 @@ class FreemarkerBuilder {
 		return false
 	}
 
-	private static final Set<String> KEY_WORDS=['if','else',''] as Set<String>
+	private static final Set<String> DIRECTIVES=['if','else',''] as Set<String>
 	
-	def propertyMissing(String name){
-	}
-
-	def handle(String name,args){
-	}
-
-	def handleArgs(args){
-		int num=args.size()
-
-		if(num==2&&args[-1] instanceof Closure){
-			_w<<' '
-			args[0].each{
-				_w<<it.key
-				_w<<'="'
-				_w<<it.value
-				_w<<'" '
-			}
-			_w<<'>\r\n'
-
-			def cl=args[-1]
-			cl.delegate=this
-			cl()
-		}
-	}
 }
