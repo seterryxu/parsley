@@ -40,7 +40,7 @@
 						<compilerId>groovy-eclipse-compiler</compilerId>
 						<source>${groovy.eclipse.compiler.source}</source>
 						<target>${groovy.eclipse.compiler.target}</target>
-						<verbose>true</verbose>
+						<verbose>false</verbose>
 					</configuration>
 					<dependencies>
 						<dependency>

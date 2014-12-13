@@ -23,75 +23,35 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import java.util.logging.Logger
-
-import freemarker.template.Configuration
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.runtime.InvokerHelper
 
 /**
- *
  * @author Xu Lijia
+ *
  */
-class FreemarkerBuilder {
+class ParsleyScriptInvoker {
 
-	private static final Logger _logger=Logger.getLogger(FreemarkerBuilder.class.name)
-
-	private static Configuration _conf
+	private URL _scriptUrl
 	
-	private Writer _w
-
-	FreemarkerBuilder(Configuration conf,Writer w){
-		FreemarkerBuilder._conf=conf
-		this._w=w
-	}
-	
-	Namespace namespace(){
-		new Namespace() 
+	ParsleyScriptInvoker(URL scriptUrl){
+		this._scriptUrl=scriptUrl
 	}
 
-	def methodMissing(String name,args){
-		//judge what parameters we have
-		Map arguments
-		Closure closure
+	void invoke(FreemarkerBuilder builder){
+		def ldr=_createGroovyClassLoader()
+		def scriptSrc=new GroovyCodeSource(_scriptUrl)
 
-		switch(args.size()){
-			case 0:break
-			case 1:
-				if(args[0] instanceof Map){
-					arguments=args[0]
-				}else if(args[0] instanceof Closure){
-					closure=args[0]
-				}
-				break
-			case 2:
-				if(args[0] instanceof Map&&args[1] instanceof Closure){
-					arguments=args[0]
-					closure=args[1]
-				}
-				break
-			default:
-				throw new MissingMethodException(name, getClass(), args)
-		}
-
-		if(_isDirective(name)){
-
-		}
-
+		def script=InvokerHelper.createScript(ldr.parseClass(scriptSrc), new Binding()) as ParsleyScript
+		script.setDelegate(builder)
+		script.run()
 	}
 
-	private boolean _isDirective(String name){
-		if(DIRECTIVES.contains(name)){
-			return true
-		}
-		
-		//		TODO how to search templates in sub-dirs?
-		def t=_conf.getTemplate(name)
-		if(t){
-			return true
-		}
+	private GroovyClassLoader _createGroovyClassLoader(){
+		def config=new CompilerConfiguration()
+		config.setScriptBaseClass(ParsleyScript.class.name)
+		config.setRecompileGroovySource(false)
 
-		return false
+		new GroovyClassLoader(this.class.getClassLoader(), config)
 	}
-
-	private static final Set<String> DIRECTIVES=['if','else',''] as Set<String>
-	
 }

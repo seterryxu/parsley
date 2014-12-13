@@ -23,75 +23,15 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import java.util.logging.Logger
-
-import freemarker.template.Configuration
-
 /**
- *
  * @author Xu Lijia
+ *
  */
-class FreemarkerBuilder {
+class Namespace {
 
-	private static final Logger _logger=Logger.getLogger(FreemarkerBuilder.class.name)
-
-	private static Configuration _conf
+	private String _name
 	
-	private Writer _w
-
-	FreemarkerBuilder(Configuration conf,Writer w){
-		FreemarkerBuilder._conf=conf
-		this._w=w
-	}
-	
-	Namespace namespace(){
-		new Namespace() 
-	}
-
-	def methodMissing(String name,args){
-		//judge what parameters we have
-		Map arguments
-		Closure closure
-
-		switch(args.size()){
-			case 0:break
-			case 1:
-				if(args[0] instanceof Map){
-					arguments=args[0]
-				}else if(args[0] instanceof Closure){
-					closure=args[0]
-				}
-				break
-			case 2:
-				if(args[0] instanceof Map&&args[1] instanceof Closure){
-					arguments=args[0]
-					closure=args[1]
-				}
-				break
-			default:
-				throw new MissingMethodException(name, getClass(), args)
-		}
-
-		if(_isDirective(name)){
-
-		}
-
-	}
-
-	private boolean _isDirective(String name){
-		if(DIRECTIVES.contains(name)){
-			return true
-		}
+	Namespace(String name){
 		
-		//		TODO how to search templates in sub-dirs?
-		def t=_conf.getTemplate(name)
-		if(t){
-			return true
-		}
-
-		return false
 	}
-
-	private static final Set<String> DIRECTIVES=['if','else',''] as Set<String>
-	
 }
