@@ -1,5 +1,5 @@
 .project
 .classpath
 *.prefs 
-code.temp
 target/
+.settings/
