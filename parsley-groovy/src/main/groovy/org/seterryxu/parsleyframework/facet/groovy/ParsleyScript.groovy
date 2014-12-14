@@ -23,22 +23,19 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import groovy.lang.Script
-
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
-abstract class ParsleyScript extends Script {
+abstract class ParsleyScript extends Script{
 
-	private GroovyObject _delegate
-	
-	void setDelegate(GroovyObject delegate){
+	GroovyObject _delegate
+
+	void setDelegate(delegate){
 		this._delegate=delegate
-	} 
-	
-	def methodMissing(String name,args){
-		return _delegate.invokeMethod(name, args)
 	}
 
+	def invokeMethod(String name, args){
+		return _delegate.invokeMethod(name, args)
+	}
 }

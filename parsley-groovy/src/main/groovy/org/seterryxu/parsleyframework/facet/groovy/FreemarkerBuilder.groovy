@@ -37,19 +37,18 @@ class FreemarkerBuilder {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
-	private static Configuration _conf
+	Configuration conf
 	
-	private Writer _w
+	final Writer WRITER
 
-	FreemarkerBuilder(Configuration conf,Writer w){
-		FreemarkerBuilder._conf=conf
-		this._w=w
-	}
-	
 	Namespace namespace(){
 		new Namespace() 
 	}
 
+	def propertyMissing(String name){
+		LOGGER.debug(name)
+	}
+	
 	def methodMissing(String name,args){
 		//judge what parameters we have
 		Map arguments

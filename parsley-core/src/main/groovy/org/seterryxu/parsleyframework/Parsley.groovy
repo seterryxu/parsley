@@ -70,7 +70,7 @@ final class Parsley extends HttpServlet {
 		LOGGER.info('Parsley wrapper instantiated.')
 		
 		LOGGER.info("Parsley Request TYPE: ")
-		//judge request type
+		//TODO judge request type
 		if(preq.isStaticResourceRequest()){
 			new StaticResourceFacet().handle(this, preq, pres)
 

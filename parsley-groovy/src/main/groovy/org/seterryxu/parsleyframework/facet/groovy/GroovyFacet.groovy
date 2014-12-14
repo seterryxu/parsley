@@ -23,9 +23,14 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import org.seterryxu.parsleyframework.core.Facet;
+import java.util.Set
+
+import org.seterryxu.parsleyframework.core.Facet
+import org.seterryxu.parsleyframework.core.WebApp;
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * @author Xu Lijia
@@ -33,18 +38,37 @@ import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
  */
 class GroovyFacet extends Facet {
 
+	private static final Logger LOGGER=LoggerFactory.getLogger(GroovyFacet)
+
+	private static boolean _isInitialized
+	private static _ext
+
 	@Override
 	public boolean handle(Object instance, IParsleyRequest preq,
 			IParsleyResponse pres) {
-		// TODO Auto-generated method stub
-		return false;
+		if(!_isInitialized){
+			for(e in allowedExtensions()) {
+				_ext=e
+			}
+
+			_isInitialized=true
+		}
+
+		def resName=WebApp.RESOURCE_FOLDER+preq.getRequestedResourceName().substring(1)+'/index'+_ext
+		def resUrl=WebApp.resources.get(resName)
+		if(resUrl){
+			ParsleyScriptInvoker invoker=new ParsleyScriptInvoker(resUrl)
+			invoker.invoke()
+			return true
+		}
+		
+		return false
 	}
 
 	@Override
 	Set<String> allowedExtensions() {
 		def exts=new HashSet<String>()
 		exts.add('.groovy')
-		return exts;
+		return exts
 	}
-
 }
