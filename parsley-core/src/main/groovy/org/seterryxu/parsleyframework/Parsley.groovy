@@ -24,6 +24,7 @@
 package org.seterryxu.parsleyframework
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -48,6 +49,8 @@ import org.seterryxu.parsleyframework.core.uom.StaticResourceFacet;
  */
 final class Parsley extends HttpServlet {
 
+	private static final Logger LOGGER=Logger.getLogger(Parsley.class.name)
+	
 	private ServletContext _context
 
 	@Override
@@ -63,6 +66,9 @@ final class Parsley extends HttpServlet {
 		IParsleyRequest preq=new PRequestImpl(req)
 		IParsleyResponse pres=new PResponseImpl(res)
 
+		LOGGER.info('Parsley wrapper instantiated.')
+		
+		LOGGER.info("Parsley Request TYPE: ")
 		//judge request type
 		if(preq.isStaticResourceRequest()){
 			new StaticResourceFacet().handle(this, preq, pres)
@@ -91,7 +97,9 @@ final class Parsley extends HttpServlet {
 		}
 
 		//out of options
+		LOGGER.warning("No such resource: ")
 		HttpResponseFactory.notFound(pres)
+		LOGGER.info("Parsley Request handling completed.")
 	}
 
 	//------------------- navigating methods -------------------

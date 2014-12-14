@@ -37,17 +37,16 @@ import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
  */
 abstract class Facet {
 
-	private static Logger _logger=Logger.getLogger Facet.class.name
+	protected static final Logger LOGGER=Logger.getLogger(Facet.class.name)
 
-	private static final List<Facet> facets=[]
+	private static final Set<Facet> FACETS=new HashSet<Facet>()
 
-	//	TODO how to discover extensions?
 	//	TODO how to disable inheritance
 	static final void lookupFacets(){
 		def facetImpls=Service.providers(Facet.class)
 		
 		while(facetImpls.hasMoreElements()){
-			facets.add(facetImpls.nextElement().class)
+			FACETS.add(facetImpls.nextElement().class)
 		}
 	}
 

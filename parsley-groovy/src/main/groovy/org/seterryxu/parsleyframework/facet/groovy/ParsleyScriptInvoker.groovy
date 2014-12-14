@@ -33,13 +33,14 @@ import org.codehaus.groovy.runtime.InvokerHelper
 class ParsleyScriptInvoker {
 
 	private URL _scriptUrl
-	
+
 	ParsleyScriptInvoker(URL scriptUrl){
 		this._scriptUrl=scriptUrl
 	}
 
 	void invoke(FreemarkerBuilder builder){
 		def ldr=_createGroovyClassLoader()
+		//		TODO add security constraints?
 		def scriptSrc=new GroovyCodeSource(_scriptUrl)
 
 		def script=InvokerHelper.createScript(ldr.parseClass(scriptSrc), new Binding()) as ParsleyScript

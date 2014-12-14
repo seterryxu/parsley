@@ -25,6 +25,7 @@ package org.seterryxu.parsleyframework.core.uom
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletOutputStream;
 
@@ -34,6 +35,8 @@ import javax.servlet.ServletOutputStream;
  */
 class StaticResourceResponse implements IHttpResponse {
 
+	private static final Logger LOGGER=Logger.getLogger(StaticResourceResponse.class.name)
+	
 	private static final BUFFER_SIZE=4096
 	
 	private InputStream _stream

@@ -23,20 +23,26 @@
 
 package org.seterryxu.parsleyframework
 
+import java.util.logging.Logger
+
 import javax.servlet.ServletContextEvent
 import javax.servlet.ServletContextListener
 
-import org.seterryxu.parsleyframework.core.WebApp;
+import org.seterryxu.parsleyframework.core.WebApp
 
 /**
  * @author Xu Lijia
  *
  */
-class ParsleyListener implements ServletContextListener {
+final class ParsleyListener implements ServletContextListener {
+
+	private static final Logger LOGGER=Logger.getLogger(ParsleyListener.class.name)
 
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
+		LOGGER.info('Parsley context initializing...')
 		WebApp.init(event.getServletContext())
+		LOGGER.info('Parsley context initialized.')
 	}
 
 	@Override

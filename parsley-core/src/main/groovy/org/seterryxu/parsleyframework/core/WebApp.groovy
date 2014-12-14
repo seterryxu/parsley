@@ -38,8 +38,7 @@ import org.seterryxu.parsleyframework.core.util.StringUtils
  */
 final class WebApp {
 
-	//	TODO add logger
-	//	private static Logger _logger=Logger.getLogger(WebApp.class.name)
+	private static final Logger LOGGER=Logger.getLogger(WebApp.class.name)
 
 	//------------------- web content meta-data -------------------
 	static final Set<String> supportedEncodings

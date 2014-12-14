@@ -23,6 +23,8 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
+import java.util.logging.Logger;
+
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.util.StringUtils
 
@@ -33,6 +35,8 @@ import org.seterryxu.parsleyframework.core.util.StringUtils
  */
 abstract class Dispatcher {
 
+	private static final Logger LOGGER=Logger.getLogger(Dispatcher.class.name)
+	
 	private static boolean TRACE=Boolean.getBoolean('Parsley.trace')
 
 	boolean traceable(){

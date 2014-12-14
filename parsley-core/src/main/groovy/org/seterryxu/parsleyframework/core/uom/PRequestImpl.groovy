@@ -24,6 +24,7 @@
 package org.seterryxu.parsleyframework.core.uom
 
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -36,6 +37,8 @@ import org.seterryxu.parsleyframework.core.WebApp;
  */
 class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest {
 
+	private static final Logger LOGGER=Logger.getLogger(PRequestImpl.class.name)
+	
 	private final String _requestedUrl
 
 	final TokenizedUrl tokenizedUrl
