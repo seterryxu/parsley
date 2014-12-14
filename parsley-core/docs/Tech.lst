@@ -1,4 +1,4 @@
-TODO
+Tech:
 1. gradle
 2. annotation parsing
 3. how to render html with css and js?
@@ -12,8 +12,17 @@ TODO
 11.groovy singleton
 12.包内可见
 13.ThreadLocal
+14.@delegate
+15.* args
+16.this.class.at?.clone()
+17.resolveStrategy
+18.args*.toString().join('/')
+19.XXXSupport
+20.ConfigSlurper
+21.ConfigObject
+22.
 
 
-finished:
+Finished:
 1.commons-discovery
 2.how to load *.ftl from *.jar
