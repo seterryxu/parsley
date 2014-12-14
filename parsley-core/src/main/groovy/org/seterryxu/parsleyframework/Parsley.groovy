@@ -24,7 +24,6 @@
 package org.seterryxu.parsleyframework
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -42,6 +41,8 @@ import org.seterryxu.parsleyframework.core.uom.IParsleyResponse;
 import org.seterryxu.parsleyframework.core.uom.PRequestImpl;
 import org.seterryxu.parsleyframework.core.uom.PResponseImpl;
 import org.seterryxu.parsleyframework.core.uom.StaticResourceFacet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Xu Lijia
@@ -49,7 +50,7 @@ import org.seterryxu.parsleyframework.core.uom.StaticResourceFacet;
  */
 final class Parsley extends HttpServlet {
 
-	private static final Logger LOGGER=Logger.getLogger(Parsley.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(Parsley)
 	
 	private ServletContext _context
 
@@ -97,7 +98,7 @@ final class Parsley extends HttpServlet {
 		}
 
 		//out of options
-		LOGGER.warning("No such resource: ")
+		LOGGER.warn("No such resource: ")
 		HttpResponseFactory.notFound(pres)
 		LOGGER.info("Parsley Request handling completed.")
 	}

@@ -23,10 +23,11 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.util.logging.Logger;
 
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.util.StringUtils
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -35,7 +36,7 @@ import org.seterryxu.parsleyframework.core.util.StringUtils
  */
 abstract class Dispatcher {
 
-	private static final Logger LOGGER=Logger.getLogger(Dispatcher.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(Dispatcher)
 	
 	private static boolean TRACE=Boolean.getBoolean('Parsley.trace')
 
@@ -45,6 +46,8 @@ abstract class Dispatcher {
 
 	static void addDispatchers(Class c){
 		if(!WebApp.dispatchers.contains(c)){
+			LOGGER.debug("Adding a dispatcher for $c")
+			
 			c.metaClass.fallback={
 				if(it)
 					it.call()

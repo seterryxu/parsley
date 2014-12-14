@@ -23,13 +23,14 @@
 
 package org.seterryxu.parsleyframework.core
 
-import java.util.logging.Logger
 import java.util.Set
 
 import org.apache.commons.discovery.tools.Service;
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Xu Lijia
@@ -37,7 +38,7 @@ import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
  */
 abstract class Facet {
 
-	protected static final Logger LOGGER=Logger.getLogger(Facet.class.name)
+	protected static final Logger LOGGER=LoggerFactory.getLogger(Facet)
 
 	private static final Set<Facet> FACETS=new HashSet<Facet>()
 
@@ -46,7 +47,9 @@ abstract class Facet {
 		def facetImpls=Service.providers(Facet.class)
 		
 		while(facetImpls.hasMoreElements()){
-			FACETS.add(facetImpls.nextElement().class)
+			def clazz=facetImpls.nextElement().class
+			LOGGER.debug("Discovered extension $clazz.")
+			FACETS.add(clazz)
 		}
 	}
 

@@ -25,10 +25,11 @@ package org.seterryxu.parsleyframework.core.uom
 
 import java.net.URL;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.seterryxu.parsleyframework.core.Facet;
 import org.seterryxu.parsleyframework.core.WebApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Xu Lijia
@@ -36,7 +37,7 @@ import org.seterryxu.parsleyframework.core.WebApp;
  */
 class StaticResourceFacet extends Facet {
 
-	private static final Logger LOGGER=Logger.getLogger(StaticResourceFacet.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(StaticResourceFacet)
 	
 	@Override
 	public boolean handle(instance, IParsleyRequest preq,

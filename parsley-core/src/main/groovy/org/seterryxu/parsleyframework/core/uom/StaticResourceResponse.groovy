@@ -25,9 +25,11 @@ package org.seterryxu.parsleyframework.core.uom
 
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Xu Lijia
@@ -35,21 +37,20 @@ import javax.servlet.ServletOutputStream;
  */
 class StaticResourceResponse implements IHttpResponse {
 
-	private static final Logger LOGGER=Logger.getLogger(StaticResourceResponse.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(StaticResourceResponse)
 	
-	private static final BUFFER_SIZE=4096
+	private static final int BUFFER_SIZE=4096
 	
 	private InputStream _stream
 	
 	StaticResourceResponse(URL resUrl){
-		this._stream=toStream(resUrl) 
+		this._stream=_toStream(resUrl) 
 	}
 	
 	@Override
 	public void generateResponse(IParsleyResponse pres) {
 		ServletOutputStream out=pres.getOutputStream()
 
-		// TODO why 1024 byte?
 		byte[]buffer=new byte[BUFFER_SIZE]
 		int len
 		while((len=_stream.read(buffer))>0){
@@ -58,7 +59,7 @@ class StaticResourceResponse implements IHttpResponse {
 	}
 	
 	//TODO------------------- Temp codes -------------------
-	private static InputStream toStream(URL url){
+	private static InputStream _toStream(URL url){
 		url.openConnection().getInputStream()
 	}
 }

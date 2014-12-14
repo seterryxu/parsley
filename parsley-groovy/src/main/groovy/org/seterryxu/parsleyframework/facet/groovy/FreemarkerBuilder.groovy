@@ -23,7 +23,9 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import java.util.logging.Logger
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.Configuration
 
@@ -33,7 +35,7 @@ import freemarker.template.Configuration
  */
 class FreemarkerBuilder {
 
-	private static final Logger _logger=Logger.getLogger(FreemarkerBuilder.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
 	private static Configuration _conf
 	

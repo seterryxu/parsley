@@ -24,13 +24,14 @@
 package org.seterryxu.parsleyframework.core
 
 import java.net.URL
-import java.util.logging.Logger
 
 import javax.naming.InitialContext
 import javax.servlet.ServletContext
 
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.util.StringUtils
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,7 +39,7 @@ import org.seterryxu.parsleyframework.core.util.StringUtils
  */
 final class WebApp {
 
-	private static final Logger LOGGER=Logger.getLogger(WebApp.class.name)
+	private static final Logger LOGGER=LoggerFactory.getLogger(WebApp)
 
 	//------------------- web content meta-data -------------------
 	static final Set<String> supportedEncodings

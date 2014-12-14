@@ -25,6 +25,8 @@ package org.seterryxu.parsleyframework.facet.groovy
 
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.runtime.InvokerHelper
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Xu Lijia
@@ -32,6 +34,8 @@ import org.codehaus.groovy.runtime.InvokerHelper
  */
 class ParsleyScriptInvoker {
 
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyScriptInvoker)
+	
 	private URL _scriptUrl
 
 	ParsleyScriptInvoker(URL scriptUrl){
@@ -42,10 +46,12 @@ class ParsleyScriptInvoker {
 		def ldr=_createGroovyClassLoader()
 		//		TODO add security constraints?
 		def scriptSrc=new GroovyCodeSource(_scriptUrl)
+		LOGGER.debug("Script $_scriptUrl loaded.")
 
 		def script=InvokerHelper.createScript(ldr.parseClass(scriptSrc), new Binding()) as ParsleyScript
 		script.setDelegate(builder)
 		script.run()
+		LOGGER.debug("Running script $_scriptUrl...")
 	}
 
 	private GroovyClassLoader _createGroovyClassLoader(){
