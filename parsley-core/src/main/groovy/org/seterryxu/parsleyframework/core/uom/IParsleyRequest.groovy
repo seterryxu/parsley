@@ -33,15 +33,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 interface IParsleyRequest extends HttpServletRequest {
 
-	boolean isStaticResourceRequest()
-	
-	String getRequestedResourceName()
-	
 	Locale getRequestedLocale()
 	
-	//TODO
-	boolean isRestfulRequest()
-
-	//TODO
-	boolean isJavaScriptRequest()
 }

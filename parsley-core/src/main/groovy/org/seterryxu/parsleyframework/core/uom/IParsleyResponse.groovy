@@ -33,6 +33,4 @@ import javax.servlet.http.HttpServletResponse;
  */
 interface IParsleyResponse extends HttpServletResponse{
 
-	boolean handleStaticResource(URL resUrl)
-	
 }

@@ -23,35 +23,34 @@
 
 package org.seterryxu.parsleyframework
 
-import java.io.IOException;
+import javax.servlet.ServletConfig
+import javax.servlet.ServletContext
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServlet
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.seterryxu.parsleyframework.core.Facet;
-import org.seterryxu.parsleyframework.core.WebApp;
-import org.seterryxu.parsleyframework.core.uom.Dispatcher;
-import org.seterryxu.parsleyframework.core.uom.HttpResponseFactory;
-import org.seterryxu.parsleyframework.core.uom.IParsleyRequest;
-import org.seterryxu.parsleyframework.core.uom.IParsleyResponse;
-import org.seterryxu.parsleyframework.core.uom.PRequestImpl;
-import org.seterryxu.parsleyframework.core.uom.PResponseImpl;
-import org.seterryxu.parsleyframework.core.uom.StaticResourceFacet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.seterryxu.parsleyframework.core.Facet
+import org.seterryxu.parsleyframework.core.WebApp
+import org.seterryxu.parsleyframework.core.uom.Dispatcher
+import org.seterryxu.parsleyframework.core.uom.HttpResponseFactory
+import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
+import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
+import org.seterryxu.parsleyframework.core.uom.ParsleyRequestSupport
+import org.seterryxu.parsleyframework.core.uom.ParsleyResponseSupport
+import org.seterryxu.parsleyframework.core.util.ResourceUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 final class Parsley extends HttpServlet {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(Parsley)
-	
+
+	//	TODO
 	private ServletContext _context
 
 	@Override
@@ -64,43 +63,48 @@ final class Parsley extends HttpServlet {
 	protected void service(HttpServletRequest req, HttpServletResponse res)
 	throws ServletException, IOException {
 		//wrapper
-		IParsleyRequest preq=new PRequestImpl(req)
-		IParsleyResponse pres=new PResponseImpl(res)
-
+		IParsleyRequest preq=new ParsleyRequestSupport(req)
+		IParsleyResponse pres=new ParsleyResponseSupport(res)
 		LOGGER.info('Parsley wrapper instantiated.')
-		
-		LOGGER.info("Parsley Request TYPE: ")
-		//TODO judge request type
-		if(preq.isStaticResourceRequest()){
-			new StaticResourceFacet().handle(this, preq, pres)
 
-			return
+		def type=_checkParsleyRequestType(preq)
+		LOGGER.debug("Parsley Request TYPE: $type")
+
+		switch(type){
+			case PARSLEY_REQ_TYPE.STATIC:
+				HttpResponseFactory.staticResource(preq, pres)
+				break
+
+			case PARSLEY_REQ_TYPE.REST:
+				println 'To be implemented.'
+				break
+
+			case PARSLEY_REQ_TYPE.JS:
+				println 'To be implemented.'
+				break
+
+			case PARSLEY_REQ_TYPE.UNKNOWN:
+			//action?
+				if(_navigate(preq, pres)){
+					return
+				}
+
+			//try facets
+				for(facet in Facet.FACETS){
+					if(facet.newInstance().handle(this,preq,pres)){
+						return
+					}
+				}
+
+				break
+
+			default:
+			//out of options
+				LOGGER.warn("No such resource: ${preq.getRequestedResourceName()}")
+				HttpResponseFactory.notFound(pres)
+
+				LOGGER.info("Parsley Request handling completed.")
 		}
-
-		//		TODO
-		if(preq.isRestfulRequest()){
-		}
-
-		//		TODO
-		if(preq.isJavaScriptRequest()){
-		}
-
-		if(_navigate(preq, pres)){
-			return
-		}
-
-		//		TODO how to handle?
-		//static resource facet excluded
-		for(facet in Facet.FACETS){
-			if(facet.newInstance().handle(this,preq,pres)){
-				return
-			}
-		}
-
-		//out of options
-		LOGGER.warn("No such resource: ")
-		HttpResponseFactory.notFound(pres)
-		LOGGER.info("Parsley Request handling completed.")
 	}
 
 	//------------------- navigating methods -------------------
@@ -143,4 +147,28 @@ final class Parsley extends HttpServlet {
 		return instance."$token"(preq,pres)
 	}
 
+	//------------------- Parsley request types -------------------
+	private static final enum PARSLEY_REQ_TYPE{
+		STATIC, REST, JS, UNKNOWN
+	}
+
+	private _checkParsleyRequestType(IParsleyRequest preq){
+		def resName=preq.requestedResource
+
+		if(ResourceUtils.isStaticResource(resName)){
+			return PARSLEY_REQ_TYPE.STATIC
+		}
+
+		//TODO
+		if(resName.startsWith('/$REST/')){
+			return PARSLEY_REQ_TYPE.REST
+		}
+
+		//TODO
+		if(resName.startsWith('/$JS/')){
+			return PARSLEY_REQ_TYPE.JS
+		}
+
+		PARSLEY_REQ_TYPE.UNKNOWN
+	}
 }

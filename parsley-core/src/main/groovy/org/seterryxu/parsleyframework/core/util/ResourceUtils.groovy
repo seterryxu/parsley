@@ -21,64 +21,74 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.seterryxu.parsleyframework.core.uom
-
-import javax.servlet.ServletOutputStream
+package org.seterryxu.parsleyframework.core.util
 
 import org.seterryxu.parsleyframework.core.WebApp
-import org.seterryxu.parsleyframework.core.util.ResourceUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
-class StaticResourceResponse implements IHttpResponse {
+class ResourceUtils {
 
-	private static final Logger LOGGER=LoggerFactory.getLogger(StaticResourceResponse)
+	private static final Logger LOGGER=LoggerFactory.getLogger(ResourceUtils)
 
-	private static final int BUFFER_SIZE=4096
-
-	private IParsleyRequest _preq
-
-	private InputStream _stream
-
-	StaticResourceResponse(IParsleyRequest preq){
-		this._preq=preq
+	static String capitalFirst(String token){
+		return String.valueOf(Character.toUpperCase(token.charAt(0)))+token.substring(1)
 	}
 
-	private static InputStream _toStream(URL url){
-		url.openConnection().getInputStream()
-	}
-
-
-	@Override
-	public void generateResponse(IParsleyResponse pres) {
-		def page=ResourceUtils.getStaticResource(_preq.requestedResource)
-
-		if(page){
-			this._stream=_toStream(page)
-			_generateResponse(pres)
+	static boolean isStaticResource(String requestedResource){
+		if(getStaticResource(requestedResource)){
+			return true
 		}else{
-			HttpResponseFactory.notFound(pres)
+			return false
 		}
 	}
 
-	private void _generateResponse(IParsleyResponse pres) {
-		ServletOutputStream out=pres.getOutputStream()
+	static URL getStaticResource(String requestedResource){
+		def resName=requestedResource.toLowerCase()
+		if(resName&&!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
+			if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
+			||resName.endsWith('.eot')||resName.endsWith('.svg')
+			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-		byte[]buffer=new byte[BUFFER_SIZE]
-		int len
-		while((len=_stream.read(buffer))>0){
-			out.write(buffer, 0, len)
+				return WebApp.RESOURCE_FOLDER+requestedResource
+			}
 		}
 
-		out.close()
+		//check existence?
+		if(resName.endsWith('/')){
+			for(ext in STATIC_RESOURCE_EXT){
+				def indexPage=WebApp.RESOURCE_FOLDER+(resName.length()==1?'':resName)+'index'+ext
+				def pageUrl=WebApp.resources.get(indexPage)
+				if(pageUrl){
+					LOGGER.debug("$indexPage found.")
+					return pageUrl
+				}
+			}
+
+			null
+
+		}else{//try /xx.htm(l)
+			for(ext in STATIC_RESOURCE_EXT){
+				def page=WebApp.RESOURCE_FOLDER+trimSlash(resName)+ext
+				def pageUrl=WebApp.resources.get(page)
+				if(pageUrl){
+					LOGGER.debug("$page found.")
+					return pageUrl
+				}
+			}
+
+			null
+		}
 	}
 
+	static String trimSlash(String str){
+		str.substring(1)
+	}
 
-	//	TODO duplicated codes, better way?
 	private static final STATIC_RESOURCE_EXT=['.htm', 'html'].asImmutable()
 
 }

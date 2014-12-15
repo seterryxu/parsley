@@ -25,7 +25,7 @@ package org.seterryxu.parsleyframework.core.uom
 
 
 import org.seterryxu.parsleyframework.core.WebApp
-import org.seterryxu.parsleyframework.core.util.StringUtils
+import org.seterryxu.parsleyframework.core.util.ResourceUtils
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ abstract class Dispatcher {
 			}
 
 			c.metaClass.methodMissing={String name,args->
-				def n=StringUtils.capitalFirst(name)
+				def n=ResourceUtils.capitalFirst(name)
 				if(c.metaClass.respondsTo(c,"js$n")){
 					return invokeMethod("js$n", args)
 				}

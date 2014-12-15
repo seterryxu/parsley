@@ -4,7 +4,7 @@
 
 	<groupId>org.seterryxu</groupId>
 	<artifactId>parsley</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -15,6 +15,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- parsley versions -->
+		<parsley.version>0.2-SNAPSHOT</parsley.version>
 		
 		<!-- maven versions -->
 		<maven.compiler.version>3.1</maven.compiler.version>
@@ -119,7 +122,7 @@
 			<dependency>
 				<groupId>org.seterryxu</groupId>
 				<artifactId>parsley-core</artifactId>
-				<version>0.1-SNAPSHOT</version>
+				<version>${parsley.version}</version>
 			</dependency>
 			
 <!--

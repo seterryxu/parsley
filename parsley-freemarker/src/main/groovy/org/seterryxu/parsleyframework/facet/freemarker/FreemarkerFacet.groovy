@@ -62,7 +62,7 @@ class FreemarkerFacet extends Facet{
 			def url=this.class.getProtectionDomain().getCodeSource().getLocation()
 			def jarFile=new File(url.toURI())
 
-			JarUtils.decompress(jarFile, preq.getServletContext().getRealPath('/'))
+			JarUtils.decompress(jarFile, WebApp.RESOURCE_PATH)
 
 			for(e in allowedExtensions()){
 				_ext=e
@@ -81,10 +81,10 @@ class FreemarkerFacet extends Facet{
 
 		try{
 			//			TODO how to embed directives?
-			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+_ext)
+			_t=_conf.getTemplate(preq.requestedResource+'/index'+_ext)
 		}catch(FileNotFoundException e){
 			try{
-				_t=_conf.getTemplate(preq.getRequestedResourceName()+_ext)
+				_t=_conf.getTemplate(preq.requestedResource+_ext)
 			}catch(FileNotFoundException e2){
 				return false
 			}

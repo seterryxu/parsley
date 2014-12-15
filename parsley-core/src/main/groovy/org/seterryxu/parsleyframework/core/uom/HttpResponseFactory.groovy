@@ -28,8 +28,8 @@ import java.net.URL;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class HttpResponseFactory {
 
@@ -37,21 +37,21 @@ class HttpResponseFactory {
 	/**
 	 * Error 500 INTERNAL_SERVER_ERROR
 	 */
-	static HttpResponseException error(IParsleyResponse pres){
+	static void error(IParsleyResponse pres){
 		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).generateResponse(pres)
 	}
 
 	/**
 	 * Error 404 NOT_FOUND
 	 */
-	static HttpResponseException notFound(IParsleyResponse pres){
+	static void notFound(IParsleyResponse pres){
 		_status(HttpServletResponse.SC_NOT_FOUND).generateResponse(pres)
 	}
 
 	/**
 	 * Error 403 FORBIDDEN
 	 */
-	static HttpResponseException forbidden(IParsleyResponse pres){
+	static void forbidden(IParsleyResponse pres){
 		_status(HttpServletResponse.SC_FORBIDDEN).generateResponse(pres)
 	}
 
@@ -64,12 +64,8 @@ class HttpResponseFactory {
 	}
 
 	//------------------- http page responses -------------------
-	static void indexPage(IParsleyResponse pres,URL resUrl){
-		new StaticResourceResponse(resUrl).generateResponse(pres)
-	}
-
-	static void staticResource(IParsleyResponse pres,URL resUrl){
-		new StaticResourceResponse(resUrl).generateResponse(pres)
+	static void staticResource(IParsleyRequest preq,IParsleyResponse pres){
+		new StaticResourceResponse(preq).generateResponse(pres)
 	}
 
 }
