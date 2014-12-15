@@ -23,7 +23,7 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
-import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletOutputStream
 
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
@@ -47,6 +47,7 @@ class FreemarkerFacet extends Facet{
 	private static Configuration _conf
 	private Template _t
 	private static boolean _isInitialized
+	private static _ext
 
 	FreemarkerFacet(){
 		_conf=new Configuration()
@@ -62,13 +63,15 @@ class FreemarkerFacet extends Facet{
 			def jarFile=new File(url.toURI())
 
 			JarUtils.decompress(jarFile, preq.getServletContext().getRealPath('/'))
+
+			for(e in allowedExtensions()){
+				_ext=e
+			}
+			
 			_isInitialized=true
 		}
 
-		def ext
-		for(e in allowedExtensions()){
-			ext=e
-		}
+
 
 		def clsLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
 		def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
@@ -78,10 +81,10 @@ class FreemarkerFacet extends Facet{
 
 		try{
 			//			TODO how to embed directives?
-			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+ext)
+			_t=_conf.getTemplate(preq.getRequestedResourceName()+'/index'+_ext)
 		}catch(FileNotFoundException e){
 			try{
-				_t=_conf.getTemplate(preq.getRequestedResourceName()+ext)
+				_t=_conf.getTemplate(preq.getRequestedResourceName()+_ext)
 			}catch(FileNotFoundException e2){
 				return false
 			}
@@ -89,11 +92,11 @@ class FreemarkerFacet extends Facet{
 
 		def root=[:]
 		root.put('it', instance)
-		root.put('content','testcontent')
-		
+		root.put('bootstrapPath','')
+
 		ServletOutputStream os=pres.getOutputStream()
 		def writer=new OutputStreamWriter(os)
-		
+
 		_t.process(root, writer)
 
 		return true

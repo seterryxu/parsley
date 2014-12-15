@@ -1,5 +1,5 @@
 <#macro breadcrumb>
 	<ol class="breadcrumb">
-	  ${content}
+	  <#nested>
 	</ol>
 </#macro>
