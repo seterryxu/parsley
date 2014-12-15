@@ -50,45 +50,43 @@ class ResourceUtils {
 	static URL getStaticResource(String requestedResource){
 		def resName=requestedResource.toLowerCase()
 		if(resName&&!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
+			
 			if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
 			||resName.endsWith('.eot')||resName.endsWith('.svg')
 			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-				return WebApp.RESOURCE_FOLDER+requestedResource
+				return requestedResource
 			}
-		}
 
-		//check existence?
-		if(resName.endsWith('/')){
-			for(ext in STATIC_RESOURCE_EXT){
-				def indexPage=WebApp.RESOURCE_FOLDER+(resName.length()==1?'':resName)+'index'+ext
-				def pageUrl=WebApp.resources.get(indexPage)
-				if(pageUrl){
-					LOGGER.debug("$indexPage found.")
-					return pageUrl
+			//check existence?
+			if(requestedResource.endsWith('/')){
+				for(ext in STATIC_RESOURCE_EXT){
+					def indexPage=WebApp.RESOURCE_FOLDER+(requestedResource.length()==1?'':requestedResource)+'index'+ext
+					def pageUrl=WebApp.resources.get(indexPage)
+					if(pageUrl){
+						LOGGER.debug("$indexPage found.")
+						return pageUrl
+					}
+				}
+			}else{  //try /xx.htm(l)
+				for(ext in STATIC_RESOURCE_EXT){
+					def page=WebApp.RESOURCE_FOLDER+trimSlash(requestedResource)+ext
+					def pageUrl=WebApp.resources.get(page)
+					if(pageUrl){
+						LOGGER.debug("$page found.")
+						return pageUrl
+					}
 				}
 			}
-
-			null
-
-		}else{//try /xx.htm(l)
-			for(ext in STATIC_RESOURCE_EXT){
-				def page=WebApp.RESOURCE_FOLDER+trimSlash(resName)+ext
-				def pageUrl=WebApp.resources.get(page)
-				if(pageUrl){
-					LOGGER.debug("$page found.")
-					return pageUrl
-				}
-			}
-
-			null
 		}
+		
+		null
 	}
 
 	static String trimSlash(String str){
 		str.substring(1)
 	}
 
-	private static final STATIC_RESOURCE_EXT=['.htm', 'html'].asImmutable()
+	private static final STATIC_RESOURCE_EXT=['.htm', '.html'].asImmutable()
 
 }
