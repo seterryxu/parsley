@@ -154,6 +154,10 @@ final class WebApp {
 				_context.getResource(name)
 			}
 		}
+		
+		URL getInstantly(String name){
+			_context.getResource(name)
+		}
 
 		/*		List<URL> filterByFolder(String folderName){
 		 def l=[]

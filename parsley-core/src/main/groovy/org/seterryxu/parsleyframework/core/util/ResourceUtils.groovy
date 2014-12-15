@@ -55,7 +55,7 @@ class ResourceUtils {
 			||resName.endsWith('.eot')||resName.endsWith('.svg')
 			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-				return requestedResource
+				return WebApp.resources.getInstantly(WebApp.RESOURCE_FOLDER+trimSlash(requestedResource))
 			}
 
 			//check existence?

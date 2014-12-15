@@ -68,6 +68,7 @@ final class Parsley extends HttpServlet {
 		LOGGER.info('Parsley wrapper instantiated.')
 
 		def type=_checkParsleyRequestType(preq)
+		LOGGER.debug("Parsley requested resource: ${preq.requestedResource}")
 		LOGGER.debug("Parsley Request TYPE: $type")
 
 		switch(type){
