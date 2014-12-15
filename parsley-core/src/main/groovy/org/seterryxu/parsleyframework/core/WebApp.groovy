@@ -29,7 +29,7 @@ import javax.naming.InitialContext
 import javax.servlet.ServletContext
 
 import org.seterryxu.parsleyframework.core.Facet
-import org.seterryxu.parsleyframework.core.util.StringUtils
+import org.seterryxu.parsleyframework.core.util.ResourceUtils
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,7 +275,7 @@ final class WebApp {
 
 		if(classname){
 			if(_mapper.contains(classname)){
-				def clazzname=StringUtils.capitalFirst(classname)
+				def clazzname=ResourceUtils.capitalFirst(classname)
 				def classUrl=_mapper.getUrl(clazzname)
 				if(classUrl){
 					return Class.forName(_mapper.getQualifiedName(clazzname))

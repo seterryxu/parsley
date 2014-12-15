@@ -36,22 +36,22 @@ import org.slf4j.LoggerFactory;
  * @author Xu Lijia
  *
  */
-class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest {
+class ParsleyRequestSupport extends HttpServletRequestWrapper implements IParsleyRequest {
 
-	private static final Logger LOGGER=LoggerFactory.getLogger(PRequestImpl)
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyRequestSupport)
 	
-	private final String _requestedUrl
+	final String requestedResource
 
 	final TokenizedUrl tokenizedUrl
 
-	PRequestImpl(HttpServletRequest req){
+	ParsleyRequestSupport(HttpServletRequest req){
 		super(req)
-		this._requestedUrl=_getRequestedUrl(req)
+		this.requestedResource=_getRequestedResource(req)
 		tokenizedUrl=new TokenizedUrl()
 	}
 
 	//------------------- pre-process url -------------------
-	private String _getRequestedUrl(HttpServletRequest req){
+	private String _getRequestedResource(HttpServletRequest req){
 		req.getRequestURI().substring(req.getContextPath().size())
 	}
 
@@ -61,7 +61,7 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 		private String[] _tokens
 
 		TokenizedUrl(){
-			StringTokenizer tk=new StringTokenizer(_requestedUrl, '/\\')
+			StringTokenizer tk=new StringTokenizer(requestedResource, '/\\')
 			_tokens=new String[tk.countTokens()]
 			//			TODO maybe a better way?
 			def i=0
@@ -114,59 +114,8 @@ class PRequestImpl extends HttpServletRequestWrapper implements IParsleyRequest 
 
 	//------------------- static resource -------------------
 	@Override
-	public boolean isStaticResourceRequest() {
-		String lowerCasedRequestedUrl=_requestedUrl.toLowerCase()
-		if(lowerCasedRequestedUrl
-		&&!lowerCasedRequestedUrl.startsWith('/meta-inf')
-		&&!lowerCasedRequestedUrl.startsWith('/web-inf')){
-			//			TODO check index existence?
-			//			TODO check existence?
-			def resName=getRequestedResourceName()
-			if(resName.equals('/')){
-				return true
-			}
-
-			//			TODO not a decent way to do this
-			for(ext in ['.htm', 'html']){
-				if(WebApp.resources.get("${WebApp.RESOURCE_FOLDER}${resName}${ext}")){
-					return true
-				}
-			}
-		}
-
-		return false
-	}
-
-	@Override
-	public String getRequestedResourceName() {
-		_requestedUrl.replace('.', '/')
-	}
-
-	@Override
 	public Locale getRequestedLocale() {
 		getLocale()?:Locale.ENGLISH
 	}
-
-	//------------------- preq info -------------------
-	@Override
-	public boolean isRestfulRequest() {
-		//		TODO
-		if(_requestedUrl.startsWith('/$Parsley/')){
-			return true
-		}
-
-		return false
-	}
-
-	@Override
-	public boolean isJavaScriptRequest() {
-		//		TODO
-		if(_requestedUrl.contains('/$Js/')){
-			return true
-		}
-
-		return false
-	}
-
 
 }

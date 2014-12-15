@@ -23,77 +23,20 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.net.URL;
-import java.util.Set;
+import java.net.URL
 
-import org.seterryxu.parsleyframework.core.Facet;
-import org.seterryxu.parsleyframework.core.WebApp;
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpServletResponseWrapper
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Xu Lijia
- *
- */
-class StaticResourceFacet extends Facet {
+class ParsleyResponseSupport extends HttpServletResponseWrapper implements IParsleyResponse {
 
-	private static final Logger LOGGER=LoggerFactory.getLogger(StaticResourceFacet)
-	
-	@Override
-	public boolean handle(instance, IParsleyRequest preq,
-			IParsleyResponse pres) {
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyResponseSupport)
 
-		if(_isIndexPageRequest(preq)){
-			def indexPage=_getIndexPage()
-			if(indexPage){
-				HttpResponseFactory.indexPage(pres,indexPage)
-			}else{
-				HttpResponseFactory.notFound(pres)
-			}
-			
-			return true
-		}
-		
-		def resUrl=LocalizedResourcesSelector.selectByLocale(preq.getRequestedResourceName(), preq.getRequestedLocale())
-
-		if(resUrl){
-			HttpResponseFactory.staticResource(pres,resUrl)
-			return true
-		}else{
-			HttpResponseFactory.notFound(pres)
-		}
-
-		return false
-	}
-
-	boolean _isIndexPageRequest(IParsleyRequest preq) {
-		if(!preq.tokenizedUrl.hasMore()){
-			return true
-		}
-
-		return false
-	}
-
-	//------------------- index page process -------------------
-	private URL _getIndexPage(){
-		URL index
-		for(ext in allowedExtensions()){
-			index=WebApp.resources.get("${WebApp.RESOURCE_FOLDER}index${ext}")
-			if(index){
-				break
-			}
-		}
-
-		return index
-	}
-
-	@Override
-	Set<String> allowedExtensions() {
-		def exts=new HashSet<String>()
-		exts.add('.html')
-		exts.add('.htm')
-
-		return exts
+	ParsleyResponseSupport(HttpServletResponse res){
+		super(res)
 	}
 
 }

@@ -23,7 +23,11 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-//TODO why RuntimeException?
+/**
+ *
+ * @author Xu Lijia
+ */
 abstract class HttpResponseException extends RuntimeException implements IHttpResponse {
+//TODO why RuntimeException?
 
 }
