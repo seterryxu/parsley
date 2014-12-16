@@ -26,8 +26,8 @@ package org.seterryxu.parsleyframework.core.uom
 
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.util.ResourceUtils
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
 /**
@@ -37,17 +37,18 @@ import org.slf4j.LoggerFactory;
 abstract class Dispatcher {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(Dispatcher)
-	
+
 	private static boolean TRACE=Boolean.getBoolean('Parsley.trace')
 
 	boolean traceable(){
 		TRACE
 	}
 
+	//TODO modify -> delegate ?
 	static void addDispatchers(Class c){
 		if(!WebApp.dispatchers.contains(c)){
 			LOGGER.debug("Adding a dispatcher for $c")
-			
+
 			c.metaClass.fallback={
 				if(it)
 					it.call()

@@ -38,4 +38,8 @@ abstract class ParsleyScript extends Script{
 	def invokeMethod(String name, args){
 		return _delegate.invokeMethod(name, args)
 	}
+	
+	String $(String key){
+		
+	}
 }

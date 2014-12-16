@@ -1,0 +1,9 @@
+1. Dispatching
+  #1) => *.ftl
+  2) => *.groovy
+  3) => js methods
+2. Security
+  1) CSRF
+3. Decorators
+  2) sitemesh
+

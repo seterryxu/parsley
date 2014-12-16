@@ -24,8 +24,8 @@
 package org.seterryxu.parsleyframework.facet.groovy
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import freemarker.template.Configuration
 
@@ -38,17 +38,18 @@ class FreemarkerBuilder {
 	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
 	Configuration conf
-	
+
 	final Writer WRITER
 
-	Namespace namespace(){
-		new Namespace() 
+	Namespace namespace(Class c){
+		new Namespace()
 	}
 
+	//	TODO
 	def propertyMissing(String name){
 		LOGGER.debug(name)
 	}
-	
+
 	def methodMissing(String name,args){
 		//judge what parameters we have
 		Map arguments
@@ -83,7 +84,7 @@ class FreemarkerBuilder {
 		if(DIRECTIVES.contains(name)){
 			return true
 		}
-		
+
 		//		TODO how to search templates in sub-dirs?
 		def t=_conf.getTemplate(name)
 		if(t){
@@ -93,6 +94,6 @@ class FreemarkerBuilder {
 		return false
 	}
 
-	private static final Set<String> DIRECTIVES=['if','else',''] as Set<String>
-	
+	private static final Set<String> DIRECTIVES=['if', 'else', ''] as Set<String>
+
 }
