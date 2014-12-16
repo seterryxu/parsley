@@ -55,7 +55,7 @@ class GroovyFacet extends Facet {
 		}
 
 		def resName=WebApp.RESOURCE_FOLDER+preq.requestedResource.substring(1)+'/index'+_ext
-		def resUrl=WebApp.resources.get(resName)
+		def resUrl=WebApp.resources.getByName(resName)
 		if(resUrl){
 			ParsleyScriptInvoker invoker=new ParsleyScriptInvoker(resUrl)
 			invoker.invoke()

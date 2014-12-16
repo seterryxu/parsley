@@ -30,8 +30,8 @@ import javax.servlet.ServletContext
 
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.util.ResourceUtils
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  *
@@ -142,21 +142,22 @@ final class WebApp {
 			this._resources=Collections.unmodifiableMap(resourcePaths)
 		}
 
-		URL get(String name){
+		URL getByName(String name){
 			//		TODO sys var?
 			if(Boolean.getBoolean('Parsley.noResourcePathCache')){
-				_context.getResource(name)
+				return _context.getResource(name)
 			}
 
 			if(_resources){
-				_resources.get(name)
+				def resUrl=_resources.get(name)
+				if(resUrl){
+					return resUrl
+				}else{
+					return _context.getResource(name)
+				}
 			}else{
 				_context.getResource(name)
 			}
-		}
-		
-		URL getInstantly(String name){
-			_context.getResource(name)
 		}
 
 		/*		List<URL> filterByFolder(String folderName){

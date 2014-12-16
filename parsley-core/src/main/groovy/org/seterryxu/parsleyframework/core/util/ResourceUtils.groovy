@@ -50,19 +50,19 @@ class ResourceUtils {
 	static URL getStaticResource(String requestedResource){
 		def resName=requestedResource.toLowerCase()
 		if(resName&&!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
-			
+
 			if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
 			||resName.endsWith('.eot')||resName.endsWith('.svg')
 			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-				return WebApp.resources.getInstantly(WebApp.RESOURCE_FOLDER+trimSlash(requestedResource))
+				return WebApp.resources.getByName(WebApp.RESOURCE_FOLDER+trimSlash(requestedResource))
 			}
 
 			//check existence?
 			if(requestedResource.endsWith('/')){
 				for(ext in STATIC_RESOURCE_EXT){
 					def indexPage=WebApp.RESOURCE_FOLDER+(requestedResource.length()==1?'':requestedResource)+'index'+ext
-					def pageUrl=WebApp.resources.get(indexPage)
+					def pageUrl=WebApp.resources.getByName(indexPage)
 					if(pageUrl){
 						LOGGER.debug("$indexPage found.")
 						return pageUrl
@@ -71,7 +71,7 @@ class ResourceUtils {
 			}else{  //try /xx.htm(l)
 				for(ext in STATIC_RESOURCE_EXT){
 					def page=WebApp.RESOURCE_FOLDER+trimSlash(requestedResource)+ext
-					def pageUrl=WebApp.resources.get(page)
+					def pageUrl=WebApp.resources.getByName(page)
 					if(pageUrl){
 						LOGGER.debug("$page found.")
 						return pageUrl
@@ -79,10 +79,11 @@ class ResourceUtils {
 				}
 			}
 		}
-		
+
 		null
 	}
 
+	//	TODO remove this?
 	static String trimSlash(String str){
 		str.substring(1)
 	}
