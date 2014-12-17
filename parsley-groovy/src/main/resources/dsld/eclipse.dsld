@@ -30,7 +30,7 @@ contribute(currentType(isScript())) {
 	
 	// not a decent way to delegate to some classes,
 	// for many unrelated public methods are shown
-	method name:'namespace', type:Namespace, params:[ns:Class]
+	method name:'namespace', type:Object, params:[ns:Class]
 	method name:'namespace', type:Namespace, params:[ns:String]
 
 	method name:'$', type:String, params:[key:String]

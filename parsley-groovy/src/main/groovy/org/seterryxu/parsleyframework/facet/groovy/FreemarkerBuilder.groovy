@@ -23,7 +23,6 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -37,36 +36,47 @@ class FreemarkerBuilder {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
-	Configuration conf
+	final Configuration conf
 
-	final Writer WRITER
+	final Writer writer
 
-	Namespace namespace(Class c){
-		new Namespace()
+	//------------------- namespace methods -------------------
+	def namespace(Class lib){
+		def a=lib.getAnnotation(LibUri) as LibUri
+		if(!a){
+			def errorMsg="$lib is not a valid namespace."
+			LOGGER.error(errorMsg)
+			//	TODO ex type
+			throw new Exception(errorMsg)
+		}
+
+		lib.metaClass.invokeMethod=this.&invokeMethod
 	}
 
-	//	TODO
-	def propertyMissing(String name){
-		LOGGER.debug(name)
+	Namespace namespace(String ns){
+		new Namespace(ns)
 	}
 
+	//------------------- handler methods -------------------
 	def methodMissing(String name,args){
+		LOGGER.debug("Calling method: name $name, args $args")
+		
 		//judge what parameters we have
-		Map arguments
+		Map argz
 		Closure closure
 
 		switch(args.size()){
 			case 0:break
 			case 1:
 				if(args[0] instanceof Map){
-					arguments=args[0]
+					argz=args[0]
 				}else if(args[0] instanceof Closure){
 					closure=args[0]
 				}
 				break
 			case 2:
 				if(args[0] instanceof Map&&args[1] instanceof Closure){
-					arguments=args[0]
+					argz=args[0]
 					closure=args[1]
 				}
 				break
@@ -86,7 +96,7 @@ class FreemarkerBuilder {
 		}
 
 		//		TODO how to search templates in sub-dirs?
-		def t=_conf.getTemplate(name)
+		def t=conf.getTemplate(name)
 		if(t){
 			return true
 		}

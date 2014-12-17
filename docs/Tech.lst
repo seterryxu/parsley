@@ -20,6 +20,10 @@ Tech:
 19.XXXSupport
 20.ConfigSlurper
 21.ConfigObject
+22.@Retention
+23.@Documented
+23.@Target(TYPE)
+24.@Singleton
 
 
 Finished:

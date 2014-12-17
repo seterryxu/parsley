@@ -29,9 +29,10 @@ package org.seterryxu.parsleyframework.facet.groovy
  */
 class Namespace {
 
-	private String _name
-	
-	Namespace(String name){
-		
+	private String _ns
+
+	Namespace(String ns){
+		this._ns=ns
 	}
+	
 }
