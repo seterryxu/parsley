@@ -20,15 +20,16 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
- 
+
 <#macro well type="normal">
-	<#assign _type="">
-	
-	<#if type=="large">
-		<#assign _type=" well-lg">
-	<#elseif type=="small">
-		<#assign _type=" well-sm">
-	</#if>
-		
-	<div class="well${_type}"><#nested></div>
+<#assign _type="">
+
+<#if type=="large">
+<#assign _type=" well-lg">
+<#elseif type=="small">
+<#assign _type=" well-sm">
+</#if>
+
+<div class="well${_type}"><#nested></div>
+
 </#macro>

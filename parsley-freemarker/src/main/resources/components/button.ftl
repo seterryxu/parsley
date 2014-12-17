@@ -20,7 +20,9 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
- 
+
 <#macro button text>
-	<button type="button" class="btn btn-default">${text}</button>
+	
+<button type="button" class="btn btn-default">${text}</button>
+
 </#macro>

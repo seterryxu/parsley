@@ -22,7 +22,9 @@
  -->
  
 <#macro breadcrumb>
-	<ol class="breadcrumb">
-	  <#nested>
-	</ol>
+
+<ol class="breadcrumb">
+  <#nested>
+</ol>
+
 </#macro>

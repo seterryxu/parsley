@@ -25,8 +25,10 @@ package org.seterryxu.parsleyframework.facet.groovy
 
 import java.util.Set
 
+import javax.servlet.ServletOutputStream;
+
 import org.seterryxu.parsleyframework.core.Facet
-import org.seterryxu.parsleyframework.core.WebApp;
+import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.slf4j.Logger
@@ -58,10 +60,13 @@ class GroovyFacet extends Facet {
 		def resUrl=WebApp.resources.getByName(resName)
 		if(resUrl){
 			ParsleyScriptInvoker invoker=new ParsleyScriptInvoker(resUrl)
-			invoker.invoke()
+			
+			ServletOutputStream os=pres.getOutputStream()
+			def writer=new OutputStreamWriter(os)
+			invoker.invoke(writer)
 			return true
 		}
-		
+
 		return false
 	}
 

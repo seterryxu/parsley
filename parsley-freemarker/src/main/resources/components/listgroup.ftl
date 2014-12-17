@@ -22,7 +22,9 @@
  -->
  
 <#macro listgroup>
-	<ul class="list-group">
-	  <#nested>
-	</ul>
+
+<ul class="list-group">
+  <#nested>
+</ul>
+
 </#macro>

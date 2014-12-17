@@ -27,6 +27,7 @@ import groovy.lang.GroovyClassLoader
 
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.runtime.InvokerHelper
+import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -44,7 +45,7 @@ class ParsleyScriptInvoker {
 		this._scriptUrl=scriptUrl
 	}
 
-	void invoke(){
+	void invoke(Writer writer){
 		def loader=_createGroovyClassLoader()
 		//		TODO add security constraints?
 		def scriptSrc=new GroovyCodeSource(_scriptUrl)
@@ -52,9 +53,10 @@ class ParsleyScriptInvoker {
 
 		def script=InvokerHelper.createScript(loader.parseClass(scriptSrc), new Binding()) as ParsleyScript
 		//		TODO why cannot directly "script.delegate=..."
+		init()
 		def builder=new FreemarkerBuilder()
-		builder.conf=
-		builder.writer=
+		builder.conf=conf
+		builder.writer=writer
 		script.setDelegate(builder)
 		script.run()
 		LOGGER.debug("Running script $_scriptUrl...")

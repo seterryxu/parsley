@@ -23,68 +23,46 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
-import javax.servlet.ServletOutputStream
-
-import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
-import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
-import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.seterryxu.parsleyframework.facet.freemarker.util.JarUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import freemarker.cache.ClassTemplateLoader
 import freemarker.cache.FileTemplateLoader
 import freemarker.cache.MultiTemplateLoader
 import freemarker.cache.TemplateLoader
 import freemarker.template.Configuration
-import freemarker.template.Template
-
-import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
 /**
- *
  * @author Xu Lijia
+ *
  */
-class FreemarkerFacet extends Facet{
+class ResourceLoader {
 
-	private Template _t
+	private static final Logger LOGGER=LoggerFactory.getLogger(ResourceLoader)
+	
+	private static boolean _isInitialized
+	private static Configuration conf
+	
+	static void init(){
+		if(!_isInitialized){
+			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
+			def jarFile=new File(url.toURI())
 
-	private static _ext
+			JarUtils.decompress(jarFile, WebApp.RESOURCE_PATH)
 
-	@Override
-	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
-		ResourceLoader.init()
-		
-		if(!_ext){
-			for(e in allowedExtensions()){
-				_ext=e
-			}
+			conf=new Configuration()
+			conf.setDefaultEncoding('UTF-8')
+			
+			def clsLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
+			def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
+			TemplateLoader[]loaders=[clsLoader, resLoader] as TemplateLoader[]
+			def multiLoaders=new MultiTemplateLoader(loaders)
+			conf.setTemplateLoader(multiLoaders)
+			
+			_isInitialized=true
 		}
-
-		try{
-			_t=conf.getTemplate(preq.requestedResource+'/index'+_ext)
-		}catch(FileNotFoundException e){
-			try{
-				_t=conf.getTemplate(preq.requestedResource+_ext)
-			}catch(FileNotFoundException e2){
-				return false
-			}
-		}
-
-		def root=[:]
-		root.put('it', instance)
-
-		ServletOutputStream os=pres.getOutputStream()
-		def writer=new OutputStreamWriter(os)
-
-		_t.process(root, writer)
-
-		return true
 	}
-
-	@Override
-	Set<String> allowedExtensions() {
-		def exts=new HashSet<String>()
-		exts.add('.ftl')
-		return exts
-	}
+	
 }

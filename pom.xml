@@ -103,7 +103,7 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.7</version>
+				<version>1.7.6</version>
 			</dependency>
 <!-- 
 			<dependency>
@@ -122,6 +122,11 @@
 			<dependency>
 				<groupId>org.seterryxu</groupId>
 				<artifactId>parsley-core</artifactId>
+				<version>${parsley.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.seterryxu</groupId>
+				<artifactId>parsley-freemarker</artifactId>
 				<version>${parsley.version}</version>
 			</dependency>
 			

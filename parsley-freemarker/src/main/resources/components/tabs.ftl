@@ -22,7 +22,9 @@
  -->
  
 <#macro tabs>
-	<ul class="nav nav-tabs">
-	  <#nested>
-	</ul>
+
+<ul class="nav nav-tabs">
+  <#nested>
+</ul>
+
 </#macro>

@@ -27,6 +27,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import freemarker.template.Configuration
+import freemarker.template.Template
 
 /**
  *
@@ -36,9 +37,11 @@ class FreemarkerBuilder {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
-	final Configuration conf
+	Configuration conf
 
-	final Writer writer
+	Writer writer
+
+	private StringWriter _w
 
 	//------------------- namespace methods -------------------
 	def namespace(Class lib){
@@ -60,7 +63,26 @@ class FreemarkerBuilder {
 	//------------------- handler methods -------------------
 	def methodMissing(String name,args){
 		LOGGER.debug("Calling method: name $name, args $args")
-		
+
+		def t=_getTemplate(name)
+		if(t){
+			if(!_w){
+				_w=new StringWriter()
+				_w.append(_doImport())
+			}
+
+			_parseArguments(name, args)
+			
+			runScript(new Template(null, _w.toString(), conf))
+		}else{
+			def errorMsg="No such lib: $name, $args"
+			LOGGER.error(errorMsg)
+			//		TODO ex type
+			throw new Exception(errorMsg)
+		}
+	}
+
+	private void _parseArguments(name, args){
 		//judge what parameters we have
 		Map argz
 		Closure closure
@@ -80,30 +102,50 @@ class FreemarkerBuilder {
 					closure=args[1]
 				}
 				break
+
 			default:
 				throw new MissingMethodException(name, getClass(), args)
 		}
 
-		if(_isDirective(name)){
-
-		}
-
+		_createTemplate(name, argz, closure)
 	}
 
-	private boolean _isDirective(String name){
-		if(DIRECTIVES.contains(name)){
-			return true
-		}
-
-		//		TODO how to search templates in sub-dirs?
-		def t=conf.getTemplate(name)
-		if(t){
-			return true
-		}
-
-		return false
+	private _getTemplate(String name){
+		conf.getTemplate(name+'.ftl')
 	}
 
-	private static final Set<String> DIRECTIVES=['if', 'else', ''] as Set<String>
+	private String _doImport(){
+		"""
+			<#include "/imp_bootstrap.ftl">
+			<#include "/well.ftl">
+			<@imp_bootstrap/>
+		"""
+	}
+
+	private void _createTemplate(name, args, closure){
+		_w.append("<@$name")
+		
+		if(args){
+			for(def k in args.keySet()){
+				def v=args.get(k)
+				_w.append(" $k=\"${v}\"")
+			}
+		}else{
+			_w.append(">")
+		}
+		
+		if(closure){
+			closure()
+		}
+		
+		_w.append("</@$name>")
+		
+	}
+
+	private void runScript(template){
+		def root=[:]
+		println template
+		template.process(root,writer)
+	}
 
 }
