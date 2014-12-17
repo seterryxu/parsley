@@ -43,6 +43,8 @@ class FreemarkerBuilder {
 
 	private StringWriter _w
 
+	private Stack<String> _stack=new Stack<String>()
+
 	//------------------- namespace methods -------------------
 	def namespace(Class lib){
 		def a=lib.getAnnotation(LibUri) as LibUri
@@ -56,6 +58,7 @@ class FreemarkerBuilder {
 		lib.metaClass.invokeMethod=this.&invokeMethod
 	}
 
+	//	TODO ns <-> cls_ns
 	Namespace namespace(String ns){
 		new Namespace(ns)
 	}
@@ -64,30 +67,23 @@ class FreemarkerBuilder {
 	def methodMissing(String name,args){
 		LOGGER.debug("Calling method: name $name, args $args")
 
-		def t=_getTemplate(name)
-		if(t){
-			if(!_w){
-				_w=new StringWriter()
-				_doImport('imp_bootstrap')
-			}
-
-			_parseArguments(name, args)
-
-			runScript(new Template(null, _w.toString(), conf))
-		}else{
-			def errorMsg="No such lib: $name, $args"
-			LOGGER.error(errorMsg)
-			//		TODO ex type
-			throw new Exception(errorMsg)
+		if(!_w){
+			_w=new StringWriter()
+			_doImport('imp_bootstrap')
 		}
-	}
 
-	private _getTemplate(String name){
-		conf.getTemplate("${name}.ftl")
+		_parseArguments(name, args)
+
+		while(!_stack.isEmpty()){
+			def n=_stack.pop()
+			_w.append("</$n>")
+		}
+		
+		_runScript(new Template(null, _w.toString(), conf))
 	}
 
 	private void _doImport(name){
-		//		TODO add line separator
+		//		TODO add line separator ?
 		_w.append("<#include \"/${name}.ftl\">")
 	}
 
@@ -117,36 +113,56 @@ class FreemarkerBuilder {
 				throw new MissingMethodException(name, getClass(), args)
 		}
 
-		_createTemplate(name, argz, closure)
+		def t=_getTemplate(name)
+		if(t){
+			def name0="@$name"
+			_stack.push(name0)
+			_createTemplate(name0, argz, closure)
+		}else{
+			_stack.push(name)
+			_createTemplate(name, argz, closure)
+		}
+
+	}
+
+	private _getTemplate(String name){
+		try{
+			conf.getTemplate("${name}.ftl")
+		}catch(FileNotFoundException e){
+			null
+		}
 	}
 
 	private void _createTemplate(name, args, closure){
-		_doImport(name)
-		_w.append("<@$name")
+		if(name.startsWith('@')){
+			_doImport(name.substring(1))
+		}
+
+		_w.append("<$name")
 
 		if(args){
 			for(def k in args.keySet()){
 				def v=args.get(k)
 				_w.append(" $k=\"${v}\"")
 			}
-			
-			_w.append(">")
-		}else{
-			_w.append(">")
 		}
+		_w.append(">")
 
 		if(closure){
 			closure()
 		}
 
-		_w.append("</@$name>")
+		_w.append("</$name>")
+		if(!_stack.isEmpty()){
+			_stack.pop()
+		}
 	}
 
-	private void runScript(template){
+	private void _runScript(Template t){
 		def root=[:]
 		//		TODO add some properties later
-		println template
-		template.process(root,writer)
+		LOGGER.debug(t.toString())
+		t.process(root,writer)
 	}
 
 }

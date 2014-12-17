@@ -111,7 +111,7 @@ final class WebApp {
 		}
 
 		Map<String,URL> paths = new HashMap<String,URL>()
-		Stack<String> q = new Stack<String>()
+		def q = new Stack<String>()
 		q.push("/")
 		while (!q.isEmpty()) {
 			String folder = q.pop()

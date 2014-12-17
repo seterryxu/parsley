@@ -20,13 +20,14 @@ Tech:
 19.XXXSupport
 20.ConfigSlurper
 21.ConfigObject
-22.@Retention
-23.@Documented
+22.@Singleton
 23.@Target(TYPE)
-24.@Singleton
-
+23.StringWriter, StringBuffer
+24.
+25.
 
 Finished:
 1. commons-discovery
 2. how to load *.ftl from *.jar
-3. 
+3. @Retention
+4. @Documented
