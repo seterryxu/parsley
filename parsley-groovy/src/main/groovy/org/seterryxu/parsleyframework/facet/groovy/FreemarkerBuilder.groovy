@@ -68,11 +68,11 @@ class FreemarkerBuilder {
 		if(t){
 			if(!_w){
 				_w=new StringWriter()
-				_w.append(_doImport())
+				_doImport('imp_bootstrap')
 			}
 
 			_parseArguments(name, args)
-			
+
 			runScript(new Template(null, _w.toString(), conf))
 		}else{
 			def errorMsg="No such lib: $name, $args"
@@ -80,6 +80,15 @@ class FreemarkerBuilder {
 			//		TODO ex type
 			throw new Exception(errorMsg)
 		}
+	}
+
+	private _getTemplate(String name){
+		conf.getTemplate("${name}.ftl")
+	}
+
+	private void _doImport(name){
+		//		TODO add line separator
+		_w.append("<#include \"/${name}.ftl\">")
 	}
 
 	private void _parseArguments(name, args){
@@ -104,46 +113,38 @@ class FreemarkerBuilder {
 				break
 
 			default:
+			//			TODO how to get class?
 				throw new MissingMethodException(name, getClass(), args)
 		}
 
 		_createTemplate(name, argz, closure)
 	}
 
-	private _getTemplate(String name){
-		conf.getTemplate(name+'.ftl')
-	}
-
-	private String _doImport(){
-		"""
-			<#include "/imp_bootstrap.ftl">
-			<#include "/well.ftl">
-			<@imp_bootstrap/>
-		"""
-	}
-
 	private void _createTemplate(name, args, closure){
+		_doImport(name)
 		_w.append("<@$name")
-		
+
 		if(args){
 			for(def k in args.keySet()){
 				def v=args.get(k)
 				_w.append(" $k=\"${v}\"")
 			}
+			
+			_w.append(">")
 		}else{
 			_w.append(">")
 		}
-		
+
 		if(closure){
 			closure()
 		}
-		
+
 		_w.append("</@$name>")
-		
 	}
 
 	private void runScript(template){
 		def root=[:]
+		//		TODO add some properties later
 		println template
 		template.process(root,writer)
 	}

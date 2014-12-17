@@ -35,17 +35,17 @@ import org.slf4j.LoggerFactory
  * @author Xu Lijia
  *
  */
-class ParsleyScriptInvoker {
+class ParsleyScriptHelper {
 
-	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyScriptInvoker)
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyScriptHelper)
 
 	private URL _scriptUrl
 
-	ParsleyScriptInvoker(URL scriptUrl){
+	ParsleyScriptHelper(URL scriptUrl){
 		this._scriptUrl=scriptUrl
 	}
 
-	void invoke(Writer writer){
+	void writeTo(Writer writer){
 		def loader=_createGroovyClassLoader()
 		//		TODO add security constraints?
 		def scriptSrc=new GroovyCodeSource(_scriptUrl)

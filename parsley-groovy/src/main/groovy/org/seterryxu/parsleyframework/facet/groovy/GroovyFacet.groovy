@@ -25,8 +25,6 @@ package org.seterryxu.parsleyframework.facet.groovy
 
 import java.util.Set
 
-import javax.servlet.ServletOutputStream;
-
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
@@ -59,11 +57,9 @@ class GroovyFacet extends Facet {
 		def resName=WebApp.RESOURCE_FOLDER+preq.requestedResource.substring(1)+'/index'+_ext
 		def resUrl=WebApp.resources.getByName(resName)
 		if(resUrl){
-			ParsleyScriptInvoker invoker=new ParsleyScriptInvoker(resUrl)
+			ParsleyScriptHelper invoker=new ParsleyScriptHelper(resUrl)
 			
-			ServletOutputStream os=pres.getOutputStream()
-			def writer=new OutputStreamWriter(os)
-			invoker.invoke(writer)
+			invoker.writeTo(pres.getWriter())
 			return true
 		}
 
