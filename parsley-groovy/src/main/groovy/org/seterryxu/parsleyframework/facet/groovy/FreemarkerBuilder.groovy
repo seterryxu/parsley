@@ -70,6 +70,7 @@ class FreemarkerBuilder {
 		if(!_w){
 			_w=new StringWriter()
 			_doImport('imp_bootstrap')
+			_w.append("<@imp_bootstrap/>")
 		}
 
 		_parseArguments(name, args)
@@ -78,8 +79,9 @@ class FreemarkerBuilder {
 			def n=_stack.pop()
 			_w.append("</$n>")
 		}
-		
-		_runScript(new Template(null, _w.toString(), conf))
+		def tStr=_w.toString()
+		println tStr
+		_runScript(new Template(null, tStr, conf))
 	}
 
 	private void _doImport(name){
@@ -162,6 +164,10 @@ class FreemarkerBuilder {
 		def root=[:]
 		//		TODO add some properties later
 		LOGGER.debug(t.toString())
+		//		TODO why throw ParseException
+		//		: Syntax error in nameless template in line 1, column 95:
+		//		Encountered "</@well>", but was expecting one of:
+		//			<EOF>
 		t.process(root,writer)
 	}
 
