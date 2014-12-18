@@ -79,9 +79,8 @@ class FreemarkerBuilder {
 			def n=_stack.pop()
 			_w.append("</$n>")
 		}
-		def tStr=_w.toString()
-		println tStr
-		_runScript(new Template(null, tStr, conf))
+		
+		_runScript(new Template(null, _w.toString(), conf))
 	}
 
 	private void _doImport(name){
@@ -93,7 +92,8 @@ class FreemarkerBuilder {
 		//judge what parameters we have
 		Map argz
 		Closure closure
-
+		String innerText
+		
 		switch(args.size()){
 			case 0:break
 			case 1:
@@ -101,6 +101,8 @@ class FreemarkerBuilder {
 					argz=args[0]
 				}else if(args[0] instanceof Closure){
 					closure=args[0]
+				}else{
+					innerText=args[0]
 				}
 				break
 			case 2:
@@ -119,10 +121,10 @@ class FreemarkerBuilder {
 		if(t){
 			def name0="@$name"
 			_stack.push(name0)
-			_createTemplate(name0, argz, closure)
+			_createTemplate(name0, argz, closure, innerText)
 		}else{
 			_stack.push(name)
-			_createTemplate(name, argz, closure)
+			_createTemplate(name, argz, closure, innerText)
 		}
 
 	}
@@ -135,7 +137,7 @@ class FreemarkerBuilder {
 		}
 	}
 
-	private void _createTemplate(name, args, closure){
+	private void _createTemplate(String name, Map args, closure, innerText){
 		if(name.startsWith('@')){
 			_doImport(name.substring(1))
 		}
@@ -151,7 +153,11 @@ class FreemarkerBuilder {
 		_w.append(">")
 
 		if(closure){
-			closure()
+			_w.append(closure())
+		}
+		
+		if(innerText){
+			_w.append(innerText)
 		}
 
 		_w.append("</$name>")
@@ -164,10 +170,6 @@ class FreemarkerBuilder {
 		def root=[:]
 		//		TODO add some properties later
 		LOGGER.debug(t.toString())
-		//		TODO why throw ParseException
-		//		: Syntax error in nameless template in line 1, column 95:
-		//		Encountered "</@well>", but was expecting one of:
-		//			<EOF>
 		t.process(root,writer)
 	}
 
