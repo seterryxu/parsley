@@ -23,12 +23,10 @@
 
 package org.seterryxu.parsleyframework.core
 
-import java.net.URL
+import static org.seterryxu.parsleyframework.core.util.ResourceUtils.*
 
-import javax.naming.InitialContext
 import javax.servlet.ServletContext
 
-import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.util.ResourceUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -37,33 +35,34 @@ import org.slf4j.LoggerFactory
  *
  * @author Xu Lijia
  */
+//TODO make singleton?
 final class WebApp {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(WebApp)
 
 	//------------------- web content meta-data -------------------
-	static final Set<String> supportedEncodings
-	static final Set<String> supportedMimeTypes
+	static final Set<String> SUPPORTED_ENCODINGS
+	static final Set<String> SUPPORTED_MIMETYPES
+
+	static String WEB_ROOT_PATH
 	static String RESOURCE_FOLDER
+	static String RESOURCE_PATH
 	static WebResource resources
 
-	//------------------- action dispatchers -------------------
-	static final List<String> dispatchers=[]
-	private static ClassUrlMapper _mapper=new ClassUrlMapper()
+	//------------------- action DISPATCHERS -------------------
+	static final List<String> DISPATCHERS=[]
+	private static ClassUrlMap _map=new ClassUrlMap()
 
 	//------------------- app name -------------------
 	private static String _appName
 	private static Class _rootClass
 
-	//------------------- web PATH -------------------
-	static String WEB_ROOT_PATH
-	static String RESOURCE_PATH
 
 	private static ServletContext _context
 
-	//TODO singleton
 	static void init(ServletContext context){
 		this._context=context
+
 		_initWebRootPath()
 		_initSystemProperties()
 		_initResourceFolder()
@@ -79,18 +78,13 @@ final class WebApp {
 	}
 
 	private static void _initSystemProperties(){
-		def c=new InitialContext()
-		def e=c.lookup('java:comp/env')
-		//		TODO how to set global vars?
-		def props=System.getProperties()
-		props.put 'Parsley.trace',e.lookup('Parsley.trace')
-		props.put 'Parsley.noResourcePathCache',e.lookup('Parsley.noResourcePathCache')
+		//	TODO how to LOAD global vars?
+
 	}
 
 	private static void _initResourceFolder(){
-		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
-		//		TODO /WEB... or WEB ?
-		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER.substring(1)
+		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'WEB-INF/resource-files/'
+		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER
 	}
 
 	//TODO
@@ -104,22 +98,22 @@ final class WebApp {
 	}
 
 	private static void _generateResourcePaths(){
-		//		TODO how to set vars?
+		//	TODO how to set vars?
 		if (Boolean.getBoolean('Parsley.noResourcePathCache')) {
 			resources = null
 			return
 		}
 
-		Map<String,URL> paths = new HashMap<String,URL>()
-		def q = new Stack<String>()
-		q.push("/")
-		while (!q.isEmpty()) {
-			String folder = q.pop()
+		def paths = new HashMap<String,URL>()
+		def stack = new Stack<String>()
+		stack.push("/")
+		while (!stack.isEmpty()) {
+			String folder = stack.pop()
 			Set<String> content = _context.getResourcePaths(folder)
 			if (content) {
 				for (String c : content) {
 					if (c.endsWith("/"))
-						q.push(c)
+						stack.push(c)
 					else {
 						URL v = _context.getResource(c)
 						if (!v) {
@@ -135,6 +129,22 @@ final class WebApp {
 		resources=new WebResource(paths)
 	}
 
+	private static void _initApp(){
+		_appName=_context.getInitParameter('APP')
+		//	TODO check good name?
+		if(_appName){
+			_rootClass=Class.forName(_appName)
+			return
+		}
+
+		_rootClass=WebApp
+		_generateClassList()
+	}
+
+	private static void _generatePageHandlers(){
+		Facet.lookupFacets()
+	}
+
 	private static final class WebResource{
 		private static Map<String, URL> _resources
 
@@ -143,7 +153,7 @@ final class WebApp {
 		}
 
 		URL getByName(String name){
-			//		TODO sys var?
+			//TODO sys var?
 			if(Boolean.getBoolean('Parsley.noResourcePathCache')){
 				return _context.getResource(name)
 			}
@@ -160,17 +170,8 @@ final class WebApp {
 			}
 		}
 
-		/*		List<URL> filterByFolder(String folderName){
-		 def l=[]
-		 for(resource in _resources.values()){
-		 if(resource.toExternalForm().contains("/${folderName}/")){
-		 l<<resource
-		 }
-		 }
-		 return l
-		 }*/
-
-		Map<String,URL> filterWebResources(){
+		// TODO duck-typing style filtering ?
+		Map<String,URL> filterPageResources(){
 			def m=[:]
 			for(key in _resources.keySet()){
 				if(key.contains(WebApp.RESOURCE_FOLDER)){
@@ -178,11 +179,11 @@ final class WebApp {
 				}
 			}
 
-			return m
+			m
 		}
 
+		// TODO a decent way to filter classes that belong to current web app?
 		void filterClasses(){
-
 			for(k in _resources.keySet()){
 				if(k.endsWith('.class')){
 					int i=k.lastIndexOf('.')
@@ -192,110 +193,89 @@ final class WebApp {
 					int i3=k1.lastIndexOf('classes/')
 					def k3=k1.substring(i3+8)
 
-					WebApp._mapper.add(k3, k2, _resources.get(k))
+					WebApp._map.add(k3, k2, _resources.get(k))
 				}
 			}
 		}
-
 	}
 
-	private static final class ClassUrlMapper{
-		private class ClassInfo{
+	private static final class ClassUrlMap{
+		private class MapInfo{
 			String qualifiedName
-			String simplifiedName
+			String simpleName
 			URL classUrl
 		}
 
-		private List<ClassInfo> _classInfo=[]
+		private List<MapInfo> _mapInfo=[]
 
-		boolean contains(String name){
-			for(c in _classInfo){
-				if(c.simplifiedName.equalsIgnoreCase(name)){
+		boolean contains(String simpleName){
+			for(c in _mapInfo){
+				if(c.simpleName.equals(simpleName)){
 					return true
 				}
 			}
 
-			return false
+			false
 		}
 
-		void add(String qualifiedName,String simplifiedName,URL classUrl){
-			def c=new ClassInfo()
+		void add(String qualifiedName, String simpleName, URL classUrl){
+			def c=new MapInfo()
 			c.qualifiedName=qualifiedName
-			c.simplifiedName=simplifiedName
+			c.simpleName=simpleName
 			c.classUrl=classUrl
-			_classInfo.add(c)
+			_mapInfo.add(c)
 		}
 
-		String getQualifiedName(String name){
-			for(c in _classInfo){
-				if(c.simplifiedName.equalsIgnoreCase(name)){
-					return c.qualifiedName.replaceAll('/', '.')
+		String getQualifiedName(String simpleName){
+			for(c in _mapInfo){
+				if(c.simpleName.equals(simpleName)){
+					return c.qualifiedName
 				}
 			}
 
-			return null
+			null
 		}
 
-		URL getUrl(String name){
-			for(c in _classInfo){
-				if(c.simplifiedName.equalsIgnoreCase(name)){
+		URL getUrl(String simpleName){
+			for(c in _mapInfo){
+				if(c.simpleName.equals(simpleName)){
 					return c.classUrl
 				}
 			}
 
-			return null
+			null
 		}
 	}
 
-	//------------------- init app -------------------
-	private static void _initApp(){
-		_appName=_context.getInitParameter('APP')
-		//		TODO check good name?
-		if(_appName){
-			_rootClass=Class.forName(_appName)
-			return
-		}
-
-		_rootClass=WebApp.class.name
-		_generateClassList()
-	}
-
-	//------------------- page facet handlers -------------------
-	private static void _generatePageHandlers(){
-		Facet.lookupFacets()
-	}
-
-	//------------------- instantiate object instances -------------------
 	private static void _generateClassList(){
+		//	TODO check simple class name conflicts at compile time?
 		resources.filterClasses()
-		//		TODO check class name conflicts at compile time?
 	}
 
 	//	TODO check good name
 	//	TODO check duplicated name
-	static Class getClazz(String classname){
+	static Class getClazz(String token){
 		if(_appName){
 			return _rootClass
 		}
 
-		if(classname){
-			if(_mapper.contains(classname)){
-				def clazzname=ResourceUtils.capitalFirst(classname)
-				def classUrl=_mapper.getUrl(clazzname)
+		if(token){
+			if(_map.contains(token)){
+				def classname=capitalFirst(token)
+				def classUrl=_map.getUrl(classname)
 				if(classUrl){
-					return Class.forName(_mapper.getQualifiedName(clazzname))
+					return Class.forName(_map.getQualifiedName(classname))
 				}
-			}else{
-				return null
 			}
 		}
 
-		return null
+		null
 	}
 
 	//------------------- clean up before shutdown -------------------
 	static void cleanUp(){
-		//		TODO add some clean up tasks
+		//TODO add some clean up tasks
+		
 	}
 
 }

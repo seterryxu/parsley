@@ -28,8 +28,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 interface IParsleyRequest extends HttpServletRequest {
 

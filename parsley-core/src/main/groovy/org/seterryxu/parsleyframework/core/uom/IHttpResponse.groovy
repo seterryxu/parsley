@@ -24,8 +24,8 @@
 package org.seterryxu.parsleyframework.core.uom
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 interface IHttpResponse {
 

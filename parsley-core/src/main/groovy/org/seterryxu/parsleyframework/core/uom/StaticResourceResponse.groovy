@@ -25,14 +25,13 @@ package org.seterryxu.parsleyframework.core.uom
 
 import javax.servlet.ServletOutputStream
 
-import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.util.ResourceUtils;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class StaticResourceResponse implements IHttpResponse {
 
@@ -52,21 +51,23 @@ class StaticResourceResponse implements IHttpResponse {
 		url.openConnection().getInputStream()
 	}
 
-
 	@Override
 	public void generateResponse(IParsleyResponse pres) {
-		def page=ResourceUtils.getStaticResource(_preq.requestedResource)
+		def res=_preq.requestedResource
+		def page=ResourceUtils.getStaticResource(res)
 
 		if(page){
 			this._stream=_toStream(page)
 			_generateResponse(pres)
 		}else{
-			HttpResponseFactory.notFound(pres)
+			def errorMsg="Static Resource $res not found."
+			LOGGER.error(errorMsg)
+			HttpResponseFactory.notFound(errorMsg, pres)
 		}
 	}
 
 	private void _generateResponse(IParsleyResponse pres) {
-		ServletOutputStream out=pres.getOutputStream()
+		def out=pres.getOutputStream()
 
 		byte[]buffer=new byte[BUFFER_SIZE]
 		int len
@@ -76,9 +77,5 @@ class StaticResourceResponse implements IHttpResponse {
 
 		out.close()
 	}
-
-
-	//	TODO duplicated codes, better way?
-	private static final STATIC_RESOURCE_EXT=['.htm', 'html'].asImmutable()
 
 }

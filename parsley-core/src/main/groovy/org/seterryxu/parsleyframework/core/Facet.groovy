@@ -23,71 +23,67 @@
 
 package org.seterryxu.parsleyframework.core
 
-import java.util.Set
-
-import org.apache.commons.discovery.tools.Service;
-import org.seterryxu.parsleyframework.core.WebApp
+import org.apache.commons.discovery.tools.Service
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
+import java.util.Set
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 abstract class Facet {
 
 	protected static final Logger LOGGER=LoggerFactory.getLogger(Facet)
 
-	private static final Set<Facet> FACETS=new HashSet<Facet>()
+	static final Set<Facet> FACETS=new HashSet<Facet>()
 
-	//	TODO how to disable inheritance
 	static final void lookupFacets(){
-		def facetImpls=Service.providers(Facet.class)
-		
-		while(facetImpls.hasMoreElements()){
-			def clazz=facetImpls.nextElement().class
+		def facets=Service.providers(Facet)
+
+		while(facets.hasMoreElements()){
+			def clazz=facets.nextElement().class
 			LOGGER.debug("Discovered extension $clazz.")
 			FACETS.add(clazz)
 		}
 	}
 
 	//------------------- all facets should maintain localized resources -------------------
-	
-	//	TODO where to place this class?
-	protected static class LocalizedResourcesSelector{
-		protected static final Map<String,URL> localizedResources
+	//	TODO perfect this class
+	protected static class LOCALIZED_RESOURCESSelector{
+		private static final Map<String,URL> LOCALIZED_RESOURCES
 
 		static{
 			if(WebApp.resources){
-				localizedResources=WebApp.resources.filterWebResources()
+				LOCALIZED_RESOURCES=WebApp.resources.filterPageResources()
 			}
 		}
 
 		static URL selectByLocale(String name, Locale locale){
-			if(localizedResources){
+			if(LOCALIZED_RESOURCES){
 				if(name.equals('/')){
-					return localizedResources
+					return null
 				}
 
 				int i=name.lastIndexOf('.')
 				if(i>0){
 					def filename=name.substring(0, i)
-					def extname=name.subSequence(i)
+					def ext=name.subSequence(i)
 					def lang=locale.getLanguage()
 					def country=locale.getCountry()
-					return localizedResources.get("${filename}_${lang}_${country}.${extname}")
+					return LOCALIZED_RESOURCES.get("${filename}_${lang}_${country}.${ext}")
 				}
 
-				return null
 			}
 
-			return null
+			null
 		}
 	}
 
-	//------------------- handlers for subclasses to implement -------------------
+	//------------------- handlers -------------------
 
 	abstract boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres)
 

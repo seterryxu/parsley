@@ -23,8 +23,6 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import java.util.Set
-
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
@@ -33,8 +31,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class GroovyFacet extends Facet {
 
@@ -54,16 +52,16 @@ class GroovyFacet extends Facet {
 			_isInitialized=true
 		}
 
-		def resName=WebApp.RESOURCE_FOLDER+preq.requestedResource.substring(1)+'/index'+_ext
+		def resName=WebApp.RESOURCE_FOLDER+preq.requestedResource+'/index'+_ext
 		def resUrl=WebApp.resources.getByName(resName)
 		if(resUrl){
 			ParsleyScriptHelper helper=new ParsleyScriptHelper(resUrl)
-			
+
 			helper.writeTo(pres.getWriter())
 			return true
 		}
 
-		return false
+		false
 	}
 
 	@Override

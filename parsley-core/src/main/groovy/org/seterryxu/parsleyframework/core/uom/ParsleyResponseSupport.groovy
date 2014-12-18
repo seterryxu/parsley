@@ -23,15 +23,17 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.net.URL
-
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletResponseWrapper
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-class ParsleyResponseSupport extends HttpServletResponseWrapper implements IParsleyResponse {
+/**
+ *
+ * @author Xu Lijia
+ */
+final class ParsleyResponseSupport extends HttpServletResponseWrapper implements IParsleyResponse {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyResponseSupport)
 

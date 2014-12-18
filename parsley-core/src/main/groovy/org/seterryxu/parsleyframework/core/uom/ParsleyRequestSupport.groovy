@@ -23,51 +23,48 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.util.Locale;
+import java.util.Locale
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletRequestWrapper
 
-import org.seterryxu.parsleyframework.core.WebApp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
-class ParsleyRequestSupport extends HttpServletRequestWrapper implements IParsleyRequest {
+final class ParsleyRequestSupport extends HttpServletRequestWrapper implements IParsleyRequest {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyRequestSupport)
-	
+
 	final String requestedResource
 
-	final TokenizedUrl tokenizedUrl
+	final ResourceToken resourceTokens
 
 	ParsleyRequestSupport(HttpServletRequest req){
 		super(req)
+
 		this.requestedResource=_getRequestedResource(req)
-		tokenizedUrl=new TokenizedUrl()
+		this.resourceTokens=new ResourceToken()
 	}
 
-	//------------------- pre-process url -------------------
 	private String _getRequestedResource(HttpServletRequest req){
-		req.getRequestURI().substring(req.getContextPath().size())
+		req.getRequestURI().substring(req.getContextPath().size()+1)
 	}
 
-	//------------------- tokenize url -------------------
-	private class TokenizedUrl{
-		//TODO need final?
+	private class ResourceToken{
 		private String[] _tokens
 
-		TokenizedUrl(){
-			StringTokenizer tk=new StringTokenizer(requestedResource, '/\\')
-			_tokens=new String[tk.countTokens()]
-			//			TODO maybe a better way?
-			def i=0
+		ResourceToken(){
+			StringTokenizer tk=new StringTokenizer(requestedResource, '/')
+
+			def l=[]
 			while(tk.hasMoreTokens()){
-				_tokens[i++]=tk.nextToken()
+				l<<tk.nextToken()
 			}
+			_tokens=l as String[]
 		}
 
 		private int index
@@ -77,42 +74,48 @@ class ParsleyRequestSupport extends HttpServletRequestWrapper implements IParsle
 		}
 
 		String nextToken(){
-			if(hasMore()){
+			if(hasMoreTokens()){
 				return _tokens[++index]
 			}
-			
-			return null
+
+			null
+		}
+
+		public boolean hasMoreTokens() {
+			index<_tokens.size()-1
 		}
 
 		int nextAsInt(){
-			_tokens[++index] as int
-		}
+			if(hasMoreTokens()){
+				_tokens[++index] as int
+			}
 
-		public boolean hasMore() {
-			index<_tokens.size()-1
+			Integer.MIN_VALUE
 		}
 
 		@Override
 		public String toString() {
-			StringBuilder b=new StringBuilder()
+			def b=new StringBuilder()
 			def i=0
-			while(i!=_tokens.size()){
+			while(i<_tokens.size()){
 				if(i!=index){
-					b.append(_tokens[i])
+					b<<_tokens[i]
 				}else{
-					b.append('!'+_tokens[i])
+					b<<'!'<<_tokens[i]
 				}
+				b<<'/'
 
 				i++
 			}
 
-			return b.toString()
+			if(requestedResource.endsWith('/')){
+				return b.toString()
+			}else{
+				return b.toString().substring(0, b.size())
+			}
 		}
-
-
 	}
 
-	//------------------- static resource -------------------
 	@Override
 	public Locale getRequestedLocale() {
 		getLocale()?:Locale.ENGLISH

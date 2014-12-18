@@ -23,9 +23,7 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.net.URL;
-
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse
 
 /**
  *
@@ -37,34 +35,35 @@ class HttpResponseFactory {
 	/**
 	 * Error 500 INTERNAL_SERVER_ERROR
 	 */
-	static void error(IParsleyResponse pres){
-		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).generateResponse(pres)
+	static void error(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg).generateResponse(pres)
 	}
 
 	/**
 	 * Error 404 NOT_FOUND
 	 */
-	static void notFound(IParsleyResponse pres){
-		_status(HttpServletResponse.SC_NOT_FOUND).generateResponse(pres)
+	static void notFound(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_NOT_FOUND, errorMsg).generateResponse(pres)
 	}
 
 	/**
 	 * Error 403 FORBIDDEN
 	 */
-	static void forbidden(IParsleyResponse pres){
-		_status(HttpServletResponse.SC_FORBIDDEN).generateResponse(pres)
+	static void forbidden(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_FORBIDDEN, errorMsg).generateResponse(pres)
 	}
 
-	private static HttpResponseException _status(int statusCode){
-		new HttpResponseException(){
-					void generateResponse(IParsleyResponse pres){
-						pres.setStatus(statusCode)
-					}
-				}
+	private static HttpResponseException _status(int statusCode, String errorMsg){
+		new HttpResponseException(errorMsg){
+			void generateResponse(IParsleyResponse pres){
+				 pres.setStatus(statusCode)
+				 pres.getWriter().print(errorMsg)
+			}
+		}
 	}
 
 	//------------------- http page responses -------------------
-	static void staticResource(IParsleyRequest preq,IParsleyResponse pres){
+	static void staticResource(IParsleyRequest preq, IParsleyResponse pres){
 		new StaticResourceResponse(preq).generateResponse(pres)
 	}
 

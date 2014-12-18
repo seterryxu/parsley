@@ -28,6 +28,11 @@ package org.seterryxu.parsleyframework.core.uom
  * @author Xu Lijia
  */
 abstract class HttpResponseException extends RuntimeException implements IHttpResponse {
-//TODO why RuntimeException?
 
+	private String _errorMsg
+	
+	HttpResponseException(String errorMsg){
+		this._errorMsg=errorMsg
+	}
+	
 }

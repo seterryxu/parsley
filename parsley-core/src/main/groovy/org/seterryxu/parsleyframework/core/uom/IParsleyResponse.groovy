@@ -23,14 +23,13 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
-import java.net.URL;
-
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 interface IParsleyResponse extends HttpServletResponse{
-
+	
+	
 }

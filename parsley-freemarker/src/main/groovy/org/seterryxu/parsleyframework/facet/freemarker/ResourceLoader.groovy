@@ -35,16 +35,16 @@ import freemarker.cache.TemplateLoader
 import freemarker.template.Configuration
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
-class ResourceLoader {
+final class ResourceLoader {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ResourceLoader)
-	
+
 	private static boolean _isInitialized
-	private static Configuration conf
-	
+	static Configuration conf
+
 	static void init(){
 		if(!_isInitialized){
 			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
@@ -54,15 +54,14 @@ class ResourceLoader {
 
 			conf=new Configuration()
 			conf.setDefaultEncoding('UTF-8')
-			
+
 			def clsLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
 			def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
 			TemplateLoader[]loaders=[clsLoader, resLoader] as TemplateLoader[]
 			def multiLoaders=new MultiTemplateLoader(loaders)
 			conf.setTemplateLoader(multiLoaders)
-			
+
 			_isInitialized=true
 		}
 	}
-	
 }

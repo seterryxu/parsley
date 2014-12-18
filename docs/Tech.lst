@@ -6,7 +6,7 @@ Tech:
 5. CopyOnWriteArrayList
 6. ConcurrentMap
 7. jsr269
-8. ClassLoader
+8. ClassLoader.loadClass vs Class.forName
 9. GroovyASTTransformation
 10.google.common.cache - script loading cache ?
 11.groovy singleton

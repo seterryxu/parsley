@@ -84,7 +84,7 @@ class FreemarkerBuilder {
 	}
 
 	private void _doImport(name){
-		//		TODO add line separator ?
+		//	TODO add line separator ?
 		_w.append("<#include \"/${name}.ftl\">")
 	}
 
@@ -168,7 +168,7 @@ class FreemarkerBuilder {
 
 	private void _runScript(Template t){
 		def root=[:]
-		//		TODO add some properties later
+		//	TODO add some properties later
 		LOGGER.debug(t.toString())
 		t.process(root,writer)
 	}

@@ -23,6 +23,8 @@
 
 package org.seterryxu.parsleyframework
 
+import static org.seterryxu.parsleyframework.core.util.ResourceUtils.*
+
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
 import javax.servlet.ServletException
@@ -38,7 +40,6 @@ import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.seterryxu.parsleyframework.core.uom.ParsleyRequestSupport
 import org.seterryxu.parsleyframework.core.uom.ParsleyResponseSupport
-import org.seterryxu.parsleyframework.core.util.ResourceUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -50,13 +51,9 @@ final class Parsley extends HttpServlet {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(Parsley)
 
-	//	TODO
-	private ServletContext _context
-
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config)
-		_context=config.getServletContext()
 	}
 
 	@Override
@@ -65,11 +62,11 @@ final class Parsley extends HttpServlet {
 		//wrapper
 		IParsleyRequest preq=new ParsleyRequestSupport(req)
 		IParsleyResponse pres=new ParsleyResponseSupport(res)
-		LOGGER.info('Parsley wrapper instantiated.')
+		LOGGER.debug('Parsley wrapper instantiated.')
 
-		def type=_checkParsleyRequestType(preq)
-		LOGGER.debug("Parsley requested resource: ${preq.requestedResource}")
-		LOGGER.debug("Parsley Request TYPE: $type")
+		def resName=preq.requestedResource
+		def type=_checkParsleyRequestType(resName)
+		LOGGER.debug("Parsley Requested resource: ${resName}, type: $type")
 
 		switch(type){
 			case PARSLEY_REQ_TYPE.STATIC:
@@ -77,22 +74,24 @@ final class Parsley extends HttpServlet {
 				break
 
 			case PARSLEY_REQ_TYPE.REST:
-				println 'To be implemented.'
+				println 'REST calls to be implemented.'
 				break
 
 			case PARSLEY_REQ_TYPE.JS:
-				println 'To be implemented.'
+				println 'JS calls to be implemented.'
 				break
 
 			case PARSLEY_REQ_TYPE.UNKNOWN:
-			//action?
-				if(_navigate(preq, pres)){
+				def instance=_instantiate(pres)
+
+			//try actions
+				if(_navigate(instance, preq, pres)){
 					return
 				}
 
 			//try facets
 				for(facet in Facet.FACETS){
-					if(facet.newInstance().handle(this,preq,pres)){
+					if(facet.newInstance().handle(instance,preq,pres)){
 						return
 					}
 				}
@@ -101,51 +100,12 @@ final class Parsley extends HttpServlet {
 
 			default:
 			//out of options
-				LOGGER.warn("No such resource: ${preq.getRequestedResourceName()}")
-				HttpResponseFactory.notFound(pres)
-
-				LOGGER.info("Parsley Request handling completed.")
-		}
-	}
-
-	//------------------- navigating methods -------------------
-	/**
-	 * recursive method for navigation
-	 */
-	private boolean _navigate(IParsleyRequest preq, IParsleyResponse pres){
-		def rootClass=_findRootClass(preq)
-		if(!rootClass){
-			return false
+				def errorMsg="No such resource: $resName"
+				LOGGER.error(errorMsg)
+				HttpResponseFactory.notFound(errorMsg, pres)
 		}
 
-		_generateDispatchers(rootClass)
-
-		def instance=rootClass.newInstance()
-
-		//		tryNavigate()
-		//		TODO: recursive??
-		while(preq.tokenizedUrl.hasMore()){
-			preq.tokenizedUrl.nextToken()
-			if(_tryNavigate(instance,preq,pres)){
-				break
-			}
-		}
-
-		return true
-	}
-
-	private Class _findRootClass(IParsleyRequest preq){
-		String root=preq.tokenizedUrl.current()
-		WebApp.getClazz(root)
-	}
-
-	private void _generateDispatchers(Class root){
-		Dispatcher.addDispatchers(root)
-	}
-
-	private _tryNavigate(instance,IParsleyRequest preq, IParsleyResponse pres){
-		String token=preq.tokenizedUrl.current()
-		return instance."$token"(preq,pres)
+		LOGGER.info("Parsley Request handling completed.")
 	}
 
 	//------------------- Parsley request types -------------------
@@ -153,10 +113,8 @@ final class Parsley extends HttpServlet {
 		STATIC, REST, JS, UNKNOWN
 	}
 
-	private _checkParsleyRequestType(IParsleyRequest preq){
-		def resName=preq.requestedResource
-
-		if(ResourceUtils.isStaticResource(resName)){
+	private _checkParsleyRequestType(resName){
+		if(isStaticResource(resName)){
 			return PARSLEY_REQ_TYPE.STATIC
 		}
 
@@ -172,4 +130,36 @@ final class Parsley extends HttpServlet {
 
 		PARSLEY_REQ_TYPE.UNKNOWN
 	}
+
+	//------------------- instance locating methods -------------------
+	private _instantiate(IParsleyRequest preq){
+		String root=preq.resourceTokens.current()
+		def rootClass=WebApp.getClazz(root)
+		if(!rootClass){
+			return null
+		}
+
+		Dispatcher.addDispatchers(root)
+
+		rootClass.newInstance()
+	}
+
+	//------------------- navigating methods -------------------
+	// TODO perfect recusive invocations
+	private boolean _navigate(instance, IParsleyRequest preq, IParsleyResponse pres){
+		while(preq.resourceTokens.hasMoreTokens()){
+			preq.resourceTokens.nextToken()
+			if(_tryNavigate(instance, preq, pres)){
+				break
+			}
+		}
+
+		return true
+	}
+
+	private _tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
+		def token=preq.resourceTokens.current()
+		return instance."$token"(preq, pres)
+	}
+
 }

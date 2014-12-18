@@ -2,4 +2,5 @@
 .classpath
 *.prefs 
 target/
-.settings/
+cc.bat
+

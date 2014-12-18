@@ -23,21 +23,21 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
+import static org.seterryxu.parsleyframework.core.util.ResourceUtils.*
 
 import org.seterryxu.parsleyframework.core.WebApp
-import org.seterryxu.parsleyframework.core.util.ResourceUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 abstract class Dispatcher {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(Dispatcher)
 
+	// TODO how to get this var?
 	private static boolean TRACE=Boolean.getBoolean('Parsley.trace')
 
 	boolean traceable(){
@@ -49,54 +49,25 @@ abstract class Dispatcher {
 		if(!WebApp.dispatchers.contains(c)){
 			LOGGER.debug("Adding a dispatcher for $c")
 
-			c.metaClass.fallback={
-				if(it)
-					it.call()
-			}
-
 			c.metaClass.methodMissing={String name,args->
-				def n=ResourceUtils.capitalFirst(name)
-				if(c.metaClass.respondsTo(c,"js$n")){
-					return invokeMethod("js$n", args)
+				def name0=capitalFirst(name)
+
+				if(c.metaClass.respondsTo(c,"do$name0")){
+					return invokeMethod("do$name0", args)
 				}
 
-				if(c.metaClass.respondsTo(c,"get$n")){
-					return invokeMethod("get$n", args)
-				}
+				//				if(c.metaClass.respondsTo(c,"js$name0")){
+				//					return invokeMethod("js$name0", args)
+				//				}
+				//
+				//				if(c.metaClass.respondsTo(c,'do$Self')){
+				//					return invokeMethod('do$Self', args)
+				//				}
 
-				if(c.metaClass.respondsTo(c,"do$n")){
-					return invokeMethod("do$n", args)
-				}
-
-				if(c.metaClass.respondsTo(c,'do$Self')){
-					return invokeMethod('do$Self', args)
-				}
-
-				fallback()
 			}
 
-			c.metaClass.propertyMissing={String name->
-				//				TODO
-				if(hasProperty(name)){
-					println 'has $name'
-				}
-			}
-
-			WebApp.dispatchers.add(c)
+			WebApp.DISPATCHERS<<c
 		}
-	}
-
-	void dispatch(instance,IParsleyRequest preq,IParsleyResponse pres){
-		// consume url tokens
-		if(!pres.tokenizedUrl.hasMore()){
-
-		}
-		// do dispatch
-		// before doing dispatch
-		String classname=instance.class.name
-
-
-
 	}
 
 }

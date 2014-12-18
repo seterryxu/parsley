@@ -1,10 +1,12 @@
 1. Dispatching
   #1) => *.ftl
-  2) => *.groovy
+  #2) => *.groovy
   3) => js methods
 2. Security
   1) CSRF
 3. Decorators
   2) sitemesh
-4.
+4. JarUtils
+  1)only extract necessary files and dirs
+5. Add AngularJS support   
 

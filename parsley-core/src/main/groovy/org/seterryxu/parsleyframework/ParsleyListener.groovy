@@ -27,8 +27,8 @@ import javax.servlet.ServletContextEvent
 import javax.servlet.ServletContextListener
 
 import org.seterryxu.parsleyframework.core.WebApp
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  *
@@ -46,7 +46,6 @@ final class ParsleyListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		// TODO Auto-generated method stub
 		LOGGER.info('Cleaning up Parsley context...')
 		WebApp.cleanUp()
 	}

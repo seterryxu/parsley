@@ -24,8 +24,8 @@
 package org.seterryxu.parsleyframework.facet.groovy
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class Namespace {
 

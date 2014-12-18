@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory
  *
  * @author Xu Lijia
  */
-class ResourceUtils {
+final class ResourceUtils {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ResourceUtils)
 
@@ -50,15 +50,15 @@ class ResourceUtils {
 	static URL getStaticResource(String requestedResource){
 		def resName=requestedResource.toLowerCase()
 		if(resName&&!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
-
+			// TODO a better way to judge exts?
 			if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
 			||resName.endsWith('.eot')||resName.endsWith('.svg')
 			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-				return WebApp.resources.getByName(WebApp.RESOURCE_FOLDER+trimSlash(requestedResource))
+				return WebApp.resources.getByName(WebApp.RESOURCE_FOLDER+requestedResource)
 			}
 
-			//check existence?
+			//try xx/index.htm(l)
 			if(requestedResource.endsWith('/')){
 				for(ext in STATIC_RESOURCE_EXT){
 					def indexPage=WebApp.RESOURCE_FOLDER+(requestedResource.length()==1?'':requestedResource)+'index'+ext
@@ -70,7 +70,7 @@ class ResourceUtils {
 				}
 			}else{  //try /xx.htm(l)
 				for(ext in STATIC_RESOURCE_EXT){
-					def page=WebApp.RESOURCE_FOLDER+trimSlash(requestedResource)+ext
+					def page=WebApp.RESOURCE_FOLDER+requestedResource+ext
 					def pageUrl=WebApp.resources.getByName(page)
 					if(pageUrl){
 						LOGGER.debug("$page found.")
@@ -81,11 +81,6 @@ class ResourceUtils {
 		}
 
 		null
-	}
-
-	//	TODO remove this?
-	static String trimSlash(String str){
-		str.substring(1)
 	}
 
 	private static final STATIC_RESOURCE_EXT=['.htm', '.html'].asImmutable()

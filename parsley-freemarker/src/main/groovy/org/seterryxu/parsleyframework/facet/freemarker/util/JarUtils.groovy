@@ -31,6 +31,7 @@ import java.util.jar.JarFile
  */
 class JarUtils {
 
+	// TODO only decompress necessary files and dirs
 	static boolean decompress(File jarFile,String outputPath){
 		if(!jarFile||!outputPath){
 			return false
@@ -51,8 +52,7 @@ class JarUtils {
 		def entries=jar.entries()
 		while(entries.hasMoreElements()){
 			def entry=entries.nextElement()
-			//TODO filter .css, .js ? if(!entry.getName().endsWith(''))
-			def f=new File("${outputPath}/${entry.getName()}")
+			def f=new File("${outputPath}/${entry.name}")
 			if(entry.isDirectory()){
 				if(!f.exists()){
 					if(!f.mkdirs()){

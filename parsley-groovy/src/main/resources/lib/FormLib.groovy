@@ -26,8 +26,8 @@ package lib
 import org.seterryxu.parsleyframework.facet.groovy.LibUri
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 @LibUri('/lib/form')
 interface FormLib {

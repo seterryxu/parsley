@@ -23,9 +23,17 @@
 
 package org.seterryxu.parsleyframework.core.uom
 
+import static java.lang.annotation.RetentionPolicy.*
+
+import java.lang.annotation.Documented
+import java.lang.annotation.Retention
+
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
+@Retention(RUNTIME)
+@Documented
 @interface URLMapping {
+	String value()
 }

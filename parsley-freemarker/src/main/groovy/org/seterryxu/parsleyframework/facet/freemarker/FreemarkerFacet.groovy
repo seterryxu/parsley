@@ -23,22 +23,15 @@
 
 package org.seterryxu.parsleyframework.facet.freemarker
 
+import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
+
 import javax.servlet.ServletOutputStream
 
 import org.seterryxu.parsleyframework.core.Facet
-import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
-import org.seterryxu.parsleyframework.facet.freemarker.util.JarUtils
 
-import freemarker.cache.ClassTemplateLoader
-import freemarker.cache.FileTemplateLoader
-import freemarker.cache.MultiTemplateLoader
-import freemarker.cache.TemplateLoader
-import freemarker.template.Configuration
 import freemarker.template.Template
-
-import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
 /**
  *
@@ -51,9 +44,9 @@ class FreemarkerFacet extends Facet{
 	private static _ext
 
 	@Override
-	boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres){
-		ResourceLoader.init()
-		
+	boolean handle(instance, IParsleyRequest preq, IParsleyResponse pres){
+		init()
+
 		if(!_ext){
 			for(e in allowedExtensions()){
 				_ext=e
@@ -73,10 +66,7 @@ class FreemarkerFacet extends Facet{
 		def root=[:]
 		root.put('it', instance)
 
-		ServletOutputStream os=pres.getOutputStream()
-		def writer=new OutputStreamWriter(os)
-
-		_t.process(root, writer)
+		_t.process(root, pres.getWriter())
 
 		return true
 	}

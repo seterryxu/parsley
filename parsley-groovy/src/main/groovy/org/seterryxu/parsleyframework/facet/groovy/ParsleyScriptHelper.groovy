@@ -23,17 +23,16 @@
 
 package org.seterryxu.parsleyframework.facet.groovy
 
-import groovy.lang.GroovyClassLoader
+import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.runtime.InvokerHelper
-import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*;
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * @author Xu Lijia
  *
+ * @author Xu Lijia
  */
 class ParsleyScriptHelper {
 
@@ -47,12 +46,12 @@ class ParsleyScriptHelper {
 
 	void writeTo(Writer writer){
 		def loader=_createGroovyClassLoader()
-		//		TODO add security constraints?
+		//	TODO add security constraints?
 		def scriptSrc=new GroovyCodeSource(_scriptUrl)
 		LOGGER.debug("Script $_scriptUrl loaded.")
 
 		def script=InvokerHelper.createScript(loader.parseClass(scriptSrc), new Binding()) as ParsleyScript
-		//		TODO why cannot directly "script.delegate=..."
+		//	TODO why cannot directly "script.delegate=..."
 		init()
 		def builder=new FreemarkerBuilder()
 		builder.conf=conf
