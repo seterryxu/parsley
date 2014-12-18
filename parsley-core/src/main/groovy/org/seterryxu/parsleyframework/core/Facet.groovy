@@ -57,8 +57,8 @@ abstract class Facet {
 		private static final Map<String,URL> LOCALIZED_RESOURCES
 
 		static{
-			if(WebApp.resources){
-				LOCALIZED_RESOURCES=WebApp.resources.filterPageResources()
+			if(WebApp.RESOURCES){
+				LOCALIZED_RESOURCES=WebApp.RESOURCES.filterPageResources()
 			}
 		}
 

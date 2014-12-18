@@ -48,34 +48,48 @@ final class ResourceUtils {
 	}
 
 	static URL getStaticResource(String requestedResource){
-		def resName=requestedResource.toLowerCase()
-		if(resName&&!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
-			// TODO a better way to judge exts?
-			if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
-			||resName.endsWith('.eot')||resName.endsWith('.svg')
-			||resName.endsWith('.ttf')||resName.endsWith('.woff')){
-
-				return WebApp.resources.getByName(WebApp.RESOURCE_FOLDER+requestedResource)
+		if(!requestedResource){
+			//handle index page
+			for(ext in STATIC_RESOURCE_EXT){
+				def indexPage=WebApp.RESOURCE_FOLDER+'index'+ext
+				def pageUrl=WebApp.RESOURCES.getByName(indexPage)
+				if(pageUrl){
+					LOGGER.debug("$indexPage found.")
+					return pageUrl
+				}
 			}
 
-			//try xx/index.htm(l)
-			if(requestedResource.endsWith('/')){
-				for(ext in STATIC_RESOURCE_EXT){
-					def indexPage=WebApp.RESOURCE_FOLDER+(requestedResource.length()==1?'':requestedResource)+'index'+ext
-					def pageUrl=WebApp.resources.getByName(indexPage)
-					if(pageUrl){
-						LOGGER.debug("$indexPage found.")
-						return pageUrl
-					}
+		}else{
+			def resName=requestedResource.toLowerCase()
+			if(!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
+				// TODO a better way to judge exts?
+				if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
+				||resName.endsWith('.eot')||resName.endsWith('.svg')
+				||resName.endsWith('.ttf')||resName.endsWith('.woff')){
+
+					return WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+requestedResource)
 				}
-			}else{  //try /xx.htm(l)
-				for(ext in STATIC_RESOURCE_EXT){
-					def page=WebApp.RESOURCE_FOLDER+requestedResource+ext
-					def pageUrl=WebApp.resources.getByName(page)
-					if(pageUrl){
-						LOGGER.debug("$page found.")
-						return pageUrl
+
+				//try xx/index.htm(l)
+				if(requestedResource.endsWith('/')){
+					for(ext in STATIC_RESOURCE_EXT){
+						def indexPage=WebApp.RESOURCE_FOLDER+requestedResource+'index'+ext
+						def pageUrl=WebApp.RESOURCES.getByName(indexPage)
+						if(pageUrl){
+							LOGGER.debug("index page for $requestedResource found.")
+							return pageUrl
+						}
 					}
+				}else{  //try /xx.htm(l)
+					for(ext in STATIC_RESOURCE_EXT){
+						def page=WebApp.RESOURCE_FOLDER+requestedResource+ext
+						def pageUrl=WebApp.RESOURCES.getByName(page)
+						if(pageUrl){
+							LOGGER.debug("$page found.")
+							return pageUrl
+						}
+					}
+					
 				}
 			}
 		}

@@ -66,7 +66,7 @@ final class Parsley extends HttpServlet {
 
 		def resName=preq.requestedResource
 		def type=_checkParsleyRequestType(resName)
-		LOGGER.debug("Parsley Requested resource: ${resName}, type: $type")
+		LOGGER.debug("Parsley Requested resource: ${resName?:'Web Root'}, type: $type")
 
 		switch(type){
 			case PARSLEY_REQ_TYPE.STATIC:
@@ -82,11 +82,13 @@ final class Parsley extends HttpServlet {
 				break
 
 			case PARSLEY_REQ_TYPE.UNKNOWN:
-				def instance=_instantiate(pres)
+				def instance=_instantiate(preq)
 
-			//try actions
-				if(_navigate(instance, preq, pres)){
-					return
+				if(instance){
+					//try actions
+					if(_navigate(instance, preq, pres)){
+						return
+					}
 				}
 
 			//try facets
@@ -95,8 +97,6 @@ final class Parsley extends HttpServlet {
 						return
 					}
 				}
-
-				break
 
 			default:
 			//out of options
@@ -132,14 +132,14 @@ final class Parsley extends HttpServlet {
 	}
 
 	//------------------- instance locating methods -------------------
-	private _instantiate(IParsleyRequest preq){
+	private _instantiate(preq){
 		String root=preq.resourceTokens.current()
 		def rootClass=WebApp.getClazz(root)
 		if(!rootClass){
 			return null
 		}
 
-		Dispatcher.addDispatchers(root)
+		Dispatcher.addDispatchers(rootClass)
 
 		rootClass.newInstance()
 	}

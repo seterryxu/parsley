@@ -8,5 +8,7 @@
   2) sitemesh
 4. JarUtils
   1)only extract necessary files and dirs
-5. Add AngularJS support   
+5. RequestDispatch, redirect & forward   
+6. Add do$Self mechanism   
+7. Add AngularJS support   
 

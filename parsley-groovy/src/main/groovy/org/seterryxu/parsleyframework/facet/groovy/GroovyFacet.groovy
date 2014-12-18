@@ -38,26 +38,30 @@ class GroovyFacet extends Facet {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(GroovyFacet)
 
-	private static boolean _isInitialized
 	private static _ext
 
 	@Override
 	public boolean handle(Object instance, IParsleyRequest preq,
 			IParsleyResponse pres) {
-		if(!_isInitialized){
+			
+		if(!_ext){
 			for(e in allowedExtensions()) {
 				_ext=e
 			}
-
-			_isInitialized=true
 		}
 
-		def resName=WebApp.RESOURCE_FOLDER+preq.requestedResource+'/index'+_ext
-		def resUrl=WebApp.resources.getByName(resName)
+		def resName=preq.requestedResource
+		def resUrl
+		if(resName.endsWith('/')){
+			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+'index'+_ext)
+		}else{
+			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+_ext)
+		}
+		
 		if(resUrl){
 			ParsleyScriptHelper helper=new ParsleyScriptHelper(resUrl)
-
 			helper.writeTo(pres.getWriter())
+			
 			return true
 		}
 

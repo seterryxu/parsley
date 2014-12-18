@@ -47,7 +47,7 @@ final class WebApp {
 	static String WEB_ROOT_PATH
 	static String RESOURCE_FOLDER
 	static String RESOURCE_PATH
-	static WebResource resources
+	static WebResource RESOURCES
 
 	//------------------- action DISPATCHERS -------------------
 	static final List<String> DISPATCHERS=[]
@@ -83,8 +83,8 @@ final class WebApp {
 	}
 
 	private static void _initResourceFolder(){
-		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'WEB-INF/resource-files/'
-		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER
+		RESOURCE_FOLDER=_context.getInitParameter('RESOURCE_FOLDER')?:'/WEB-INF/resource-files/'
+		RESOURCE_PATH=WEB_ROOT_PATH+RESOURCE_FOLDER.substring(1)
 	}
 
 	//TODO
@@ -100,7 +100,7 @@ final class WebApp {
 	private static void _generateResourcePaths(){
 		//	TODO how to set vars?
 		if (Boolean.getBoolean('Parsley.noResourcePathCache')) {
-			resources = null
+			RESOURCES = null
 			return
 		}
 
@@ -117,7 +117,7 @@ final class WebApp {
 					else {
 						URL v = _context.getResource(c)
 						if (!v) {
-							resources = null
+							RESOURCES = null
 							return
 						}
 						paths.put(c, v)
@@ -126,7 +126,7 @@ final class WebApp {
 			}
 		}
 
-		resources=new WebResource(paths)
+		RESOURCES=new WebResource(paths)
 	}
 
 	private static void _initApp(){
@@ -220,7 +220,7 @@ final class WebApp {
 
 		void add(String qualifiedName, String simpleName, URL classUrl){
 			def c=new MapInfo()
-			c.qualifiedName=qualifiedName
+			c.qualifiedName=qualifiedName.replaceAll('/', '.')
 			c.simpleName=simpleName
 			c.classUrl=classUrl
 			_mapInfo.add(c)
@@ -249,7 +249,7 @@ final class WebApp {
 
 	private static void _generateClassList(){
 		//	TODO check simple class name conflicts at compile time?
-		resources.filterClasses()
+		RESOURCES.filterClasses()
 	}
 
 	//	TODO check good name
@@ -260,11 +260,11 @@ final class WebApp {
 		}
 
 		if(token){
-			if(_map.contains(token)){
-				def classname=capitalFirst(token)
-				def classUrl=_map.getUrl(classname)
+			def simpleName=capitalFirst(token)
+			if(_map.contains(simpleName)){
+				def classUrl=_map.getUrl(simpleName)
 				if(classUrl){
-					return Class.forName(_map.getQualifiedName(classname))
+					return Class.forName(_map.getQualifiedName(simpleName))
 				}
 			}
 		}

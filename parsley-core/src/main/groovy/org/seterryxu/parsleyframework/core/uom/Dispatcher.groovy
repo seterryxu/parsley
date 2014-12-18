@@ -46,7 +46,7 @@ abstract class Dispatcher {
 
 	//TODO modify -> delegate ?
 	static void addDispatchers(Class c){
-		if(!WebApp.dispatchers.contains(c)){
+		if(!WebApp.DISPATCHERS.contains(c)){
 			LOGGER.debug("Adding a dispatcher for $c")
 
 			c.metaClass.methodMissing={String name,args->

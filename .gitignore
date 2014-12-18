@@ -3,4 +3,5 @@
 *.prefs 
 target/
 cc.bat
+.settings/
 

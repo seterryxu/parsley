@@ -53,12 +53,14 @@ class ParsleyScriptHelper {
 		def script=InvokerHelper.createScript(loader.parseClass(scriptSrc), new Binding()) as ParsleyScript
 		//	TODO why cannot directly "script.delegate=..."
 		init()
+		
 		def builder=new FreemarkerBuilder()
 		builder.conf=conf
 		builder.writer=writer
 		script.setDelegate(builder)
 		script.run()
-		LOGGER.debug("Running script $_scriptUrl...")
+		
+		LOGGER.debug("Finished running script $_scriptUrl")
 	}
 
 	private GroovyClassLoader _createGroovyClassLoader(){

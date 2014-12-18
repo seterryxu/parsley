@@ -25,8 +25,6 @@ package org.seterryxu.parsleyframework.facet.freemarker
 
 import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
-import javax.servlet.ServletOutputStream
-
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
@@ -54,17 +52,18 @@ class FreemarkerFacet extends Facet{
 		}
 
 		try{
-			_t=conf.getTemplate(preq.requestedResource+'/index'+_ext)
-		}catch(FileNotFoundException e){
-			try{
-				_t=conf.getTemplate(preq.requestedResource+_ext)
-			}catch(FileNotFoundException e2){
-				return false
+			def resName=preq.requestedResource
+			if(resName.endsWith('/')){
+				_t=conf.getTemplate(resName+'index'+_ext)
+			}else{
+				_t=conf.getTemplate(resName+_ext)
 			}
+		}catch(FileNotFoundException e){
+			return false
 		}
 
 		def root=[:]
-		root.put('it', instance)
+		root.put('it', instance?:new Object())
 
 		_t.process(root, pres.getWriter())
 
