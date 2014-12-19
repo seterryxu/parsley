@@ -57,7 +57,6 @@ class JarUtils {
 				if(!f.exists()){
 					if(!f.mkdirs()){
 						return false
-						break
 					}
 				}
 			}else{
@@ -65,7 +64,6 @@ class JarUtils {
 				if(!parentFile.exists()){
 					if(!parentFile.mkdirs()){
 						return false
-						break
 					}
 				}
 				

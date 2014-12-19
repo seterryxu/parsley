@@ -218,9 +218,9 @@ final class WebApp {
 			false
 		}
 
-		void add(String qualifiedName, String simpleName, URL classUrl){
+		void add(String packageName, String simpleName, URL classUrl){
 			def c=new MapInfo()
-			c.qualifiedName=qualifiedName.replaceAll('/', '.')
+			c.qualifiedName=packageName.replaceAll('/', '.')
 			c.simpleName=simpleName
 			c.classUrl=classUrl
 			_mapInfo.add(c)

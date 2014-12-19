@@ -56,8 +56,10 @@ class HttpResponseFactory {
 	private static HttpResponseException _status(int statusCode, String errorMsg){
 		new HttpResponseException(errorMsg){
 			void generateResponse(IParsleyResponse pres){
-				pres.getWriter().print(errorMsg)
 				pres.setStatus(statusCode)
+				
+				pres.setContentType('text/html;charset=UTF-8')
+				pres.getWriter().println(errorMsg)
 			}
 		}
 	}

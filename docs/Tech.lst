@@ -23,7 +23,7 @@ Tech:
 22.@Singleton
 23.@Target(TYPE)
 23.StringWriter, StringBuffer
-24.how to set response page content?
+24.
 25.
 
 Finished:
