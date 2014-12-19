@@ -11,4 +11,4 @@
 5. RequestDispatch, redirect & forward   
 6. Add do$Self mechanism   
 7. Add AngularJS support   
-
+8. check "static final" vars concurrent problems 
