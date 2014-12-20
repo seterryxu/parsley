@@ -1,0 +1,5 @@
+1. JarUtils: 
+  1) extraction abnormal
+  2) only extract necessary files and dirs
+2. FreemarkerBuilder: directives output abnormal
+3. check "static final" vars concurrent problems 

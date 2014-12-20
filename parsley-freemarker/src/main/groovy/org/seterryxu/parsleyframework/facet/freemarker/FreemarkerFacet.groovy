@@ -48,14 +48,12 @@ class FreemarkerFacet extends Facet{
 	@Override
 	boolean handle(instance, IParsleyRequest preq, IParsleyResponse pres){
 		def resName=preq.requestedResource
-		LOGGER.debug("Handling '${resName}'. Initializing required resources...")
-		init()
+		LOGGER.debug("Try handling '${resName}'...")
 
-		if(!_ext){
-			for(e in allowedExtensions()){
-				_ext=e
-			}
-		}
+		_initExtName()
+
+		LOGGER.debug("Initializing required resources...")
+		loadResources()
 
 		def templateName
 		try{
@@ -71,15 +69,26 @@ class FreemarkerFacet extends Facet{
 			return false
 		}
 
-		LOGGER.debug("Template '$templateName' found. Generating html page...")
+		LOGGER.debug("Template '$templateName' found.")
+
 		def root=[:]
 		root.put('it', instance?:new Object())
 
 		pres.setContentType('text/html;charset=UTF-8')
-		_t.process(root, pres.getWriter())
 
+		LOGGER.debug("Generating web page...")
+		_t.process(root, pres.getWriter())
 		LOGGER.debug("Handling completed.")
+
 		return true
+	}
+
+	private void _initExtName(){
+		if(!_ext){
+			for(e in allowedExtensions()){
+				_ext=e
+			}
+		}
 	}
 
 	@Override

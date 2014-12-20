@@ -59,7 +59,7 @@ class HttpResponseFactory {
 				pres.setStatus(statusCode)
 				
 				pres.setContentType('text/html;charset=UTF-8')
-				pres.getWriter().println "<h2>Problem occurred.</h2> <hr/> Reason: $errorMsg"
+				pres.getWriter().println "<h2>Problem occurred.</h2> Reason: $errorMsg <hr/><I>Powered by Parsley</I>"
 			}
 		}
 	}

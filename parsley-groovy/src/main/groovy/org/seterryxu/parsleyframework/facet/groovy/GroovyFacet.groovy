@@ -41,33 +41,41 @@ class GroovyFacet extends Facet {
 	private static _ext
 
 	@Override
-	public boolean handle(Object instance, IParsleyRequest preq,
-			IParsleyResponse pres) {
-			
-		if(!_ext){
-			for(e in allowedExtensions()) {
-				_ext=e
-			}
-		}
-
+	public boolean handle(Object instance, IParsleyRequest preq, IParsleyResponse pres) {
 		def resName=preq.requestedResource
+		LOGGER.debug("Try handling '${resName}'...")
+
+		_initExtName()
+
 		def resUrl
 		if(resName.endsWith('/')){
 			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+'index'+_ext)
 		}else{
 			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+_ext)
 		}
-		
+
 		if(resUrl){
-			ParsleyScriptHelper helper=new ParsleyScriptHelper(resUrl)
-			
+			LOGGER.debug("'$resUrl' found. Generating web page...")
+
 			pres.setContentType('text/html;charset=UTF-8')
+
+			def helper=new ParsleyScriptHelper(instance, resUrl)
 			helper.writeTo(pres.getWriter())
-			
+			LOGGER.debug("Handling completed.")
+
 			return true
 		}
 
+		LOGGER.debug("'$resName' not found. Handling completed.")
 		false
+	}
+
+	private void _initExtName(){
+		if(!_ext){
+			for(e in allowedExtensions()){
+				_ext=e
+			}
+		}
 	}
 
 	@Override

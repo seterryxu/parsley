@@ -30,32 +30,37 @@ import freemarker.template.Configuration
 import freemarker.template.Template
 
 /**
- *
+ * DSL builder for Freemarker templates.
+ * 
  * @author Xu Lijia
  */
 class FreemarkerBuilder {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerBuilder)
 
-	Configuration conf
+	private _instance
+	private Configuration _conf
+	private Writer _writer
 
-	Writer writer
+	FreemarkerBuilder(instance, conf, writer){
+		this._instance=instance
+		this._conf=conf
+		this._writer=writer
+	}
 
-	private StringWriter _w
+	private StringWriter _templateBuilder
 
-	private Stack<String> _stack=new Stack<String>()
+	private Stack<String> _directiveStack=new Stack<String>()
 
-	//------------------- namespace methods -------------------
 	def namespace(Class lib){
 		def a=lib.getAnnotation(LibUri) as LibUri
 		if(!a){
-			def errorMsg="$lib is not a valid namespace."
+			def errorMsg="'$lib' is not a valid namespace."
 			LOGGER.error(errorMsg)
-			//	TODO ex type
-			throw new Exception(errorMsg)
+			throw new IllegalArgumentException(errorMsg)
 		}
 
-		lib.metaClass.invokeMethod=this.&invokeMethod
+		lib.metaClass.methodMissing=this.&methodMissing
 	}
 
 	//	TODO ns <-> cls_ns
@@ -63,29 +68,25 @@ class FreemarkerBuilder {
 		new Namespace(ns)
 	}
 
-	//------------------- handler methods -------------------
-	def methodMissing(String name,args){
-		LOGGER.debug("Calling method: name $name, args $args")
 
-		if(!_w){
-			_w=new StringWriter()
-			_doImport('imp_bootstrap')
-			_w.append("<@imp_bootstrap/>")
+	def methodMissing(String name,args){
+		LOGGER.debug("Calling '$name' with '$args'")
+
+		if(!_templateBuilder){
+			_templateBuilder=new StringWriter()
+			_createTemplate('@imp_bootstrap', null, null, null)
 		}
 
 		_parseArguments(name, args)
 
-		while(!_stack.isEmpty()){
-			def n=_stack.pop()
-			_w.append("</$n>")
+		while(!_directiveStack.isEmpty()){
+			def n=_directiveStack.pop()
+			_templateBuilder.append("</$n>")
 		}
-		
-		_runScript(new Template(null, _w.toString(), conf))
-	}
 
-	private void _doImport(name){
-		//	TODO add line separator ?
-		_w.append("<#include \"/${name}.ftl\">")
+		_runScript(new Template(null, _templateBuilder.toString(), _conf))
+
+		_clearBuilder()
 	}
 
 	private void _parseArguments(name, args){
@@ -93,7 +94,7 @@ class FreemarkerBuilder {
 		Map argz
 		Closure closure
 		String innerText
-		
+
 		switch(args.size()){
 			case 0:break
 			case 1:
@@ -109,21 +110,22 @@ class FreemarkerBuilder {
 				if(args[0] instanceof Map&&args[1] instanceof Closure){
 					argz=args[0]
 					closure=args[1]
+				}else{
+					throw new MissingMethodException(name, getClass(), args)
 				}
 				break
 
 			default:
-			//			TODO how to get class?
 				throw new MissingMethodException(name, getClass(), args)
 		}
 
 		def t=_getTemplate(name)
 		if(t){
 			def name0="@$name"
-			_stack.push(name0)
+			_directiveStack.push(name0)
 			_createTemplate(name0, argz, closure, innerText)
 		}else{
-			_stack.push(name)
+			_directiveStack.push(name)
 			_createTemplate(name, argz, closure, innerText)
 		}
 
@@ -131,7 +133,7 @@ class FreemarkerBuilder {
 
 	private _getTemplate(String name){
 		try{
-			conf.getTemplate("${name}.ftl")
+			_conf.getTemplate("${name}.ftl")
 		}catch(FileNotFoundException e){
 			null
 		}
@@ -142,35 +144,50 @@ class FreemarkerBuilder {
 			_doImport(name.substring(1))
 		}
 
-		_w.append("<$name")
+		_templateBuilder.append("<$name")
 
 		if(args){
 			for(def k in args.keySet()){
 				def v=args.get(k)
-				_w.append(" $k=\"${v}\"")
+				_templateBuilder.append(" $k=\"${v}\"")
 			}
 		}
-		_w.append(">")
+		_templateBuilder.append(">")
 
 		if(closure){
-			_w.append(closure())
-		}
-		
-		if(innerText){
-			_w.append(innerText)
+			def result=closure()
+			if(result){
+				_templateBuilder.append(result)
+			}
 		}
 
-		_w.append("</$name>")
-		if(!_stack.isEmpty()){
-			_stack.pop()
+		if(innerText){
+			_templateBuilder.append(innerText)
 		}
+
+		_templateBuilder.append("</$name>")
+
+		if(!_directiveStack.isEmpty()){
+			_directiveStack.pop()
+		}
+	}
+
+	private void _doImport(name){
+		_templateBuilder.append("<#include \"/${name}.ftl\">").append(LINE_SEPARATOR)
 	}
 
 	private void _runScript(Template t){
 		def root=[:]
-		//	TODO add some properties later
-		LOGGER.debug(t.toString())
-		t.process(root,writer)
+		root.put('instance', _instance?:new Object()) // TODO 'it' is a key word
+
+		LOGGER.debug('Template String: '+t.toString())
+		t.process(root,_writer)
 	}
+
+	private void _clearBuilder(){
+		_templateBuilder.getBuffer().setLength(0)
+	}
+
+	private static final LINE_SEPARATOR=File.pathSeparator==';'?'\r\n':'\n'
 
 }

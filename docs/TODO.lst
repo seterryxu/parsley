@@ -6,9 +6,7 @@
   1) CSRF
 3. Decorators
   2) sitemesh
-4. JarUtils
-  1)only extract necessary files and dirs
+*4. make DSLD effective 
 5. RequestDispatch, redirect & forward   
 6. Add do$Self mechanism   
 7. Add AngularJS support   
-8. check "static final" vars concurrent problems 

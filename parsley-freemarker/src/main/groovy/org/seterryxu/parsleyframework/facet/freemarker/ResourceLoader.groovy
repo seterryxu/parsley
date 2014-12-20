@@ -45,7 +45,7 @@ final class ResourceLoader {
 	private static boolean _isInitialized
 	static Configuration conf
 
-	static void init(){
+	static void loadResources(){
 		if(!_isInitialized){
 			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
 			def jarFile=new File(url.toURI())

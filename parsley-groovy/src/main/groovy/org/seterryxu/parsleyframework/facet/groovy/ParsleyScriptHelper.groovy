@@ -38,9 +38,11 @@ class ParsleyScriptHelper {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyScriptHelper)
 
+	private _instance
 	private URL _scriptUrl
 
-	ParsleyScriptHelper(URL scriptUrl){
+	ParsleyScriptHelper(instance, URL scriptUrl){
+		this._instance=instance
 		this._scriptUrl=scriptUrl
 	}
 
@@ -51,15 +53,13 @@ class ParsleyScriptHelper {
 		LOGGER.debug("Script $_scriptUrl loaded.")
 
 		def script=InvokerHelper.createScript(loader.parseClass(scriptSrc), new Binding()) as ParsleyScript
+		loadResources()
+
+		def builder=new FreemarkerBuilder(_instance, conf, writer)
 		//	TODO why cannot directly "script.delegate=..."
-		init()
-		
-		def builder=new FreemarkerBuilder()
-		builder.conf=conf
-		builder.writer=writer
 		script.setDelegate(builder)
 		script.run()
-		
+
 		LOGGER.debug("Finished running script $_scriptUrl")
 	}
 
