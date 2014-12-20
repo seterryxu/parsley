@@ -28,6 +28,8 @@ import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 import org.seterryxu.parsleyframework.core.Facet
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import freemarker.template.Template
 
@@ -37,12 +39,16 @@ import freemarker.template.Template
  */
 class FreemarkerFacet extends Facet{
 
+	private static final Logger LOGGER=LoggerFactory.getLogger(FreemarkerFacet)
+
 	private Template _t
 
 	private static _ext
 
 	@Override
 	boolean handle(instance, IParsleyRequest preq, IParsleyResponse pres){
+		def resName=preq.requestedResource
+		LOGGER.debug("Handling '${resName}'. Initializing required resources...")
 		init()
 
 		if(!_ext){
@@ -51,22 +57,28 @@ class FreemarkerFacet extends Facet{
 			}
 		}
 
+		def templateName
 		try{
-			def resName=preq.requestedResource
 			if(resName.endsWith('/')){
-				_t=conf.getTemplate(resName+'index'+_ext)
+				templateName=resName+'index'+_ext
+				_t=conf.getTemplate(templateName)
 			}else{
-				_t=conf.getTemplate(resName+_ext)
+				templateName=resName+_ext
+				_t=conf.getTemplate(templateName)
 			}
 		}catch(FileNotFoundException e){
+			LOGGER.debug("Template '$templateName' not found. Handling completed.")
 			return false
 		}
 
+		LOGGER.debug("Template '$templateName' found. Generating html page...")
 		def root=[:]
 		root.put('it', instance?:new Object())
 
+		pres.setContentType('text/html;charset=UTF-8')
 		_t.process(root, pres.getWriter())
 
+		LOGGER.debug("Handling completed.")
 		return true
 	}
 

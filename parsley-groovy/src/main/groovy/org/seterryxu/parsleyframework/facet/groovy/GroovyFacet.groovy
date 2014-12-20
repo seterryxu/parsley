@@ -60,6 +60,8 @@ class GroovyFacet extends Facet {
 		
 		if(resUrl){
 			ParsleyScriptHelper helper=new ParsleyScriptHelper(resUrl)
+			
+			pres.setContentType('text/html;charset=UTF-8')
 			helper.writeTo(pres.getWriter())
 			
 			return true

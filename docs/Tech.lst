@@ -23,7 +23,7 @@ Tech:
 22.@Singleton
 23.@Target(TYPE)
 23.StringWriter, StringBuffer
-24.
+*24.res url: relative or absolute?
 25.
 
 Finished:

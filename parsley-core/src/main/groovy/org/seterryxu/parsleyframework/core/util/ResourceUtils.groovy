@@ -62,12 +62,14 @@ final class ResourceUtils {
 		}else{
 			def resName=requestedResource.toLowerCase()
 			if(!resName.contains('/meta-inf')&&!resName.contains('/web-inf')){
-				// TODO a better way to judge exts?
+				// TODO a better way to retrieve .js .css?
 				if(resName.endsWith('.js')||resName.endsWith('.css')||resName.endsWith('.map')
 				||resName.endsWith('.eot')||resName.endsWith('.svg')
 				||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
-					return WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+requestedResource)
+					def i=requestedResource.indexOf('bootstrap')
+					def resource=requestedResource.substring(i)
+					return WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resource)
 				}
 
 				//try xx/index.htm(l)
@@ -89,7 +91,7 @@ final class ResourceUtils {
 							return pageUrl
 						}
 					}
-					
+
 				}
 			}
 		}
