@@ -113,7 +113,7 @@ final class Parsley extends HttpServlet {
 		STATIC, REST, JS, UNKNOWN
 	}
 
-	private _checkParsleyRequestType(resName){
+	private _checkParsleyRequestType(String resName){
 		if(isStaticResource(resName)){
 			return PARSLEY_REQ_TYPE.STATIC
 		}

@@ -21,22 +21,21 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro panel title="" footer="">
+<#macro navbar inverted="false" fixed="">
+<#assign _inverted="">
 
-<div class="panel panel-default">
+<#if inverted=="true">
+<#assign _inverted=" navbar-inverse">
+</#if>
 
-  <#if title!="">
-  <div class="panel-heading">${title}</div>
-  </#if>
+<#assign _fixed="">
 
-  <div class="panel-body">
-    <#nested>
-  </div>
-  
-  <#if footer!="">
-  <div class="panel-footer">${footer}</div>
-  </#if>
-  
-</div>
+<#if _fixed=="top">
+<#assign _fixed=" navbar-fixed-bottom">
+</#if>
+
+<nav class="navbar${_inverted}${_fixed}" role="navigation">
+  <#nested>
+</nav>
 
 </#macro>

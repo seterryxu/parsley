@@ -1,3 +1,5 @@
+=== Version 1.0 (before distributing, 0.x-SNAPSHOT) ===
+
 1. Dispatching
   #1) => *.ftl
   #2) => *.groovy
@@ -10,4 +12,17 @@
 *4. make DSLD effective 
 5. RequestDispatch, redirect & forward   
 6. Add do$Self mechanism   
-7. Add AngularJS support   
+7. make customized components perfect
+
+
+=== Version 2.0 ===
+1. Improve .ftl availability
+  1) make "<@.../>" template calling style invisible
+  2) bring in name space mechanism
+2. extract layout to a single element
+3. Add AngularJS support   
+
+
+
+
+

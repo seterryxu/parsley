@@ -48,7 +48,9 @@ class GroovyFacet extends Facet {
 		_initExtName()
 
 		def resUrl
-		if(resName.endsWith('/')){
+		if(!resName){
+			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+"index$_ext")
+		}else if(resName.endsWith('/')){
 			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+'index'+_ext)
 		}else{
 			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+_ext)

@@ -64,12 +64,16 @@ final class ParsleyRequestSupport extends HttpServletRequestWrapper implements I
 			while(tk.hasMoreTokens()){
 				l<<tk.nextToken()
 			}
-			_tokens=l as String[]
+
+			if(l.size())
+				_tokens=l as String[]
 		}
 
 		private int index
 
 		String current(){
+			if(!_tokens)
+				return null
 			_tokens[index]
 		}
 
@@ -120,5 +124,4 @@ final class ParsleyRequestSupport extends HttpServletRequestWrapper implements I
 	public Locale getRequestedLocale() {
 		getLocale()?:Locale.ENGLISH
 	}
-
 }

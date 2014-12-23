@@ -21,10 +21,10 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro inverted_navbar>
+<#macro pageheader>
 
-<nav class="navbar navbar-inverse" role="navigation">
+<div class="page-header">
   <#nested>
-</nav>
+</div>
 
 </#macro>

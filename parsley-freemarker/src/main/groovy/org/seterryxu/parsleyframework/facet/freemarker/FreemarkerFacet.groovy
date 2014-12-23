@@ -57,13 +57,15 @@ class FreemarkerFacet extends Facet{
 
 		def templateName
 		try{
-			if(resName.endsWith('/')){
+			if(!resName){// is index.ftl
+				templateName="index$_ext"
+			}else if(resName.endsWith('/')){
 				templateName=resName+'index'+_ext
-				_t=conf.getTemplate(templateName)
 			}else{
 				templateName=resName+_ext
-				_t=conf.getTemplate(templateName)
 			}
+			_t=conf.getTemplate(templateName)
+					
 		}catch(FileNotFoundException e){
 			LOGGER.debug("Template '$templateName' not found. Handling completed.")
 			return false
