@@ -26,6 +26,7 @@ package org.seterryxu.parsleyframework.facet.freemarker
 import static org.seterryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
 import org.seterryxu.parsleyframework.core.Facet
+import org.seterryxu.parsleyframework.core.WebApp
 import org.seterryxu.parsleyframework.core.uom.IParsleyRequest
 import org.seterryxu.parsleyframework.core.uom.IParsleyResponse
 import org.slf4j.Logger
@@ -75,6 +76,7 @@ class FreemarkerFacet extends Facet{
 
 		def root=[:]
 		root.put('it', instance?:new Object())
+		root.put("contextPath", WebApp.CONTEXT_PATH)
 
 		pres.setContentType('text/html;charset=UTF-8')
 

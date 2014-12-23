@@ -44,6 +44,7 @@ final class WebApp {
 	static final Set<String> SUPPORTED_ENCODINGS
 	static final Set<String> SUPPORTED_MIMETYPES
 
+	static String CONTEXT_PATH
 	static String WEB_ROOT_PATH
 	static String RESOURCE_FOLDER
 	static String RESOURCE_PATH
@@ -63,7 +64,7 @@ final class WebApp {
 	static void init(ServletContext context){
 		this._context=context
 
-		_initWebRootPath()
+		_initRootPath()
 		_initSystemProperties()
 		_initResourceFolder()
 		_initEncodings()
@@ -73,8 +74,9 @@ final class WebApp {
 		_generatePageHandlers()
 	}
 
-	private static void _initWebRootPath(){
+	private static void _initRootPath(){
 		WEB_ROOT_PATH=_context.getRealPath("/")
+		CONTEXT_PATH=_context.getContextPath()
 	}
 
 	private static void _initSystemProperties(){
