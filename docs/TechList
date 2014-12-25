@@ -17,12 +17,11 @@ Tech:
 16.this.class.at?.clone()
 17.resolveStrategy
 18.args*.toString().join('/')
-19.XXXSupport
-20.StringWriter, StringBuffer
-21.ConfigObject
-22.@Target(TYPE)
-*23.res url: relative or absolute?
-24.URL patterns:
+19.StringWriter, StringBuffer
+20.ConfigObject
+21.@Target(TYPE)
+*22.res url: relative or absolute?
+23.URL patterns:
    1)/a/b/c
    2)/a-b-c
    3)/a+b+c

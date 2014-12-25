@@ -67,6 +67,7 @@ final class ResourceUtils {
 				||resName.endsWith('.eot')||resName.endsWith('.svg')
 				||resName.endsWith('.ttf')||resName.endsWith('.woff')){
 
+					// TODO decouple: an ugly way to hard code with bootstrap, in future this should be removed.
 					def i=requestedResource.indexOf('bootstrap')
 					def resource=requestedResource.substring(i)
 					return WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resource)
