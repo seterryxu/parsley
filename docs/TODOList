@@ -1,27 +1,72 @@
-=== Version 1.0 (before distributing, 0.x-SNAPSHOT) ===
+========= Version 1.0 ============
+0.5-SNAPSHOT
+(I) Functions:
+*1. GroovyFacet
+  1) make DSLD effective
+  2) groovy facet: make DSL work more efficiently
+*2. FreemarkerFacet
+  1) optimize existing template components
+  2) add new customized components
+*3. Core
+  1) Add strict constraints on argument type checking before action methods
+  2) Add do$Self mechanism
+  3) RequestDispatch, redirect & forward      
+4. set log level for logback, only output logs for INFO level
 
-1. Dispatching
-  3) => js methods
-2. Security
-  1) CSRF
-3. Decorators
-  2) sitemesh
-*4. make DSLD effective 
-5. RequestDispatch, redirect & forward   
-6. Add do$Self mechanism   
-7. make customized components perfect
-8. decouple bootstrap
+(II) Bugs to fix:
+1. JarUtils(Considering): 
+  1) extraction abnormal
+  2) only extract necessary files and dirs
+2. check "static final" vars concurrent problems
+3. [Linux] Error "URL is not hierarchical" at line 51 in ResourceLoader
 
 
-=== Version 2.0 ===
-1. Improve .ftl availability
-  1) make "<@.../>" template calling style invisible
-  2) bring in name space mechanism
-2. Add AngularJS support 
+0.6-SNAPSHOT
+1. FreemarkerFacet(Improve .ftl availability)
+  1) try an "XML-ish" way to call templates, hiding "<@.../>" template calling style
+2. GroovyFacet
+  1) bring in string name space mechanism ('/lib/form' <=> FormLib)
+3. Add AngularJS support
+  1) Dispatching => js methods
+  2) ParsleyResponse: JSONObject?
+  3) Security: CSRF
+4. use Travis CI   
+   
+0.7-SNAPSHOT
+1. Core(Dispatching Actions)
+   1) multiple classes with the same simple name, how to distinguish?
+   2) conflicts check at compile time rather than at runtime
+2. Annotations support
+  1) @WebMethod
+  2) @URLMapping
+3. decode URL (when URL has non-ASCII characters)    
+4. Decorators
+  1) sitemesh?
 
 
-=== Finished ===
-1. Dispatching
-  #1) => *.ftl
-  #2) => *.groovy
-2. extract layout to a single element
+========= Version 2.0 =========
+1. Refactor: Groovier way
+  1) some inheritance styles
+  2) design patterns
+  
+  
+==============================
+====== Versions History ======
+==============================
+0.1-SNAPSHOT 
+  1) Basic infrastructure and architecture 
+  2) Dispatching => *.htm/html
+  3) Dispatching => Actions
+0.2-SNAPSHOT 
+  1) commons-discovery
+  2) Dispatching => *.ftl
+  3) components based on bootstrap
+0.3-SNAPSHOT  
+  1) Dispatching => *.groovy
+  2) ParsleyScripts
+  3) FreemarkerBuilder
+0.4-SNAPSHOT
+  1) refactor
+  2) fix bugs and make it function normally
+  3) [MY Web Site] construct a web site based on Parsley and extract layout to a single element
+

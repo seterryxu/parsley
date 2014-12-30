@@ -30,8 +30,8 @@
 
 <#assign _fixed="">
 
-<#if _fixed=="top">
-<#assign _fixed=" navbar-fixed-bottom">
+<#if fixed=="top">
+<#assign _fixed=" navbar-fixed-top">
 </#if>
 
 <nav class="navbar${_inverted}${_fixed}" role="navigation">

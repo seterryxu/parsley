@@ -47,10 +47,11 @@ final class ResourceLoader {
 
 	static void loadResources(){
 		if(!_isInitialized){
-			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
-			def jarFile=new File(url.toURI())
-
-			JarUtils.decompress(jarFile, WebApp.RESOURCE_PATH)
+			//TODO error on Linux
+			//			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
+			//			def jarFile=new File(url.toURI())
+			//
+			//			JarUtils.decompress(jarFile, WebApp.RESOURCE_PATH)
 
 			conf=new Configuration()
 			conf.setDefaultEncoding('UTF-8')
