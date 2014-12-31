@@ -21,19 +21,61 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.core.uom
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import javax.servlet.ServletOutputStream
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+import org.terryxu.parsleyframework.core.util.ResourceUtils;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-	method name:'$', type:String, params:[key:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+class StaticResourceResponse implements IHttpResponse {
+
+	private static final Logger LOGGER=LoggerFactory.getLogger(StaticResourceResponse)
+
+	private static final int BUFFER_SIZE=4096
+
+	private IParsleyRequest _preq
+
+	private InputStream _stream
+
+	StaticResourceResponse(IParsleyRequest preq){
+		this._preq=preq
+	}
+
+	private static InputStream _toStream(URL url){
+		url.openConnection().getInputStream()
+	}
+
+	@Override
+	public void generateResponse(IParsleyResponse pres) {
+		def res=_preq.requestedResource
+		def page=ResourceUtils.getStaticResource(res)
+
+		if(page){
+			this._stream=_toStream(page)
+			_generateResponse(pres)
+		}else{
+			def errorMsg="Static Resource $res not found."
+			LOGGER.error(errorMsg)
+			HttpResponseFactory.notFound(errorMsg, pres)
+		}
+	}
+
+	private void _generateResponse(IParsleyResponse pres) {
+		def out=pres.getOutputStream()
+
+		byte[]buffer=new byte[BUFFER_SIZE]
+		int len
+		while((len=_stream.read(buffer))>0){
+			out.write(buffer, 0, len)
+		}
+
+		out.close()
+	}
+
 }
-
-

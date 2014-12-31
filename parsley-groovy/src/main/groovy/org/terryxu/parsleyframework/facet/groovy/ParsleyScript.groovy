@@ -21,19 +21,26 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.facet.groovy
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+/**
+ *
+ * @author Xu Lijia
+ */
+abstract class ParsleyScript extends Script{
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+	GroovyObject _delegate
 
-	method name:'$', type:String, params:[key:String]
+	void setDelegate(delegate){
+		this._delegate=delegate
+	}
+
+	def invokeMethod(String name, args){
+		return _delegate.invokeMethod(name, args)
+	}
+
+	//	TODO
+	String $(String key){
+
+	}
 }
-
-

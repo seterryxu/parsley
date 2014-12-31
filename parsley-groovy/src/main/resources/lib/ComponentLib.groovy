@@ -23,7 +23,7 @@
 
 package lib
 
-import org.seterryxu.parsleyframework.facet.groovy.LibUri
+import org.terryxu.parsleyframework.facet.groovy.LibUri
 
 /**
  *

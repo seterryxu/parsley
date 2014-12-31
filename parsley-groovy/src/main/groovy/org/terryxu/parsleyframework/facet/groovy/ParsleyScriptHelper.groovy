@@ -21,16 +21,53 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package lib
+package org.terryxu.parsleyframework.facet.groovy
 
-import org.terryxu.parsleyframework.facet.groovy.LibUri
+import static org.terryxu.parsleyframework.facet.freemarker.ResourceLoader.*
+
+import org.codehaus.groovy.control.CompilerConfiguration
+import org.codehaus.groovy.runtime.InvokerHelper
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  *
  * @author Xu Lijia
  */
-@LibUri('/lib/form')
-interface FormLib {
+class ParsleyScriptHelper {
 
-	void form()
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyScriptHelper)
+
+	private _instance
+	private URL _scriptUrl
+
+	ParsleyScriptHelper(instance, URL scriptUrl){
+		this._instance=instance
+		this._scriptUrl=scriptUrl
+	}
+
+	void writeTo(Writer writer){
+		def loader=_createGroovyClassLoader()
+		//	TODO add security constraints?
+		def scriptSrc=new GroovyCodeSource(_scriptUrl)
+		LOGGER.debug("Script $_scriptUrl loaded.")
+
+		def script=InvokerHelper.createScript(loader.parseClass(scriptSrc), new Binding()) as ParsleyScript
+		loadResources()
+
+		def builder=new FreemarkerBuilder(_instance, conf, writer)
+		//	TODO why cannot directly "script.delegate=..."
+		script.setDelegate(builder)
+		script.run()
+
+		LOGGER.debug("Finished running script $_scriptUrl")
+	}
+
+	private GroovyClassLoader _createGroovyClassLoader(){
+		def config=new CompilerConfiguration()
+		config.setScriptBaseClass(ParsleyScript.class.name)
+		config.setRecompileGroovySource(false)
+
+		new GroovyClassLoader(this.class.getClassLoader(), config)
+	}
 }

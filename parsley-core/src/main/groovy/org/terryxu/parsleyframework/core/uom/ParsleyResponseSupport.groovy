@@ -21,19 +21,24 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.core.uom
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpServletResponseWrapper
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-	method name:'$', type:String, params:[key:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+final class ParsleyResponseSupport extends HttpServletResponseWrapper implements IParsleyResponse {
+
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyResponseSupport)
+
+	ParsleyResponseSupport(HttpServletResponse res){
+		super(res)
+	}
+
 }
-
-

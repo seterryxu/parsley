@@ -21,19 +21,32 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import javax.servlet.ServletContextEvent
+import javax.servlet.ServletContextListener
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+import org.terryxu.parsleyframework.core.WebApp
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-	method name:'$', type:String, params:[key:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+final class ParsleyListener implements ServletContextListener {
+
+	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyListener)
+
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		WebApp.init(event.getServletContext())
+		LOGGER.info('Parsley context initialized.')
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		LOGGER.info('Cleaning up Parsley context...')
+		WebApp.cleanUp()
+	}
 }
-
-

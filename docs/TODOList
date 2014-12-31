@@ -3,14 +3,15 @@
 (I) Functions:
 *1. GroovyFacet
   1) make DSLD effective
-  2) groovy facet: make DSL work more efficiently
+  2) make DSL work more efficiently
 *2. FreemarkerFacet
   1) optimize existing template components
-  2) add new customized components
+  2) add new customized components(*.ftl)
 *3. Core
   1) Add strict constraints on argument type checking before action methods
   2) Add do$Self mechanism
   3) RequestDispatch, redirect & forward      
+4. org.seterryxu => org.terryxu
 
 (II) Bugs to fix:
 1. JarUtils(Considering): 
@@ -43,22 +44,31 @@
 2. Annotations support
   1) @WebMethod
   2) @URLMapping
-3. decode URL (when URL has non-ASCII characters)
-
+3. load env vars
+ 
   
 0.8-SNAPSHOT  
-1. Decorators
+1. i18n support
+2. decode URL (when URL has non-ASCII characters)
+
+(II) Bugs to fix:
+1. Error when deploying on tomcat8  
+  
+0.9-SNAPSHOT 
+1. Decorators(Considering)
   1) sitemesh?
 2. Refactor: Groovier way
   1) some inheritance styles
   2) design patterns
+3. GroovyFacet
+  1) Generate Libs automatically
+
+1.0
+1. use Travis CI 
+2. set log level for logback, only output logs for INFO level
 3. use Gradle
 
 
-0.9-SNAPSHOT 
-1. use Travis CI 
-2. set log level for logback, only output logs for INFO level
-3. 
 ================================ Version 2.0 ================================
 
   

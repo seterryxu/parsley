@@ -21,19 +21,48 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.facet.freemarker
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import org.terryxu.parsleyframework.core.WebApp
+import org.terryxu.parsleyframework.facet.freemarker.util.JarUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+import freemarker.cache.ClassTemplateLoader
+import freemarker.cache.FileTemplateLoader
+import freemarker.cache.MultiTemplateLoader
+import freemarker.cache.TemplateLoader
+import freemarker.template.Configuration
 
-	method name:'$', type:String, params:[key:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+final class ResourceLoader {
+
+	private static final Logger LOGGER=LoggerFactory.getLogger(ResourceLoader)
+
+	private static boolean _isInitialized
+	static Configuration conf
+
+	static void loadResources(){
+		if(!_isInitialized){
+			//TODO error on Linux
+			//			def url=ResourceLoader.getProtectionDomain().getCodeSource().getLocation()
+			//			def jarFile=new File(url.toURI())
+			//
+			//			JarUtils.decompress(jarFile, WebApp.RESOURCE_PATH)
+
+			conf=new Configuration()
+			conf.setDefaultEncoding('UTF-8')
+
+			def clsLoader=new ClassTemplateLoader(FreemarkerFacet.class, '/components')
+			def resLoader=new FileTemplateLoader(new File(WebApp.RESOURCE_PATH))
+			TemplateLoader[]loaders=[clsLoader, resLoader] as TemplateLoader[]
+			def multiLoaders=new MultiTemplateLoader(loaders)
+			conf.setTemplateLoader(multiLoaders)
+
+			_isInitialized=true
+		}
+	}
 }
-
-

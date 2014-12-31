@@ -21,19 +21,52 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.core.uom
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import javax.servlet.http.HttpServletResponse
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+class HttpResponseFactory {
 
-	method name:'$', type:String, params:[key:String]
+	//------------------- http exceptions -------------------
+	/**
+	 * Error 500 INTERNAL_SERVER_ERROR
+	 */
+	static void error(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errorMsg).generateResponse(pres)
+	}
+
+	/**
+	 * Error 404 NOT_FOUND
+	 */
+	static void notFound(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_NOT_FOUND, errorMsg).generateResponse(pres)
+	}
+
+	/**
+	 * Error 403 FORBIDDEN
+	 */
+	static void forbidden(String errorMsg, IParsleyResponse pres){
+		_status(HttpServletResponse.SC_FORBIDDEN, errorMsg).generateResponse(pres)
+	}
+
+	private static HttpResponseException _status(int statusCode, String errorMsg){
+		new HttpResponseException(errorMsg){
+			void generateResponse(IParsleyResponse pres){
+				pres.setStatus(statusCode)
+				
+				pres.setContentType('text/html;charset=UTF-8')
+				pres.getWriter().println "<h2>Problem occurred.</h2> Reason: $errorMsg <hr/><I>Powered by Parsley</I>"
+			}
+		}
+	}
+
+	//------------------- http page responses -------------------
+	static void staticResource(IParsleyRequest preq, IParsleyResponse pres){
+		new StaticResourceResponse(preq).generateResponse(pres)
+	}
+
 }
-
-

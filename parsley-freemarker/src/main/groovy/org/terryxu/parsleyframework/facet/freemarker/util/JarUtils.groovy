@@ -21,19 +21,69 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.facet.freemarker.util
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import java.util.jar.JarFile
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+/**
+ * @author Xu Lijia
+ *
+ */
+class JarUtils {
 
-	method name:'$', type:String, params:[key:String]
+	// TODO only decompress necessary files and dirs
+	static boolean decompress(File jarFile,String outputPath){
+		if(!jarFile||!outputPath){
+			return false
+		}
+
+		if(!jarFile.exists()){
+			return false
+		}
+
+		def oPath=new File(outputPath)
+		if(!oPath.exists()){
+			if(oPath.mkdirs()){
+				return false
+			}
+		}
+
+		def jar=new JarFile(jarFile)
+		def entries=jar.entries()
+		while(entries.hasMoreElements()){
+			def entry=entries.nextElement()
+			def f=new File("${outputPath}/${entry.name}")
+			if(entry.isDirectory()){
+				if(!f.exists()){
+					if(!f.mkdirs()){
+						return false
+					}
+				}
+			}else{
+				def parentFile=f.getParentFile()
+				if(!parentFile.exists()){
+					if(!parentFile.mkdirs()){
+						return false
+					}
+				}
+				
+				if(!entry.name.endsWith('.css')||entry.name.endsWith('.js')){
+					continue
+				}
+				
+				def is=jar.getInputStream(entry)
+				def os=new BufferedOutputStream(new FileOutputStream(f))
+				
+				byte[]buffer=new byte[4096]
+				int len
+				while((len=is.read(buffer))>0){
+					os.write(buffer, 0, len)
+				}
+				
+				os.flush()
+				os.close()
+				is.close()
+			}
+		}
+	}
 }
-
-

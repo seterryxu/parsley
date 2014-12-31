@@ -21,19 +21,21 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.facet.groovy
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import static java.lang.annotation.ElementType.*
+import static java.lang.annotation.RetentionPolicy.*
 
-	//TODO add doc
-	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
+import java.lang.annotation.Documented
+import java.lang.annotation.Retention
 
-	method name:'$', type:String, params:[key:String]
+/**
+ *
+ * @author Xu Lijia
+ */
+//TODO add more annotations
+@Retention(RUNTIME)
+@Documented
+@interface LibUri {
+	String value()
 }
-
-

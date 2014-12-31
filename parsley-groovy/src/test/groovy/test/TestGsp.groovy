@@ -3,7 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.seterryxu.parsleyframework.facet.groovy.FreemarkerBuilder;
+import org.terryxu.parsleyframework.facet.groovy.FreemarkerBuilder;
 
 class TestGsp {
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.seterryxu.parsleyframework.facet.freemarker.FreemarkerFacet;
+import org.terryxu.parsleyframework.facet.freemarker.FreemarkerFacet;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;

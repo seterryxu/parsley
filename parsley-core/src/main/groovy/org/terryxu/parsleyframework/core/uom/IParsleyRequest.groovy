@@ -21,19 +21,18 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.terryxu.parsleyframework.facet.groovy.Namespace
+package org.terryxu.parsleyframework.core.uom
 
-contribute(currentType(isScript())) {
-	provider 'Parsley scripts'
+import java.util.Locale;
 
-	//TODO add doc
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ *
+ * @author Xu Lijia
+ */
+interface IParsleyRequest extends HttpServletRequest {
+
+	Locale getRequestedLocale()
 	
-	// not a decent way to delegate to some classes,
-	// for many unrelated public methods are shown
-	method name:'namespace', type:Object, params:[ns:Class]
-	method name:'namespace', type:Namespace, params:[ns:String]
-
-	method name:'$', type:String, params:[key:String]
 }
-
-
