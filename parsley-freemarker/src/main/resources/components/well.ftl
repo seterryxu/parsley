@@ -21,15 +21,16 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
 
-<#macro well type="normal">
-<#assign _type="">
-
-<#if type=="large">
-<#assign _type=" well-lg">
-<#elseif type=="small">
-<#assign _type=" well-sm">
+<#macro well size="">
+<#assign _size="">
+<#if size=="large">
+<#assign _size=" well-lg">
+</#if>
+<#if size=="small">
+<#assign _size=" well-sm">
 </#if>
 
-<div class="well${_type}"><#nested></div>
-
+<div class="well${_size}">
+  <#nested>
+</div>
 </#macro>

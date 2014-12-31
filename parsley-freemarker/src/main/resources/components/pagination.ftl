@@ -21,19 +21,18 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro pagination type="normal">
-<#assign _type="">
-
-<#if type=="large">
-<#assign _type=" pagination-lg">
-<#elseif type=="small">
-<#assign _type=" pagination-sm">
+<#macro pagination size="">
+<#assign _size="">
+<#if size=="large">
+<#assign _size=" pagination-lg">
+</#if>
+<#if size=="small">
+<#assign _size=" pagination-sm">
 </#if>
 
 <nav>
-  <ul class="pagination${_type}">
+  <ul class="pagination${_size}">
 	<#nested>
   </ul>
 </nav>
-
 </#macro>

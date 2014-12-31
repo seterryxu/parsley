@@ -20,12 +20,12 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
-
-<#macro button label type="default" custom="">
-<#assign _type=" btn-default">
-<#if type!="default">
-<#assign _type=type>
-</#if>
-
-<button type="button" class="btn${_type} ${custom}">${label}</button>
+ 
+<#macro progressbar now>
+<div class="progress">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" 
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="${now}" style="width: ${now}%">
+       ${now}
+  </div>
+</div>
 </#macro>

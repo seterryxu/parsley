@@ -20,12 +20,14 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
-
-<#macro button label type="default" custom="">
-<#assign _type=" btn-default">
-<#if type!="default">
-<#assign _type=type>
+ 
+<#macro nav type="tabs" justified="false">
+<#assign _justified="">
+<#if justified=="true">
+<#assign _justified=" nav-justified">
 </#if>
 
-<button type="button" class="btn${_type} ${custom}">${label}</button>
+<ul class="nav nav-${type}${_justified}">
+  <#nested>
+</ul>
 </#macro>

@@ -25,7 +25,18 @@ Tech:
    1)/a/b/c
    2)/a-b-c
    3)/a+b+c
-
+24.Bootstrap
+   1) icon
+    a) aria-hidden="true"
+    b) sr-only
+   2) dropdown
+    a) menuitem -> a component?
+    b) divider -> a component?
+    c) trigger?
+   3) button group & button dropdown
+   4) dropdown addon -> a component?
+   5) alert js plugin
+   6) progress bar: full width with label 
 Finished:
 1. commons-discovery
 2. how to load *.ftl from *.jar

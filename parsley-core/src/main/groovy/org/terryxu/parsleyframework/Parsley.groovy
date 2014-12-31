@@ -159,8 +159,11 @@ final class Parsley extends HttpServlet {
 
 	private _tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
 		def token=preq.resourceTokens.current()
-		
-		return instance."$token"(preq, pres)
+		try{
+			return instance."$token"(preq, pres)
+		}catch(MissingMethodException e){
+			null
+		}
 	}
 
 }

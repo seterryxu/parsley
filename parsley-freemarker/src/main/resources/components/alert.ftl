@@ -20,12 +20,19 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
-
-<#macro button label type="default" custom="">
-<#assign _type=" btn-default">
-<#if type!="default">
-<#assign _type=type>
+ 
+<#macro alert type message dismissible="false">
+<#assign _dismissible="">
+<#if dismissible=="true">
+<#assign _dismissible=" alert-dismissible">
 </#if>
 
-<button type="button" class="btn${_type} ${custom}">${label}</button>
+<div class="alert alert-${type}${_dismissible}" role="alert">
+<#if dismissible=="true">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+</#if>
+${message}
+</div>
 </#macro>

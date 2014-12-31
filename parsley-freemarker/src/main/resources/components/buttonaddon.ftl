@@ -20,12 +20,21 @@
   IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
-
-<#macro button label type="default" custom="">
-<#assign _type=" btn-default">
-<#if type!="default">
-<#assign _type=type>
-</#if>
-
-<button type="button" class="btn${_type} ${custom}">${label}</button>
+ 
+<#macro buttonaddon before="" placeholder="" after="">
+<div class="col-lg-6">
+  <div class="input-group">
+    <#if before!="">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="button">${before}</button>
+    </span>
+    </#if>
+    <input type="text" class="form-control" placeholder="${placeholder}">
+    <#if after!="">  
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="button">${after}</button>
+    </span>
+    </#if>
+  </div>
+</div>
 </#macro>

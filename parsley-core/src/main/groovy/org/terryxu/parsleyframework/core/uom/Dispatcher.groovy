@@ -48,7 +48,13 @@ abstract class Dispatcher {
 		if(!WebApp.DISPATCHERS.contains(c)){
 			LOGGER.debug("Adding a dispatcher for $c")
 
-			c.metaClass.methodMissing={String name,args->
+			c.metaClass.invokeMethod={String name,args->
+				//check if this class has a customized navigation method
+				//if does, invoke this method and ignore others
+				if(c.metaClass.respondsTo(c, 'do$Self', IParsleyRequest, IParsleyResponse)){
+					return invokeMethod('do$Self', args)
+				}
+				
 				def name0=capitalFirst(name)
 
 				//check if this class has a parsley action method
@@ -62,11 +68,6 @@ abstract class Dispatcher {
 				}
 				
 				//TODO should have multiple getters
-				
-				//check if this class has a customized navigation method
-				if(c.metaClass.respondsTo(c,'do$Self', IParsleyRequest, IParsleyResponse)){
-					return invokeMethod('do$Self', args)
-				}
 				
 				//				if(c.metaClass.respondsTo(c,"js$name0")){
 				//					return invokeMethod("js$name0", args)

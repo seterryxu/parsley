@@ -21,22 +21,16 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro panel title="" footer="">
-
-<div class="panel panel-default">
-
-  <#if title!="">
-  <div class="panel-heading">${title}</div>
+<#macro panel type="default" header="" footer="">
+<div class="panel panel-${type}">
+  <#if header!="">
+  <div class="panel-heading">${header}</div>
   </#if>
-
   <div class="panel-body">
     <#nested>
   </div>
-  
   <#if footer!="">
   <div class="panel-footer">${footer}</div>
   </#if>
-  
 </div>
-
 </#macro>

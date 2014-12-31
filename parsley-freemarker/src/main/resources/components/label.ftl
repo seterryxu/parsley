@@ -21,8 +21,6 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro text label>
-
-<p class="navbar-text">${label}</p>
-
+<#macro label type text>
+<span class="label label-${type}">${text}</span>
 </#macro>

@@ -21,14 +21,18 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro dropdown text>
+<#macro dropdown id label header="">
 <div class="dropdown">
-  <button id="dropdownMenu1" type="button" class="btn btn-default dropdown-toggle" 
+  <button id="${id}" type="button" class="btn btn-default dropdown-toggle" 
           data-toggle="dropdown" aria-expanded="true">
-    ${text}
+    ${label}
     <span class="caret"></span>
   </button>
-  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+  
+  <ul class="dropdown-menu" role="menu" aria-labelledby="${id}">
+    <#if header!="">
+      <li role="presentation" class="dropdown-header">${header}</li>
+    </#if>
     <#nested>
   </ul>
 </div>

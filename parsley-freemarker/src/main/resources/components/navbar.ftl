@@ -21,21 +21,20 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro navbar inverted="false" fixed="">
-<#assign _inverted="">
-
-<#if inverted=="true">
-<#assign _inverted=" navbar-inverse">
+<#macro navbar type="default" fixedTo="">
+<#assign _type="default">
+<#if type=="inverted">
+<#assign _type="inverse">
+</#if>
+<#assign _fixedTo="">
+<#if fixedTo=="top">
+<#assign _fixedTo=" navbar-fixed-top">
+</#if>
+<#if fixedTo="bottom">
+<#assign _fixedTo=" navbar-fixed-bottom">
 </#if>
 
-<#assign _fixed="">
-
-<#if fixed=="top">
-<#assign _fixed=" navbar-fixed-top">
-</#if>
-
-<nav class="navbar${_inverted}${_fixed}" role="navigation">
+<nav class="navbar navbar-${_type}${_fixedTo}" role="navigation">
   <#nested>
 </nav>
-
 </#macro>

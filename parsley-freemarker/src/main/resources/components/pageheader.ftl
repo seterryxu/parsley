@@ -22,9 +22,7 @@
  -->
  
 <#macro pageheader>
-
 <div class="page-header">
   <#nested>
 </div>
-
 </#macro>

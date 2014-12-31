@@ -21,10 +21,22 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro tabs>
+<#macro inputgroup size="" before="" placeholder="" after="">
+<#assign _size="">
+<#if size=="large">
+<#assign _size=" input-group-lg">
+</#if>
+<#if size=="small">
+<#assign _size="input-group-sm">
+</#if>
 
-<ul class="nav nav-tabs">
-  <#nested>
-</ul>
-
+<div class="input-group${_size}">
+  <#if before!="">
+  <span class="input-group-addon">${before}</span>
+  </#if>
+  <input type="text" class="form-control" placeholder="${placeholder}">
+  <#if after!="">
+  <span class="input-group-addon">${after}</span>
+  </#if>
+</div>
 </#macro>
