@@ -27,5 +27,5 @@
 <#assign _type=type>
 </#if>
 
-<button type="button" class="btn${_type} ${custom}">${label}</button>
+<button type="${_type}" class="btn${_type} ${custom}">${label}</button>
 </#macro>

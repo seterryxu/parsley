@@ -31,5 +31,6 @@ import javax.servlet.http.HttpServletResponse
  */
 interface IParsleyResponse extends HttpServletResponse{
 	
-//	void sendRedirect()
+	void forward(IParsleyRequest preq, String url)
+	
 }

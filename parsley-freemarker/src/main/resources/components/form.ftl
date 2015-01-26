@@ -21,8 +21,8 @@
   THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  -->
  
-<#macro form type="">
-<form class="${type}">
+<#macro form action type="">
+<form class="${type}" method="post" action>
   <#nested>
 </form>
 </#macro>

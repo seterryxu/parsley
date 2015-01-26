@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponseWrapper
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.terryxu.parsleyframework.Parsley;
 
 /**
  *
@@ -37,8 +38,17 @@ final class ParsleyResponseSupport extends HttpServletResponseWrapper implements
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(ParsleyResponseSupport)
 
-	ParsleyResponseSupport(HttpServletResponse res){
+	private Parsley _parsley
+	
+	ParsleyResponseSupport(HttpServletResponse res, Parsley parsley){
 		super(res)
+		this._parsley=parsley
+	}
+
+	//TODO is this one necessary? diff between req.getRequestDispatcher & res.forward()?
+	@Override
+	public void forward(IParsleyRequest preq, String url) {
+		_parsley.doForward(preq, url, this)
 	}
 
 }

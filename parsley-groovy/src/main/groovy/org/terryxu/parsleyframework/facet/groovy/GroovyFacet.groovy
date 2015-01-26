@@ -23,6 +23,8 @@
 
 package org.terryxu.parsleyframework.facet.groovy
 
+import javax.servlet.RequestDispatcher;
+
 import org.terryxu.parsleyframework.core.Facet
 import org.terryxu.parsleyframework.core.WebApp
 import org.terryxu.parsleyframework.core.uom.IParsleyRequest
@@ -47,25 +49,31 @@ class GroovyFacet extends Facet {
 
 		_initExtName()
 
-		def resUrl
-		if(!resName){
-			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+"index$_ext")
-		}else if(resName.endsWith('/')){
-			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+'index'+_ext)
-		}else{
-			resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+_ext)
-		}
-
-		if(resUrl){
-			LOGGER.debug("'$resUrl' found. Generating web page...")
-
-			pres.setContentType('text/html;charset=UTF-8')
-
-			def helper=new ParsleyScriptHelper(instance, resUrl)
-			helper.writeTo(pres.getWriter())
-			LOGGER.debug("Handling completed.")
-
+		if(instance!=null&&instance.metaClass.respondsTo(instance, 'do$Self', IParsleyRequest, IParsleyResponse)){
+			LOGGER.debug("Handling '${resName}' yourself...")
+			instance.'do$Self'(preq, pres)
 			return true
+		}else{
+			def resUrl
+			if(!resName){
+				resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+"index$_ext")
+			}else if(resName.endsWith('/')){
+				resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+'index'+_ext)
+			}else{
+				resUrl=WebApp.RESOURCES.getByName(WebApp.RESOURCE_FOLDER+resName+_ext)
+			}
+			
+			if(resUrl){
+				LOGGER.debug("'$resUrl' found. Generating web page...")
+				
+				pres.setContentType('text/html;charset=UTF-8')
+				
+				def helper=new ParsleyScriptHelper(instance, resUrl)
+				helper.writeTo(pres.getWriter())
+				LOGGER.debug("Handling completed.")
+				
+				return true
+			}
 		}
 
 		LOGGER.debug("'$resName' not found. Handling completed.")
@@ -85,5 +93,11 @@ class GroovyFacet extends Facet {
 		def exts=new HashSet<String>()
 		exts.add('.groovy')
 		return exts
+	}
+
+	@Override
+	public RequestDispatcher createRequestDispatcher(String pageName) {
+		// TODO Auto-generated method stub
+		return null
 	}
 }

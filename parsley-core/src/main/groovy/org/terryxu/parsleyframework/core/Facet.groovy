@@ -29,6 +29,8 @@ import org.terryxu.parsleyframework.core.uom.IParsleyResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+import javax.servlet.RequestDispatcher
+
 import java.util.Set
 
 /**
@@ -84,6 +86,8 @@ abstract class Facet {
 	}
 
 	//------------------- handlers -------------------
+
+	abstract RequestDispatcher createRequestDispatcher(String pageName)
 
 	abstract boolean handle(instance,IParsleyRequest preq,IParsleyResponse pres)
 

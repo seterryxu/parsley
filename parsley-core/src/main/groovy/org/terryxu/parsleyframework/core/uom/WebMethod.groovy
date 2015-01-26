@@ -35,5 +35,6 @@ import java.lang.annotation.Retention
 @Retention(RUNTIME)
 @Documented
 @interface WebMethod {
+//TODO DELETE, POST
 	String type()
 }

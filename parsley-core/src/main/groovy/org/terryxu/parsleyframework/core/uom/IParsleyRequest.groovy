@@ -25,6 +25,7 @@ package org.terryxu.parsleyframework.core.uom
 
 import java.util.Locale;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -32,7 +33,9 @@ import javax.servlet.http.HttpServletRequest;
  * @author Xu Lijia
  */
 interface IParsleyRequest extends HttpServletRequest {
-
+	
 	Locale getRequestedLocale()
+
+	RequestDispatcher getPage(String pageName)
 	
 }

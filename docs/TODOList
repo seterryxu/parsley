@@ -1,37 +1,39 @@
 ================================ Version 1.0 ===================================
 0.5-SNAPSHOT
 (I) Functions:
-*1. GroovyFacet
-  1) make DSLD effective
-  2) make DSL work more efficiently
-*2. FreemarkerFacet
+*1. FreemarkerFacet
+  1) optimize existing template components
+    a. navbar type, fixTo => class?
+    b. button type, custom => class? label?
   3) add necessary js plugins
-*3. Core
-  2) Add do$Self mechanism
-  3) RequestDispatcher, redirect & forward      
+**2. Core
+  3) add forward function to ParsleyResponse
+  4) RequestDispatcher, redirect & forward  
+  6) change root: "" -> "/"
+  7) how to map Ctlr to View according to Convention?
 
 (II) Bugs to fix:
 1. JarUtils(Considering): 
   1) extraction abnormal
   2) only extract necessary files and dirs
 2. check "static final" vars concurrent problems
-3. [Linux] Error "URL is not hierarchical" at line 51 in ResourceLoader
+3. When the context path is not followed by "/", an "OutOfBound" exception is thrown.
+5. change class behavior leads to asBoolean() throwing Exception
 
 
 0.6-SNAPSHOT
 (I) Functions:
 1. FreemarkerFacet(Considering: To optimize *.ftl availability)
   1) try an "XML-ish" way to call templates, hiding "<@.../>" template calling style
-2. GroovyFacet
+**2. GroovyFacet
   1) bring in string name space mechanism ('/lib/form' <=> FormLib)
-3. Add AngularJS support
-  1) Dispatching => js methods
-  2) ParsleyResponse: JSONObject?
-  3) Security: CSRF
-
+  2) make DSLD effective
+  3) make DSL work more efficiently
+  
 (II) Bugs to fix:
-1. FreemarkerBuilder: directives output abnormal
+1. [Linux] Error "URL is not hierarchical" at line 51 in ResourceLoader
 2. add <!DOCTYPE html> to .ftl and .css cannot be loaded  
+3. FreemarkerBuilder: directives output abnormal
    
    
 0.7-SNAPSHOT
@@ -42,12 +44,16 @@
   1) @WebMethod
   2) @URLMapping
 3. load env vars
- 
+4. Encodings & MIME types initialization 
   
 0.8-SNAPSHOT  
 1. i18n support
 2. decode URL (when URL has non-ASCII characters)
 3. REST support
+4. Add AngularJS support
+  1) Dispatching => js methods
+  2) ParsleyResponse: JSONObject binding?
+  3) Security: CSRF
 
 (II) Bugs to fix:
 1. Error when deploying on tomcat8  
@@ -81,23 +87,33 @@
   1) Basic infrastructure and architecture 
   2) Dispatching => *.htm/html
   3) Dispatching => Actions
+  
 0.2-SNAPSHOT 
   1) commons-discovery
   2) Dispatching => *.ftl
   3) create customized components based on bootstrap
+  
 0.3-SNAPSHOT  
   1) Dispatching => *.groovy
   2) ParsleyScripts
   3) FreemarkerBuilder
+  
 0.4-SNAPSHOT
   1) refactor
   2) fix bugs and make it function normally
-  3) [MY Web Site] construct a web site based on Parsley and extract layout to a single element
+  3) [terryxu.org] personal web site based on Parsley framework and extract layout to a single element
+  
 0.5-SNAPSHOT
 (I) Functions:
-*2. FreemarkerFacet
-  1) optimize existing template components
+*1. FreemarkerFacet
+  
   2) add new customized components(*.ftl)
-*3. Core
+*2. Core
   1) Add strict constraints on argument type checking before action methods
-4. org.seterryxu => org.terryxu
+  2) Add do$Self mechanism
+3. org.seterryxu => org.terryxu
+4. Actions: add default method to which the request is dispatched
+5. Dispatcher: methodMissing => invokeMethod
+
+(II) Bugs to fix:
+4. A token has been dealt with by an action, so it shouldn't be forwarded to others facets.

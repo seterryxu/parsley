@@ -1,19 +1,17 @@
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.*
 
-import org.junit.Test;
-import org.terryxu.parsleyframework.facet.groovy.FreemarkerBuilder;
+import org.junit.Test
+import org.terryxu.parsleyframework.facet.groovy.ParsleyScriptHelper
+import java.net.URL
 
 class TestGsp {
 
 	@Test
 	public void test() {
-		def b=new Binding()
-		b.builder=FreemarkerBuilder.class
-		
-		def sh=new GroovyShell(b)
-		sh.evaluate(new File('D:/workspace/parsley/parsley-groovy/src/test/resources/testgsps/TestPanel.groovy'))
+		def f=new File('D:/tmpcode/index.groovy')
+		def helper=new ParsleyScriptHelper(new Object(), f.toURL())
+		helper.writeTo(new OutputStreamWriter(System.out))
 	}
-
 }

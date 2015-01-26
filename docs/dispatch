@@ -1,0 +1,17 @@
+[URL dispatching]
+URL		   RemainingCount	Handling
+--------   --------------   ------------------------------------
+/a		   0				page: /a.*
+							actn: a.doIndex()
+/a/		   0				page: /a/index.*, a.do$Self()
+/a/b	   1				page: /a/b.*
+							actn: a.doB()
+/a/b/	   1				page: /a/b/index.*, do$Self()
+/a/b/c	   2				page: /a/b/c.*
+							actn: a.getB().doC()
+/a/b/c/	   2				page: /a/b/c/index.*, do$Self()
+
+[page mapping]
+Ctlr: a.b.c.D
+View: /a/b/c/D/index.*,xxx.*
+

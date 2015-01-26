@@ -61,9 +61,15 @@ final class Parsley extends HttpServlet {
 	throws ServletException, IOException {
 		//wrapper
 		IParsleyRequest preq=new ParsleyRequestSupport(req)
-		IParsleyResponse pres=new ParsleyResponseSupport(res)
+		IParsleyResponse pres=new ParsleyResponseSupport(res, this)
 		LOGGER.debug('Parsley wrapper instantiated.')
 
+		_service(preq, pres)
+
+		LOGGER.info("Parsley Request handling completed.")
+	}
+
+	private void _service(IParsleyRequest preq, IParsleyResponse pres){
 		def resName=preq.requestedResource
 		def type=_checkParsleyRequestType(resName)
 		LOGGER.debug("Parsley Requested resource: ${resName?:'Web Root'}, type: $type")
@@ -84,7 +90,7 @@ final class Parsley extends HttpServlet {
 			case PARSLEY_REQ_TYPE.UNKNOWN:
 				def instance=_instantiate(preq)
 
-				if(instance){
+				if(instance!=null){
 					//try actions
 					if(_navigate(instance, preq, pres)){
 						return
@@ -104,8 +110,6 @@ final class Parsley extends HttpServlet {
 				LOGGER.error(errorMsg)
 				HttpResponseFactory.notFound(errorMsg, pres)
 		}
-
-		LOGGER.info("Parsley Request handling completed.")
 	}
 
 	//------------------- Parsley request types -------------------
@@ -145,25 +149,36 @@ final class Parsley extends HttpServlet {
 	}
 
 	//------------------- navigating methods -------------------
-	// TODO perfect recusive invocations
+	// TODO optimize recursive invocations
 	private boolean _navigate(instance, IParsleyRequest preq, IParsleyResponse pres){
-		while(preq.resourceTokens.hasMoreTokens()){
-			preq.resourceTokens.nextToken()
-			if(_tryNavigate(instance, preq, pres)){
-				break
-			}
+		//check the number of remaining arguments
+		//and decide which method to call
+		while(preq.resourceTokens.remainingCount()>1){
+			String tk=preq.resourceTokens.next()
+			instance=instance."$token"()
 		}
 
-		return true
+		String tk=preq.resourceTokens.next()
+		if(!tk){
+			try{
+				instance.do$Self(preq, pres)
+				return true
+			}catch(MissingMethodException e){
+				try{
+					instance.doIndex(preq, pres)
+					return true
+				}catch(MissingMethodException e2){
+					return false
+				}
+			}
+		}else{
+			instance."$tk"(preq, pres)
+		}
 	}
 
-	private _tryNavigate(instance, IParsleyRequest preq, IParsleyResponse pres){
-		def token=preq.resourceTokens.current()
-		try{
-			return instance."$token"(preq, pres)
-		}catch(MissingMethodException e){
-			null
-		}
+	def doForward(IParsleyRequest req, String url, IParsleyResponse res){
+		def preq=new ParsleyRequestSupport(req, url)
+		_service(preq, res)
 	}
 
 }

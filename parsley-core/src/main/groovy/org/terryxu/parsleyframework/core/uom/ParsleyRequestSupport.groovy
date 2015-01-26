@@ -25,11 +25,14 @@ package org.terryxu.parsleyframework.core.uom
 
 import java.util.Locale
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.terryxu.parsleyframework.core.Facet;
+import org.terryxu.parsleyframework.core.WebApp;
 
 /**
  *
@@ -45,13 +48,19 @@ final class ParsleyRequestSupport extends HttpServletRequestWrapper implements I
 
 	ParsleyRequestSupport(HttpServletRequest req){
 		super(req)
-
 		this.requestedResource=_getRequestedResource(req)
+		this.resourceTokens=new ResourceToken()
+	}
+	
+	//TODO is this one necessary?
+	ParsleyRequestSupport(HttpServletRequest req, String url){
+		super(req)
+		this.requestedResource=url
 		this.resourceTokens=new ResourceToken()
 	}
 
 	private String _getRequestedResource(HttpServletRequest req){
-		req.getRequestURI().substring(req.getContextPath().size()+1)
+		req.getRequestURI().substring(req.getContextPath().size())
 	}
 
 	private class ResourceToken{
@@ -77,26 +86,31 @@ final class ParsleyRequestSupport extends HttpServletRequestWrapper implements I
 			_tokens[index]
 		}
 
-		String nextToken(){
-			if(hasMoreTokens()){
+		String next(){
+			if(hasMore()){
 				return _tokens[++index]
 			}
 
 			null
 		}
 
-		public boolean hasMoreTokens() {
+		public boolean hasMore() {
 			index<_tokens.size()-1
+		}
+		
+		int remainingCount(){
+			_tokens.size()-1-index
 		}
 
 		int nextAsInt(){
-			if(hasMoreTokens()){
-				_tokens[++index] as int
+			if(hasMore()){
+				return _tokens[++index] as int
 			}
 
 			Integer.MIN_VALUE
 		}
 
+		//TODO to be tested
 		@Override
 		public String toString() {
 			def b=new StringBuilder()
@@ -123,5 +137,18 @@ final class ParsleyRequestSupport extends HttpServletRequestWrapper implements I
 	@Override
 	public Locale getRequestedLocale() {
 		getLocale()?:Locale.ENGLISH
+	}
+
+	//TODO new method or override?
+	@Override
+	public RequestDispatcher getPage(String pageName) {
+		for(facet in Facet.FACETS){
+			def dispatcher=facet.createRequestDispatcher(pageName)
+			if(dispatcher){
+				return dispatcher
+			}
+		}
+		
+		null;
 	}
 }

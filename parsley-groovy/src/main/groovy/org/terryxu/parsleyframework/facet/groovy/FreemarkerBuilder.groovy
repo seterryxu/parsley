@@ -70,7 +70,7 @@ class FreemarkerBuilder {
 
 
 	def methodMissing(String name,args){
-		LOGGER.debug("Calling '$name' with '$args'")
+		LOGGER.debug("Calling '$name' with '$args'...")
 
 		if(!_templateBuilder){
 			_templateBuilder=new StringWriter()
@@ -165,7 +165,7 @@ class FreemarkerBuilder {
 			_templateBuilder.append(innerText)
 		}
 
-		_templateBuilder.append("</$name>")
+		_templateBuilder.append("</$name>").append(LINE_SEPARATOR)
 
 		if(!_directiveStack.isEmpty()){
 			_directiveStack.pop()

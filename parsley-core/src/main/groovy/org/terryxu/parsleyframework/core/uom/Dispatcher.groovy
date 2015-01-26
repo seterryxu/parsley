@@ -25,9 +25,9 @@ package org.terryxu.parsleyframework.core.uom
 
 import static org.terryxu.parsleyframework.core.util.ResourceUtils.*
 
-import org.terryxu.parsleyframework.core.WebApp
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.terryxu.parsleyframework.core.WebApp
 
 /**
  *
@@ -46,38 +46,48 @@ abstract class Dispatcher {
 
 	static void addDispatchers(Class c){
 		if(!WebApp.DISPATCHERS.contains(c)){
-			LOGGER.debug("Adding a dispatcher for $c")
 
 			c.metaClass.invokeMethod={String name,args->
-				//check if this class has a customized navigation method
-				//if does, invoke this method and ignore others
-				if(c.metaClass.respondsTo(c, 'do$Self', IParsleyRequest, IParsleyResponse)){
-					return invokeMethod('do$Self', args)
+				LOGGER.debug("Calling method '$name' with '$args' in class '$c' ...")
+
+				if(name=='do$Self'&&c.metaClass.respondsTo(c, 'do$Self', IParsleyRequest, IParsleyResponse)){
+					LOGGER.debug("Self-handling method found in class '$c'")
+					invokeMethod('do$Self', args)
+					return true
 				}
-				
+
+				if(name=='doIndex'&&c.metaClass.respondsTo(c, 'doIndex', IParsleyRequest, IParsleyResponse)){
+					LOGGER.debug("Default method found in class '$c'")
+					invokeMethod('doIndex', args)
+					return true
+				}
+
 				def name0=capitalFirst(name)
 
-				//check if this class has a parsley action method
-				if(c.metaClass.respondsTo(c, "do$name0", IParsleyRequest, IParsleyResponse)){
-					return invokeMethod("do$name0", args)
+				//TODO has other getters?
+				if(args.size()==1){
+					if(args[0] instanceof Integer&&c.metaClass.respondsTo(c, "get$name0", int)){
+						return invokeMethod("get$name0", args[0])
+					}
+
+					if(args[0] instanceof String&&c.metaClass.respondsTo(c, "get$name0", String)){
+						return invokeMethod("get$name0", args[0])
+					}
 				}
 
-				//check if this class has a simple getter
-				if(c.metaClass.respondsTo(c, "get$name0")){
-					return invokeMethod("get$name0", args)
+				//check if this class has an action method
+				if(c.metaClass.respondsTo(c, "do$name0", IParsleyRequest, IParsleyResponse)){
+					invokeMethod("do$name0", args)
+					return true
 				}
-				
-				//TODO should have multiple getters
-				
-				//				if(c.metaClass.respondsTo(c,"js$name0")){
-				//					return invokeMethod("js$name0", args)
-				//				}
-				//
-				
-				throw new MissingMethodException(name0, c, args)
+
+				//out of options
+				throw new MissingMethodException(name, c, args)
 			}
 
 			WebApp.DISPATCHERS<<c
+			
+			LOGGER.debug("Dispatchers for class '$c' added.")
 		}
 	}
 

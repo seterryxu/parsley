@@ -26,7 +26,7 @@ public class TestFtl {
 		try {
 			FileTemplateLoader fl = new FileTemplateLoader(
 					new File(
-							"D:\\workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\TestParsley\\WEB-INF/resource-files/"));
+							"D:\\TmpCode\\"));
 			// FileTemplateLoader fl = new FileTemplateLoader(new File(
 			// "D:/workspace/TestFreemarker/WebContent/ftl"));
 			ClassTemplateLoader cl = new ClassTemplateLoader(
@@ -35,7 +35,7 @@ public class TestFtl {
 			MultiTemplateLoader l = new MultiTemplateLoader(ldrs);
 			c.setTemplateLoader(l);
 
-			Template t = c.getTemplate("/bt/index.ftl");
+			Template t = c.getTemplate("/index.ftl");
 
 			Map root = new HashMap();
 			root.put("title", "this is a test panel");

@@ -25,6 +25,8 @@ package org.terryxu.parsleyframework.facet.freemarker
 
 import static org.terryxu.parsleyframework.facet.freemarker.ResourceLoader.*
 
+import javax.servlet.RequestDispatcher;
+
 import org.terryxu.parsleyframework.core.Facet
 import org.terryxu.parsleyframework.core.WebApp
 import org.terryxu.parsleyframework.core.uom.IParsleyRequest
@@ -56,26 +58,33 @@ class FreemarkerFacet extends Facet{
 		LOGGER.debug("Initializing required resources...")
 		loadResources()
 
-		def templateName
-		try{
-			if(!resName){// is index.ftl
-				templateName="index$_ext"
-			}else if(resName.endsWith('/')){
-				templateName=resName+'index'+_ext
-			}else{
-				templateName=resName+_ext
+		if(instance!=null&&instance.metaClass.respondsTo(instance, 'do$Self', IParsleyRequest, IParsleyResponse)){
+			LOGGER.debug("Handling '${resName}' yourself...")
+			instance.'do$Self'(preq, pres)
+			return true
+		}else{
+			def templateName
+			try{
+				if(!resName){
+					// is index.ftl
+					templateName="index$_ext"
+				}else if(resName.endsWith('/')){
+					templateName=resName+'index'+_ext
+				}else{
+					templateName=resName+_ext
+				}
+				_t=conf.getTemplate(templateName)
+
+				LOGGER.debug("Template '$templateName' found.")
+			}catch(FileNotFoundException e){
+				LOGGER.debug("Template '$templateName' not found. Handling completed.")
+				return false
 			}
-			_t=conf.getTemplate(templateName)
-					
-		}catch(FileNotFoundException e){
-			LOGGER.debug("Template '$templateName' not found. Handling completed.")
-			return false
 		}
 
-		LOGGER.debug("Template '$templateName' found.")
 
 		def root=[:]
-		root.put('it', instance?:new Object())
+		root.put('it', instance!=null?instance:new Object())
 		root.put("contextPath", WebApp.CONTEXT_PATH)
 
 		pres.setContentType('text/html;charset=UTF-8')
@@ -100,5 +109,12 @@ class FreemarkerFacet extends Facet{
 		def exts=new HashSet<String>()
 		exts.add('.ftl')
 		return exts
+	}
+
+	@Override
+	public RequestDispatcher createRequestDispatcher(String pageName) {
+		
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
